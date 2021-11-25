@@ -7,13 +7,12 @@ import java.util.Scanner;
 
 public class MyPage {
 
-        public void myPage() {
-            Scanner input = new Scanner(System.in);
+        public static void myPage() {
             String option;
 
             do {
                 Printing.myPage();
-                option = input.nextLine();
+                option = UserInput.readLine("");
                 switch (option) {
 
                     case "0":
@@ -27,6 +26,7 @@ public class MyPage {
                         break;
                     default:
                         Printing.invalidEntry();
+                        break;
                 }
             } while (!(option.equals("0")));
             UserInput.exitScanner();

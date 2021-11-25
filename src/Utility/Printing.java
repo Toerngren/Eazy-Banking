@@ -9,8 +9,8 @@ public class Printing {
                 "0. Close System." + EOL +
                 "1. Display My page." + EOL +
                 "2. Display Admin page." + EOL +
-                "3. No feature" + EOL +
-                "4. No feature" + EOL +
+                "3. Add customer." + EOL +
+                "4. Add employee." + EOL +
                 "5. No feature" + EOL);
     }
     public static void myPage(){
