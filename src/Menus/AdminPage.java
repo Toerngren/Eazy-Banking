@@ -1,5 +1,6 @@
 package Menus;
 
+import Utility.Controller;
 import Utility.Printing;
 import Utility.UserInput;
 
@@ -7,13 +8,13 @@ import java.util.Scanner;
 
 public class AdminPage {
 
-    public void adminPage() {
-        Scanner input = new Scanner(System.in);
+    public static void adminPage() {
+
         String option;
 
         do {
             Printing.adminPage();
-            option = input.nextLine();
+            option = UserInput.readLine("");
             switch (option) {
 
                 case "0":
@@ -27,6 +28,7 @@ public class AdminPage {
                     break;
                 default:
                     Printing.invalidEntry();
+                    break;
             }
         } while (!(option.equals("0")));
         UserInput.exitScanner();
