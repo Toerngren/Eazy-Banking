@@ -1,10 +1,7 @@
 package Menus;
 
-import Utility.Controller;
 import Utility.Printing;
 import Utility.UserInput;
-
-import java.util.Scanner;
 
 public class AdminPage {
 

@@ -31,4 +31,5 @@ public class MyPage {
             } while (!(option.equals("0")));
             UserInput.exitScanner();
         }
+
     }
