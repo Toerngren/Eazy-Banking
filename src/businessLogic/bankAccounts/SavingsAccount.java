@@ -1,6 +1,8 @@
-package businessLogic;
+package businessLogic.bankAccounts;
 
-public class SavingsAccount extends BankAccount{
+import businessLogic.bankAccounts.BankAccount;
+
+public class SavingsAccount extends BankAccount {
 
     private final double interestRate = 0.0;
 

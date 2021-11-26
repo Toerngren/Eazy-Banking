@@ -1,4 +1,4 @@
-package Transactions;
+package businessLogic.Transactions;
 
 import java.util.Date;
 import java.util.UUID;

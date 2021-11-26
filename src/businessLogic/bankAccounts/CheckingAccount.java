@@ -1,6 +1,8 @@
-package businessLogic;
+package businessLogic.bankAccounts;
 
-public class CheckingAccount extends BankAccount{
+import businessLogic.bankAccounts.BankAccount;
+
+public class CheckingAccount extends BankAccount {
 
     public CheckingAccount(String accountNumber, double balance){
         super(accountNumber, balance);

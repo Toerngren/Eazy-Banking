@@ -1,4 +1,4 @@
-package Transactions;
+package businessLogic.Transactions;
 
 public class Deposit extends Transaction {
 

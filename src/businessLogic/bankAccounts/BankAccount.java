@@ -1,4 +1,4 @@
-package businessLogic;
+package businessLogic.bankAccounts;
 
 import java.util.Date;
 import java.util.List;
