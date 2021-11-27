@@ -3,7 +3,7 @@ package businessLogic.bankAccounts;
 import java.util.Date;
 import java.util.List;
 
-public class BankAccount {
+public abstract class BankAccount {
 
     private String accountNumber;
     private double balance;

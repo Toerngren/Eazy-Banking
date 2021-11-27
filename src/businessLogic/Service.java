@@ -37,15 +37,15 @@ public class Service { // This is like our facade. Where we place all our busine
         return "";
     }
 
-    public String depositMoney(){
+    public String depositMoney(String accountNumber, double amount){
         return "";
     }
 
-    public String withdrawMoney(){
+    public String withdrawMoney(String accountNumber, double amount){
         return "";
     }
 
-    public String transferMoney(){
+    public String transferMoney(String accountNumber1, String accountNumber2, double amount){
         return "";
     }
 

@@ -3,8 +3,6 @@ package Menus;
 import Utility.Printing;
 import Utility.UserInput;
 
-import java.util.Scanner;
-
 public class MyPage {
 
         public static void myPage() {
@@ -19,7 +17,7 @@ public class MyPage {
                         StartPage.startPage();
                         break;
                     case "1":
-                        System.out.println("no feature yet");
+                        MyAccount.myAccount();
                         break;
                     case "2":
                         System.out.println("no feature yet:");

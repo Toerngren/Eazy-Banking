@@ -1,7 +1,8 @@
 package businessLogic.User;
 
 import businessLogic.KYC;
-import businessLogic.bankAccounts.BankAccount;
+import businessLogic.bankAccounts.CheckingAccount;
+import businessLogic.bankAccounts.SavingsAccount;
 
 public class Customer{
 
@@ -13,7 +14,8 @@ public class Customer{
     private String password;
     private String pinCode;
     private KYC kyc;
-    private BankAccount accountList;
+    private CheckingAccount accountList;
+    private SavingsAccount savingsAccount;
 
     public Customer(String personalNumber, String firstName,String lastName, String email, String password, String telephone, String pinCode) {
         this.personalNumber = personalNumber;
@@ -24,7 +26,7 @@ public class Customer{
         this.password = password;
         this.pinCode = pinCode;
         this.kyc = new KYC();
-        this.accountList = new BankAccount("", 0.0);
+        this.accountList = new CheckingAccount("", 0.0);
     }
 
 
