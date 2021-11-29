@@ -1,8 +1,8 @@
-package Menus;
+package View;
 
 import Utility.Printing;
 import Utility.UserInput;
-import businessLogic.Service;
+import controller.Service;
 
 public class MyAccount {
 

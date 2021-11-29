@@ -1,4 +1,4 @@
-import Menus.StartPage;
+import View.StartPage;
 
 public class EasyBanking {
 

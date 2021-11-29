@@ -1,4 +1,4 @@
-package businessLogic;
+package controller;
 
 import businessLogic.User.Customer;
 
