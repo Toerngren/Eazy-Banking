@@ -25,13 +25,9 @@ public class Customer{
         this.telephone = telephone;
         this.password = password;
         this.pinCode = pinCode;
-        this.kyc = new KYC();
+        this.kyc = new KYC("",0.0,false,false,false);
         this.accountList = new CheckingAccount("", 0.0);
     }
-
-
-
-
 }
 
 
