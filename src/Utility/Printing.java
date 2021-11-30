@@ -5,38 +5,69 @@ public class Printing {
     static final String EOL = System.lineSeparator();
 
     public static void startPage() {
-        System.out.println("Start page: Choose among the options below." + EOL +
-                "0. Close System." + EOL +
-                "1. Display My page." + EOL +
-                "2. Display Admin page." + EOL +
-                "3. Add customer." + EOL +
-                "4. Add employee." + EOL +
-                "5. No feature" + EOL);
+        System.out.println("Welcome to Eazy Banking!" + EOL +
+                "0. Close system." + EOL +
+                "1. Customer registration." + EOL +
+                "2. Customer login." + EOL +
+                "3. Employee login." + EOL);
     }
-    public static void myPage(){
-        System.out.println("My page: Choose among the options below." + EOL +
-                "0. Return to start page." + EOL +
-                "1. No feature yet" + EOL +
-                "2. No feature yet" + EOL +
-                "3. No feature yet" + EOL);
+    public static void customerMenu(){
+        System.out.println("You are now logged in!" +EOL +"Please choose among the options below." + EOL +
+                "0. Log out" + EOL +
+                "1. Payments & Transfers" + EOL +
+                "2. Bank accounts" + EOL +
+                "3. Loans" + EOL +
+                "4. Mortgages" + EOL +
+                "5. KYC" + EOL +
+                "6. Customer profile" + EOL +
+                "7. Customer support" + EOL);
     }
-    public static void adminPage(){
-        System.out.println("Admin page: Choose among the options below." + EOL +
-                "0. Return to start page." + EOL +
-                "1. No feature yet." + EOL +
-                "2. No feature yet." + EOL +
-                "3. No feature yet." + EOL);
+    public static void employeeMenu(){
+        System.out.println("You are now logged in!" + EOL +
+                "Please choose one of the following options:" + EOL +
+                "0. Log out." + EOL +
+                "1. Review loans." + EOL +
+                "2. Review mortgages." + EOL +
+                "3. Review KYCs" + EOL +
+                "4. Customer Support" + EOL);
     }
-    public static void myAccount(){
-        System.out.println("My account: Choose among the options below." + EOL +
-                "0. Return to start page." + EOL +
-                "1. Deposit." + EOL +
-                "2. Withdraw" + EOL +
-                "3. Transfer" + EOL +
-                "4. Make Payment" + EOL +
-                "5. Transaction history" + EOL +
-                "6. Check balance" + EOL);
+    public static void accountMenu(){
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to menu." + EOL +
+                "1. Open account." + EOL +
+                "2. Close account." + EOL +
+                "3. Deposit funds." + EOL +
+                "4. Withdraw funds." + EOL +
+                "5. Transfer." + EOL +
+                "6. Check balance." + EOL);
     }
+    public static void KYCMenu() {
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to menu." + EOL +
+                "1. Register KYC." + EOL +
+                "2. View KYC." + EOL +
+                "3. Update KYC." + EOL);
+    }
+    public static void loanMenu() {
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to menu." + EOL +
+                "1. Apply for a new loan." + EOL +
+                "2. Increase a curren loan." + EOL);
+    }
+
+    public static void PayTransferMenu(){
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to menu." + EOL +
+                "1. Transfers between accounts." + EOL +
+                "2. Transfer funds or make payment." + EOL +
+                "3. View saved transactions." + EOL +
+                "4. View all transactions." + EOL +
+                "5. View deposits." + EOL +
+                "6. View withdrawals." + EOL +
+                "7. View total deposits for a period." + EOL +
+                "8. View total withdrawals for a period." + EOL);
+    }
+
 
     public static void invalidEntry() {
         System.out.println("Invalid menu option. Please type another option." + EOL);

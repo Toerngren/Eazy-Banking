@@ -3,13 +3,14 @@ package View;
 import Utility.Printing;
 import Utility.UserInput;
 
-public class MyPage {
 
-        public static void myPage() {
+public class CustomerMenu {
+
+        public static void customerMenu() {
             String option;
 
             do {
-                Printing.myPage();
+                Printing.customerMenu();
                 option = UserInput.readLine("");
                 switch (option) {
 
@@ -17,7 +18,7 @@ public class MyPage {
                         StartPage.startPage();
                         break;
                     case "1":
-                        MyAccount.myAccount();
+                        System.out.println("no feature yet");
                         break;
                     case "2":
                         System.out.println("no feature yet:");
@@ -29,5 +30,4 @@ public class MyPage {
             } while (!(option.equals("0")));
             UserInput.exitScanner();
         }
-
     }
