@@ -23,7 +23,7 @@ public class Customer{
         this.telephone = telephone;
         this.password = password;
         this.pinCode = pinCode;
-        this.accountList = new CheckingAccount("", 0.0);
+        this.accountList = new CheckingAccount("");
     }
 
     public String getPersonalNumber() {

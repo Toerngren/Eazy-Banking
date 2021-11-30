@@ -2,8 +2,8 @@ package businessLogic.bankAccounts;
 
 public class CheckingAccount extends BankAccount {
 
-    public CheckingAccount(String accountNumber, double balance){
-        super(accountNumber, balance);
+    public CheckingAccount(String customerPersonalNumber){
+        super(customerPersonalNumber);
     }
 
     public void payBill(){

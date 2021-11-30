@@ -1,6 +1,8 @@
 package controller;
 
+import businessLogic.KYC;
 import businessLogic.User.Customer;
+import businessLogic.bankAccounts.BankAccount;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,9 @@ import java.util.List;
 public class Service { // This is like our facade. Where we place all our business logic
 
     private List<Customer> customerList;
+    private List<BankAccount> accountsList;
+    private List<KYC> Kyc;
+
 
     public Service(){
         customerList = new ArrayList<>();
@@ -38,8 +43,30 @@ public class Service { // This is like our facade. Where we place all our busine
         return "";
     }
 
+    public int getAccountNumberIndex(String accountNumber){
+        for (int i = 0; i < this.accountsList.size(); i++){
+            if (this.accountsList.get(i).verifyAccountNumber(accountNumber)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean isAccountNumberExist(String accountNumber){
+        return getAccountNumberIndex(accountNumber) != -1;
+    }
+
     public String depositMoney(String accountNumber, double amount){
-        return "";
+        if (!isAccountNumberExist(accountNumber)){
+            return "Account number does not exist.";
+        }
+        if (amount <= 0){
+            return "Amount must be greater than 0";
+        }else {
+            int index = getAccountNumberIndex(accountNumber);
+            this.accountsList.get(index).addToUpdateBalance(amount);
+        }
+        return amount + " has been deposit to the account " + accountNumber;
     }
 
     public String withdrawMoney(String accountNumber, double amount){

@@ -1,21 +1,37 @@
 package businessLogic.bankAccounts;
 
+import Utility.Calculator;
+
 import java.util.Date;
 import java.util.List;
 
 public abstract class BankAccount {
 
-    private String accountNumber;
+    private final String customerPersonalNumber;
+    private final String accountNumber;
     private double balance;
     private List<String> transactions;
 
-    public BankAccount(String accountNumber, double balance){
-        this.accountNumber = accountNumber;
-        this.balance = balance;
+    public BankAccount(String customerPersonalNumber){
+        this.customerPersonalNumber = customerPersonalNumber;
+        this.accountNumber = generateAccountNumber();
+        this.balance = 0.0;
+    }
+
+    private String generateAccountNumber(){
+        return Integer.toString(Calculator.randomNumberGenerator(999999,555555)) ;
+    }
+
+    public String getCustomerPersonalNumber(){
+        return this.customerPersonalNumber;
     }
 
     public String getAccountNumber(){
         return this.accountNumber;
+    }
+
+    public boolean verifyAccountNumber(String accountNumber){
+        return this.accountNumber.equals(accountNumber);
     }
 
     public double getBalance(){
