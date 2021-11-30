@@ -6,15 +6,9 @@ import controller.Service;
 
 public class MyAccount {
 
-    private String personalNumber;
-    private static final Service service = new Service();
+      private static final Service service = new Service();
 
-    public MyAccount(String personalNumber){
-        this.personalNumber = personalNumber;
-    }
-
-
-    public static void myAccount() {
+       public static void myAccount() {
         String option;
 
         do {
