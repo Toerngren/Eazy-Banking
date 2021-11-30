@@ -13,6 +13,7 @@ public class MyAccount {
         this.personalNumber = personalNumber;
     }
 
+
     public static void myAccount() {
         String option;
 
@@ -20,14 +21,31 @@ public class MyAccount {
             Printing.myAccount();
             option = UserInput.readLine("");
             switch (option) {
-                case "0" -> StartPage.startPage();
-                case "1" -> deposit();
-                case "2" -> withdraw();
-                case "3" -> transfer();
-                case "4" -> makePayment();
-                case "5" -> printTransactionHistory();
-                case "6" -> checkBalance();
-                default -> Printing.invalidEntry();
+
+                case "0":
+                    StartPage.startPage();
+                    break;
+                case "1":
+                    deposit();
+                    break;
+                case "2":
+                    withdraw();
+                    break;
+                case "3":
+                    transfer();
+                    break;
+                case "4":
+                    makePayment();
+                    break;
+                case "5":
+                    printTransactionHistory();
+                    break;
+                case "6":
+                    checkBalance();
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
             }
         } while (!(option.equals("0")));
         UserInput.exitScanner();
