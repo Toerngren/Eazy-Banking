@@ -1,7 +1,7 @@
 package View;
-import controller.Service;
 import Utility.Printing;
 import Utility.UserInput;
+import controller.Service;
 
 
 public class StartPage {
@@ -16,13 +16,7 @@ public class StartPage {
                     System.out.println("Closing");
                     System.exit(0);
                     break;
-                case "1":
-                    MyPage.myPage();
-                    break;
-                case "2":
-                    AdminPage.adminPage();
-                    break;
-                case "3": {
+                case "1": {
                     Service controller = new Service();
                     String personalNumber = UserInput.readLine("Customer personal number:");
                     String firstName = UserInput.readLine("Customer firstname:");
@@ -33,13 +27,14 @@ public class StartPage {
                     String pinCode = UserInput.readLine("Customer pin code:");
                     String message = controller.createCustomer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
                     System.out.println(message);
-                    }
                     break;
-                case "4":
-
+                }
+                case "2":
+                    CustomerMenu.customerMenu();
                     break;
-                case "5":
-                    System.out.println("No feature yet");
+                case "3": {
+                    EmployeeMenu.adminPage(); // employeePage
+                }
                     break;
                 default:
                     Printing.invalidEntry();
@@ -47,6 +42,4 @@ public class StartPage {
             }
         } while(true);
     }
-
-    // create methods for each case
 }

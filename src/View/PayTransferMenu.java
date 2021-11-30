@@ -3,14 +3,13 @@ package View;
 import Utility.Printing;
 import Utility.UserInput;
 
-public class AdminPage {
+public class PayTransferMenu {
 
-    public static void adminPage() {
-
+    public static void payTransferMenu() {
         String option;
 
         do {
-            Printing.adminPage();
+            Printing.PayTransferMenu();
             option = UserInput.readLine("");
             switch (option) {
 
@@ -18,7 +17,7 @@ public class AdminPage {
                     StartPage.startPage();
                     break;
                 case "1":
-                    System.out.println("no feature yet");
+                    System.out.println("no feature yet:");
                     break;
                 case "2":
                     System.out.println("no feature yet:");

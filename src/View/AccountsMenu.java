@@ -4,7 +4,7 @@ import Utility.Printing;
 import Utility.UserInput;
 import controller.Service;
 
-public class MyAccount {
+public class AccountsMenu {
 
       private static final Service service = new Service();
 
@@ -12,7 +12,7 @@ public class MyAccount {
         String option;
 
         do {
-            Printing.myAccount();
+            Printing.accountMenu();
             option = UserInput.readLine("");
             switch (option) {
 
