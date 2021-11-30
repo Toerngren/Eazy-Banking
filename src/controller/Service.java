@@ -26,6 +26,7 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public String editCustomerDetail(String firstName,String lastName, String email,
                                      String telephone, String password, String pinCode){
+
         return "";
     }
 
@@ -72,5 +73,20 @@ public class Service { // This is like our facade. Where we place all our busine
     public void checkInbox(){
 
     }
+
+    public Customer findCustomer(String personalNumber){
+    try {
+        if (customerList.size() > 0) {
+            for (Customer customer : customerList) {
+                if (customer.getPersonalNumber().equals(personalNumber)) {
+                    return customer;
+                }
+            }
+        }
+    } catch (Exception exception) {
+        exception.printStackTrace();
+    }
+    return null;
+}
 
 }
