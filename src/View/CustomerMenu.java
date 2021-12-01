@@ -9,6 +9,7 @@ public class CustomerMenu {
         public static void customerMenu() {
             String option;
 
+
             do {
                 Printing.customerMenu();
                 option = UserInput.readLine("");

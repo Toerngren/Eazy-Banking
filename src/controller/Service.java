@@ -58,7 +58,7 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public String depositMoney(String accountNumber, double amount){
         if (!isAccountNumberExist(accountNumber)){
-            return "Account number does not exist.";
+            return accountNumber + " Account number does not exist.";
         }
         if (amount <= 0){
             return "Amount must be greater than 0";
@@ -70,11 +70,34 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     public String withdrawMoney(String accountNumber, double amount){
-        return "";
+        if (!isAccountNumberExist(accountNumber)){
+            return accountNumber + " Account number does not exist.";
+        }
+        int index = getAccountNumberIndex(accountNumber);
+        if (this.accountsList.get(index).getBalance() < amount){
+            return "Not enough money to withdraw from account no. " + accountNumber;
+        }else {
+            this.accountsList.get(index).subtractToUpdateBalance(amount);
+        }
+        return amount + " SEK has been withdrawn from account no. " + accountNumber;
     }
 
-    public String transferMoney(String accountNumber1, String accountNumber2, double amount){
-        return "";
+    public String transferMoney(String accountNumberFrom, String accountNumberTo, double amount){
+        if (!isAccountNumberExist(accountNumberFrom)){
+            return accountNumberFrom + " Account number does not exist.";
+        }
+        if (!isAccountNumberExist(accountNumberTo)){
+            return accountNumberTo + " Account number does not exist.";
+        }
+        int index1 = getAccountNumberIndex(accountNumberFrom);
+        int index2 = getAccountNumberIndex(accountNumberFrom);
+        if (this.accountsList.get(index1).getBalance() < amount){
+            return "Not enough money to transfer from account no. " + accountNumberFrom;
+        }else {
+            this.accountsList.get(index1).subtractToUpdateBalance(amount);
+            this.accountsList.get(index2).addToUpdateBalance(amount);
+        }
+        return amount + " SEK has been transferred to account no. " + accountNumberTo;
     }
 
     public String checkBalance(){

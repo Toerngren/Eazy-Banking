@@ -1,7 +1,9 @@
 package businessLogic.bankAccounts;
 
 import Utility.Calculator;
+import businessLogic.Transactions.Transaction;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,12 +12,13 @@ public abstract class BankAccount {
     private final String customerPersonalNumber;
     private final String accountNumber;
     private double balance;
-    private List<String> transactions;
+    private List<Transaction> transactionList;
 
     public BankAccount(String customerPersonalNumber){
         this.customerPersonalNumber = customerPersonalNumber;
         this.accountNumber = generateAccountNumber();
         this.balance = 0.0;
+        this.transactionList = new ArrayList<>();
     }
 
     private String generateAccountNumber(){
@@ -46,8 +49,13 @@ public abstract class BankAccount {
         this.balance = this.balance - newBalance;
     }
 
-    public void addTransaction(String transactionID, double amount, Date date, double fromAccount,
-                               double toAccount, String note){
+    public void addTransaction(double amount, String fromAccount,
+                               String toAccount, String note){
+        this.transactionList.add(new Transaction(amount, fromAccount, toAccount, note));
+    }
+
+    public void addTransaction(double amount, double fromAccount,
+                               double toAccount){
 
     }
 
