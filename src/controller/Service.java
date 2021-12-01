@@ -100,8 +100,16 @@ public class Service { // This is like our facade. Where we place all our busine
         return amount + " SEK has been transferred to account no. " + accountNumberTo;
     }
 
-    public String checkBalance(){
-        return "";
+    public String checkBalance(String accountNumber){
+        String balance;
+        if (!isAccountNumberExist(accountNumber)){
+            return accountNumber + " Account number does not exist.";
+        }
+        else {
+            int index = getAccountNumberIndex(accountNumber);
+            balance = Double.toString(this.accountsList.get(index).getBalance()) ;
+        }
+        return balance;
     }
 
     public String applyLoan(){

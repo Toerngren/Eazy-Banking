@@ -19,7 +19,7 @@ public class CustomerMenu {
                         StartPage.startPage();
                         break;
                     case "1":
-                        System.out.println("no feature yet");
+                        AccountsMenu.myAccount();
                         break;
                     case "2":
                         System.out.println("no feature yet:");
@@ -31,4 +31,5 @@ public class CustomerMenu {
             } while (!(option.equals("0")));
             UserInput.exitScanner();
         }
+
     }

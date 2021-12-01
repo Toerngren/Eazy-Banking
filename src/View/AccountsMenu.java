@@ -46,6 +46,10 @@ public class AccountsMenu {
         UserInput.exitScanner();
     }
 
+    public static String getAccountNumber(){
+           return "";
+    }
+
     public static void deposit(){
         // Account no. should be available before coming to this step
         String accountNumber = UserInput.readLine("Enter account number: ");
@@ -63,7 +67,7 @@ public class AccountsMenu {
 
     public static void transfer(){
         String accountNumber1 = UserInput.readLine("Enter account number to transfer from: ");
-        String accountNumber2 = UserInput.readLine("Enter account number to transfer from: ");
+        String accountNumber2 = UserInput.readLine("Enter account number to transfer to: ");
         double amount = UserInput.readDouble("Enter amount to transfer: ");
         String message = service.transferMoney(accountNumber1, accountNumber2, amount);
         System.out.println(message);
@@ -78,7 +82,8 @@ public class AccountsMenu {
     }
 
     public static void checkBalance(){
-
+        String balance = service.checkBalance(getAccountNumber());
+        System.out.println(" Account balance = " + balance);
     }
 
 }
