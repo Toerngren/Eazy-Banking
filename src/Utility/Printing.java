@@ -21,6 +21,7 @@ public class Printing {
                 "5. KYC" + EOL +
                 "6. Customer profile" + EOL +
                 "7. Customer support" + EOL);
+
     }
     public static void employeeMenu(){
         System.out.println("You are now logged in!" + EOL +
@@ -29,7 +30,9 @@ public class Printing {
                 "1. Review loans." + EOL +
                 "2. Review mortgages." + EOL +
                 "3. Review KYCs" + EOL +
-                "4. Customer Support" + EOL);
+                "4. Customer Support" + EOL +
+                "5. Edit customer name" + EOL +
+                "6. Print all registered customers."+ EOL);
     }
     public static void accountMenu(){
         System.out.println("Please choose one of the following options:" + EOL +

@@ -2,10 +2,11 @@ package View;
 
 import Utility.Printing;
 import Utility.UserInput;
+import controller.Service;
 
 public class EmployeeMenu {
 
-    public static void adminPage() { // Change to employeePage
+    public static void employeePage() { // Change to employeePage
 
         String option;
 
@@ -23,7 +24,27 @@ public class EmployeeMenu {
                 case "2":
                     System.out.println("no feature yet:");
                     break;
-                default:
+                case "3":
+                    System.out.println("no feature yet:");
+                    break;
+                case "4":
+                    System.out.println("no feature yet:");
+                    break;
+                case "5": {
+                    Service controller = new Service();
+                    String personalNumber = UserInput.readLine("Enter the personal number of customer you want to change.");
+                    String newFirstName = UserInput.readLine("Enter new first name.");
+                    String message = controller.editCustomerFirstName(personalNumber, newFirstName);
+                    System.out.println(message);
+                }
+                    break;
+                case"6": {
+                    Service controller = new Service();
+                    String message = controller.printAllCustomers();
+                    System.out.println(message);
+                }
+                break;
+                    default:
                     Printing.invalidEntry();
                     break;
             }
