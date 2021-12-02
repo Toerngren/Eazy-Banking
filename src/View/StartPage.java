@@ -33,7 +33,7 @@ public class StartPage {
                     CustomerMenu.customerMenu();
                     break;
                 case "3": {
-                    EmployeeMenu.adminPage(); // employeePage
+                    EmployeeMenu.employeePage();
                 }
                     break;
                 default:
