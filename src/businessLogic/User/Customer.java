@@ -82,7 +82,7 @@ public class Customer{
         this.pinCode = pinCode;
     }
     public String toString(){
-        return firstName + lastName + "'s" + "personal number is" + personalNumber + ", email is "+ email + "and telephone is " + telephone;
+        return "First name and sur name: " +firstName + lastName +  " Personal number: " + personalNumber; // feel free to edit toString
     }
 
 }

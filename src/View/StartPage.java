@@ -5,6 +5,7 @@ import controller.Service;
 
 
 public class StartPage {
+    private static final Service service = new Service();
 
     public static void startPage() {
         String option;
@@ -16,8 +17,8 @@ public class StartPage {
                     System.out.println("Closing");
                     System.exit(0);
                     break;
-                case "1": {
-                    Service controller = new Service();
+                case "1": { //TODO Adrian
+                    // Create method below and call on it here
                     String personalNumber = UserInput.readLine("Customer personal number:");
                     String firstName = UserInput.readLine("Customer firstname:");
                     String lastName = UserInput.readLine("Customer lastname:");
@@ -25,7 +26,7 @@ public class StartPage {
                     String telephone = UserInput.readLine("Customer telephone number:");
                     String password = UserInput.readLine("Customer password:");
                     String pinCode = UserInput.readLine("Customer pin code:");
-                    String message = controller.createCustomer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
+                    String message = service.createCustomer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
                     System.out.println(message);
                     break;
                 }

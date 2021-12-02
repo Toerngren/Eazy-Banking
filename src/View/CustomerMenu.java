@@ -6,6 +6,7 @@ import controller.Service;
 
 
 public class CustomerMenu {
+    private static final Service service = new Service();
 
         public static void customerMenu() {
             String option;
