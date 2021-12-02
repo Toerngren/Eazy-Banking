@@ -8,7 +8,8 @@ public class SavingsAccount extends BankAccount {
         super(customerPersonalNumber);
     }
 
-    public void calculateInterest(){
-
+    // method should update balance by adding interest every month
+    public void addInterest(){
     }
+
 }
