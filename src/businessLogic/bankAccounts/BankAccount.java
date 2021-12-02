@@ -41,28 +41,25 @@ public abstract class BankAccount {
         return this.balance;
     }
 
-    public void addToUpdateBalance(double newBalance){
-        this.balance = this.balance + newBalance;
+    public void addToUpdateBalance(double amount){
+        this.balance = this.balance + amount;
     }
 
-    public void subtractToUpdateBalance(double newBalance){
-        this.balance = this.balance - newBalance;
+    public void subtractToUpdateBalance(double amount){
+        this.balance = this.balance - amount;
     }
 
-    public void addTransaction(double amount, String fromAccount,
-                               String toAccount, String note){
-        this.transactionList.add(new Transaction(amount, fromAccount, toAccount, note));
+    // Replacement for two addTransaction methods. We just need to add Transaction objects to a list.
+    public void addTransaction(Transaction tx){
+        this.transactionList.add(tx);
     }
 
-    public void addTransaction(double amount, double fromAccount,
-                               double toAccount){
-
-    }
-
+    // todo Margaret
     public void printLatestTransaction(){
 
     }
 
+    // todo Margaret
     public void printAllTransaction(){
 
     }
