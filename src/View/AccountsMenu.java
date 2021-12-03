@@ -51,7 +51,6 @@ public class AccountsMenu {
     }
 
     public static void deposit(){
-        // Account no. should be available before coming to this step
         String accountNumber = UserInput.readLine("Enter account number: ");
         double amount = UserInput.readDouble("Enter amount to deposit: ");
         String message = service.depositMoney(accountNumber, amount);

@@ -9,24 +9,41 @@ import java.util.List;
 
 public class Service { // This is like our facade. Where we place all our business logic
 
-    private static final List<Customer> customerList = new ArrayList<>(); // So we use the same ArrayList everytime..
-    private List<BankAccount> accountsList; // Keep in mind above^
-    private List<KYC> Kyc;
+    private List<Customer> customerList;
+    private List<BankAccount> accountsList;
+    private List<KYC> KycList;
 
 
-    public Service() {
+    public Service(){
+        this.customerList = new ArrayList<>();
+        this.accountsList = new ArrayList<>();
+        this.KycList = new ArrayList<>();
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
                                  String telephone, String password, String pinCode) {
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
-
         customerList.add(customer);
-
         return "Customer is registered successfully.";
     }
 
-    public String verifyCustomerID(String personalNumber, String password) { // Am I thinking this right?
+    public int getCustomerIndex(String personalNumber){
+        for (int i = 0; i < this.accountsList.size(); i++){
+            if (this.accountsList.get(i).verifyAccountNumber(personalNumber)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean isCustomerExist(String personalNumber){
+        return getCustomerIndex(personalNumber) != -1;
+    }
+
+    public boolean verifyCustomer(String personalNumber, String password){
+        int index = getCustomerIndex(personalNumber);
+        return !this.customerList.get(index).verifyCustomer(password);
+    }
 
         if(customerList.isEmpty()){
             return "No customers created yet.";
@@ -256,7 +273,8 @@ public class Service { // This is like our facade. Where we place all our busine
         return "";
     }
 
-    public String closeAccount(){
+    public String closeAccount(String accountNumber){
+
         return "";
     }
 
@@ -265,6 +283,14 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     public void checkInbox(){
+
+    }
+
+    public String sendMessage(){
+        return "";
+    }
+
+    public void receiveMessage(){
 
     }
 
@@ -282,5 +308,28 @@ public class Service { // This is like our facade. Where we place all our busine
     }
     return null;
 }
+
+    //Inbox methods
+    public String addNewMessage(String personalNumber, String newMessage){
+        int index = getCustomerIndex(personalNumber);
+        return this.customerList.get(index).addNewMessage(newMessage);
+    }
+
+    public String addReadMessage(){
+        return "";
+    }
+
+    public String printUnreadMessages(){
+        return "";
+    }
+
+    public String printReadMessages(){
+        return "";
+    }
+
+    public String printAllMessages(){
+        return "";
+    }
+
 
 }
