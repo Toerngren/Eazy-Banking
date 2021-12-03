@@ -5,6 +5,7 @@ import Utility.UserInput;
 import controller.Service;
 
 public class EmployeeMenu {
+    private static final Service service = new Service();
 
     public static void employeePage() { // Change to employeePage
 
@@ -27,20 +28,22 @@ public class EmployeeMenu {
                 case "3":
                     System.out.println("no feature yet:");
                     break;
-                case "4":
-                    System.out.println("no feature yet:");
+                case "4": {
+                    String personalNumber = UserInput.readLine("Enter personalNumber");
+                    String password = UserInput.readLine("Enter password");
+                    String message = service.verifyCustomerID(personalNumber, password);
+                    System.out.println(message);
+                }
                     break;
                 case "5": {
-                    Service controller = new Service();
                     String personalNumber = UserInput.readLine("Enter the personal number of customer you want to change.");
                     String newFirstName = UserInput.readLine("Enter new first name.");
-                    String message = controller.editCustomerFirstName(personalNumber, newFirstName);
+                    String message = service.editCustomerFirstName(personalNumber, newFirstName);
                     System.out.println(message);
                 }
                     break;
                 case"6": {
-                    Service controller = new Service();
-                    String message = controller.printAllCustomers();
+                    String message = service.printAllCustomers();
                     System.out.println(message);
                 }
                 break;

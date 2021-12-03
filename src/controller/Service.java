@@ -1,6 +1,6 @@
 package controller;
 
-import businessLogic.KYC;
+import businessLogic.User.KYC;
 import businessLogic.User.Customer;
 import businessLogic.bankAccounts.BankAccount;
 
@@ -20,7 +20,7 @@ public class Service { // This is like our facade. Where we place all our busine
         this.KycList = new ArrayList<>();
     }
 
-    public String createCustomer(String personalNumber, String firstName,String lastName, String email,
+    public String createCustomer(String personalNumber, String firstName, String lastName, String email,
                                  String telephone, String password, String pinCode) {
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
         customerList.add(customer);
@@ -45,15 +45,27 @@ public class Service { // This is like our facade. Where we place all our busine
         return !this.customerList.get(index).verifyCustomer(password);
     }
 
-    public String editCustomerDetail(String firstName,String lastName, String email,
-                                     String telephone, String password, String pinCode){
+        if(customerList.isEmpty()){
+            return "No customers created yet.";
+        }
+        for (Customer customer : customerList) {
+            if(!customer.getPersonalNumber().equals(personalNumber) && !customer.getPassword().equals(password)){
+                return "Wrong personal number or password.";
+            }
+        }
+        return "Verified customer.";
+    }
 
+    public String editCustomerDetail(String firstName, String lastName, String email,
+                                     String telephone, String password, String pinCode) {
+        // Done but 6 methods in total. see below
         return "";
     }
-    public String printAllCustomers(){
+
+    public String printAllCustomers() {
         String allCustomers = "All registered customers:";
 
-        for(Customer customer : customerList){
+        for (Customer customer : customerList) {
             allCustomers = allCustomers + System.lineSeparator() + customer.toString();
         }
         return allCustomers + System.lineSeparator();
@@ -61,7 +73,6 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
-        String operationResult = "";
         Customer nameToChange = null;
         for (Customer currentName : customerList) {
             if (currentName.getPersonalNumber().equals(personalNumber)) {
@@ -70,20 +81,115 @@ public class Service { // This is like our facade. Where we place all our busine
                 }
                 nameToChange = currentName;
                 currentName.setFirstName(newFirstName);
-                operationResult = personalNumber + "'s "+ " was edited successfully.";
             }
         }
-
         if (nameToChange == null) {
-            operationResult = personalNumber + " was not registered yet.";
-            return operationResult;
+            return personalNumber + " was not registered yet.";
         }
-        return operationResult;
-
+        return personalNumber + "'s " + " first name was edited successfully.";
     }
 
-    public String deleteCustomer(String personalNumber){
-        return "";
+    public String editCustomerLastName(String personalNumber, String newLastName) {
+
+        Customer lastNameToChange = null;
+
+        for (Customer currentLastName : customerList) {
+            if (currentLastName.getPersonalNumber().equals(personalNumber)) {
+                if (newLastName.isEmpty() || newLastName.isBlank()) {
+                    return "Invalid entry";
+                }
+                lastNameToChange = currentLastName;
+                currentLastName.setLastName(newLastName);
+            }
+        }
+        if (lastNameToChange == null) {
+            return personalNumber + " was not registered yet.";
+        }
+        return personalNumber + "'s last name was edited successfully.";
+    }
+
+    public String editCustomerEmail(String personalNumber, String newEmail) {
+
+        Customer emailToChange = null;
+        for (Customer currentEmail : customerList) {
+            if (currentEmail.getPersonalNumber().equals(personalNumber)) {
+                if (newEmail.isEmpty() || newEmail.isBlank()) {
+                    return "Invalid entry.";
+                }
+                emailToChange = currentEmail;
+                currentEmail.setEmail(newEmail);
+            }
+            if (emailToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " email was edited successfully.";
+    }
+
+    public String editCustomerTelephone(String personalNumber, String newTelephone) {
+
+        Customer telephoneToChange = null;
+        for (Customer currentPhone : customerList) {
+            if (currentPhone.getPersonalNumber().equals(personalNumber)) {
+                if (newTelephone.isEmpty() || newTelephone.isBlank()) {
+                    return "Invalid entry.";
+                }
+                telephoneToChange = currentPhone;
+                currentPhone.setTelephone(newTelephone);
+            }
+            if (telephoneToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " telephone number was edited successfully.";
+    }
+
+    public String editCustomerPassword(String personalNumber, String newPassword) {
+        Customer passwordToChange = null;
+        for (Customer currentPW : customerList) {
+            if (currentPW.getPersonalNumber().equals(personalNumber)) {
+                if (newPassword.isEmpty() || newPassword.isBlank()) {
+                    return "Invalid entry.";
+                }
+                passwordToChange = currentPW;
+                currentPW.setPassword(newPassword);
+            }
+            if (passwordToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " password was edited successfully.";
+    }
+
+    public String editCustomerPincode(String personalNumber, String newPincode) {
+        Customer pinCodeToChange = null;
+        for (Customer currentPinCode : customerList) {
+            if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
+                if (newPincode.isEmpty() || newPincode.isBlank()) {
+                    return "Invalid entry.";
+                }
+                pinCodeToChange = currentPinCode;
+                currentPinCode.setPinCode(newPincode);
+            }
+            if (pinCodeToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " pincode was edited successfully.";
+    }
+
+
+    public String deleteCustomer(String personalNumber) {
+        Customer customerToBeDeleted = findCustomer(personalNumber);
+        if (customerToBeDeleted != null) {
+            customerList.remove(customerToBeDeleted);
+            return "Customer " + personalNumber + "successfully removed.";
+        }
+        return "Cannot find customer:" + personalNumber;
     }
 
     public String updateKYC(String occupation, double salary, String PEP, String FATCA){

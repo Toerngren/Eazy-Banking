@@ -5,6 +5,7 @@ import controller.Service;
 
 
 public class StartPage {
+    private static final Service service = new Service();
 
     private static final Service controller = new Service();
 
