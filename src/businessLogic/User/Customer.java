@@ -1,5 +1,7 @@
 package businessLogic.User;
 
+import businessLogic.Inbox_Customer;
+
 public class Customer{
 
     private String personalNumber;
@@ -9,6 +11,7 @@ public class Customer{
     private String telephone;
     private String password;
     private String pinCode;
+    private Inbox_Customer inbox;
 
     public Customer(String personalNumber, String firstName,String lastName, String email, String password, String telephone, String pinCode) {
         this.personalNumber = personalNumber;
@@ -18,6 +21,7 @@ public class Customer{
         this.telephone = telephone;
         this.password = password;
         this.pinCode = pinCode;
+        this.inbox = new Inbox_Customer();
     }
 
     public String getPersonalNumber() {
@@ -82,6 +86,28 @@ public class Customer{
     public String toString(){
         return firstName + lastName + "'s" + "personal number is" + personalNumber + ", email is "+ email + "and telephone is " + telephone;
     }
+    // Inbox methods
+    public String addNewMessage(String newMessage){
+        return  inbox.addNewMessage(newMessage);
+    }
+
+    public String addReadMessage(){
+        return "";
+    }
+
+    public String printUnreadMessages(){
+        return "";
+    }
+
+    public String printReadMessages(){
+        return "";
+    }
+
+    public String printAllMessages(){
+        return "";
+    }
+
+
 
 }
 

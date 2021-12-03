@@ -167,7 +167,8 @@ public class Service { // This is like our facade. Where we place all our busine
         return "";
     }
 
-    public String closeAccount(){
+    public String closeAccount(String accountNumber){
+
         return "";
     }
 
@@ -176,6 +177,14 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     public void checkInbox(){
+
+    }
+
+    public String sendMessage(){
+        return "";
+    }
+
+    public void receiveMessage(){
 
     }
 
@@ -193,5 +202,28 @@ public class Service { // This is like our facade. Where we place all our busine
     }
     return null;
 }
+
+    //Inbox methods
+    public String addNewMessage(String personalNumber, String newMessage){
+        int index = getCustomerIndex(personalNumber);
+        return this.customerList.get(index).addNewMessage(newMessage);
+    }
+
+    public String addReadMessage(){
+        return "";
+    }
+
+    public String printUnreadMessages(){
+        return "";
+    }
+
+    public String printReadMessages(){
+        return "";
+    }
+
+    public String printAllMessages(){
+        return "";
+    }
+
 
 }
