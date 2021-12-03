@@ -6,7 +6,7 @@ public class CheckingAccount extends BankAccount {
         super(customerPersonalNumber);
     }
 
-    public void payBill(){
+    public void payBillS(){
 
     }
 

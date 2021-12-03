@@ -9,26 +9,40 @@ import java.util.List;
 
 public class Service { // This is like our facade. Where we place all our business logic
 
-    private static final List<Customer> customerList = new ArrayList<>(); // So we use the same ArrayList everytime..
-    private List<BankAccount> accountsList; // Keep in mind above^
-    private List<KYC> Kyc;
+    private List<Customer> customerList;
+    private List<BankAccount> accountsList;
+    private List<KYC> KycList;
 
 
-    public Service(){ // Not override current ArrayList here
+    public Service(){
+        this.customerList = new ArrayList<>();
+        this.accountsList = new ArrayList<>();
+        this.KycList = new ArrayList<>();
     }
 
     public String createCustomer(String personalNumber, String firstName,String lastName, String email,
                                  String telephone, String password, String pinCode) {
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
-
         customerList.add(customer);
-        System.out.println("In create customer");
-        System.out.println(customer.toString());
         return "Customer is registered successfully.";
     }
 
-    public String verifyCustomerID(String personalNumber, String password){
-        return "";
+    public int getCustomerIndex(String personalNumber){
+        for (int i = 0; i < this.accountsList.size(); i++){
+            if (this.accountsList.get(i).verifyAccountNumber(personalNumber)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean isCustomerExist(String personalNumber){
+        return getCustomerIndex(personalNumber) != -1;
+    }
+
+    public boolean verifyCustomer(String personalNumber, String password){
+        int index = getCustomerIndex(personalNumber);
+        return !this.customerList.get(index).verifyCustomer(password);
     }
 
     public String editCustomerDetail(String firstName,String lastName, String email,

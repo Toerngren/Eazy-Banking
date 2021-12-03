@@ -1,8 +1,5 @@
 package businessLogic.User;
 
-import businessLogic.bankAccounts.CheckingAccount;
-import businessLogic.bankAccounts.SavingsAccount;
-
 public class Customer{
 
     private String personalNumber;
@@ -12,8 +9,6 @@ public class Customer{
     private String telephone;
     private String password;
     private String pinCode;
-    private CheckingAccount accountList;
-    private SavingsAccount savingsAccount;
 
     public Customer(String personalNumber, String firstName,String lastName, String email, String password, String telephone, String pinCode) {
         this.personalNumber = personalNumber;
@@ -23,11 +18,14 @@ public class Customer{
         this.telephone = telephone;
         this.password = password;
         this.pinCode = pinCode;
-        this.accountList = new CheckingAccount("");
     }
 
     public String getPersonalNumber() {
         return personalNumber;
+    }
+
+    public boolean verifyCustomer(String password){
+        return this.password.equals(password);
     }
 
     public void setPersonalNumber(String personalNumber) {

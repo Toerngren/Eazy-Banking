@@ -7,10 +7,8 @@ import controller.Service;
 
 public class CustomerMenu {
 
-        public static void customerMenu() {
+    public static void customerMenu() {
             String option;
-
-
             do {
                 Printing.customerMenu();
                 option = UserInput.readLine("");
@@ -20,10 +18,8 @@ public class CustomerMenu {
                         StartPage.startPage();
                         break;
                     case "1":
-                        AccountsMenu.myAccount();
                         break;
                     case "2":
-                        System.out.println("no feature yet:");
                         break;
                     default:
                         Printing.invalidEntry();
@@ -31,6 +27,6 @@ public class CustomerMenu {
                 }
             } while (!(option.equals("0")));
             UserInput.exitScanner();
-        }
-
     }
+
+}
