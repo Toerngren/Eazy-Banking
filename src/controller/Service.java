@@ -45,7 +45,7 @@ public class Service { // This is like our facade. Where we place all our busine
         return !this.customerList.get(index).verifyCustomer(password);
     }
 
-        if(customerList.isEmpty()){
+       /* if(customerList.isEmpty()){ Adrians version of verifyCustomer
             return "No customers created yet.";
         }
         for (Customer customer : customerList) {
@@ -55,7 +55,7 @@ public class Service { // This is like our facade. Where we place all our busine
         }
         return "Verified customer.";
     }
-
+*/
     public String editCustomerDetail(String firstName, String lastName, String email,
                                      String telephone, String password, String pinCode) {
         // Done but 6 methods in total. see below
