@@ -101,6 +101,15 @@ public class Service { // This is like our facade. Where we place all our busine
         return allCustomers;
     }
 
+
+    public boolean onlyDigits(String personalNumber){
+        for (int i = 0; i < personalNumber.length(); i++) {
+            if (!Character.isDigit(personalNumber.charAt(i))){
+                return false;
+            }
+        } return true;
+    }
+
     public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
         Customer nameToChange = null;

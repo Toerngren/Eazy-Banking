@@ -22,17 +22,20 @@ public class Menu {
                     break;
                 case "2":
                     String personalNumber = UserInput.readLine("Please enter your personalnumber: ");
-                    if (!service.containsCustomer(personalNumber)){
-                        System.out.println("No customer with that personal number.");
-                        startPage();
+                    if (service.onlyDigits(personalNumber)) {
+                        if (!service.containsCustomer(personalNumber)) {
+                            System.out.println("No customer with that personal number.");
+                            startPage();
+                        }
+                        String password = UserInput.readLine("Please enter your password: ");
+                        Customer foundCustomer = service.findCustomer(personalNumber);
+                        if (foundCustomer.verifyPassword(password)) {
+                            customerMenu(foundCustomer);
+                        } else {
+                            System.out.println("Wrong password.");
+                        }
                     }
-                    String password = UserInput.readLine("Please enter your password: ");
-                    Customer foundCustomer = service.findCustomer(personalNumber);
-                    if (foundCustomer.verifyPassword(password)){
-                        customerMenu(foundCustomer);
-                    } else {
-                        System.out.println("Wrong password.");
-                    }
+                    System.out.println("Personal number needs to only contain digits.");
                     break;
                 case "3": {
                     String username = UserInput.readLine("Please enter your username: ");
@@ -286,6 +289,10 @@ public class Menu {
 
     public void registerCustomer(){
         String personalNumber = UserInput.readLine("Customer personal number: ");
+        if (!service.onlyDigits(personalNumber)){
+            System.out.println("Please only enter digits.");
+            startPage();
+        }
         String firstName = UserInput.readLine("Customer firstname: ");
         String lastName = UserInput.readLine("Customer lastname: ");
         String email = UserInput.readLine("Customer email: ");
