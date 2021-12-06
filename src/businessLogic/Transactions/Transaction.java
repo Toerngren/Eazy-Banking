@@ -54,7 +54,7 @@ public class Transaction {
         return note;
     }
 
-   /* // todo implement if needed
+   /* todo implement if needed
     public boolean equalTo() {
         return false;
     }*/

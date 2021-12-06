@@ -10,6 +10,10 @@ public class Withdrawal extends Transaction {
         super(amount, fromAccount, toAccount, note);
     }
 
+    public Withdrawal (double amount, String fromAccount) {
+        super(amount, fromAccount, "");
+    }
+
     @Override
     public String toString() {
         if (!getNote().isEmpty()) {

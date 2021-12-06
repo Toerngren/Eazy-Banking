@@ -12,6 +12,7 @@ public class Customer{
     private String telephone;
     private String password;
     private String pinCode;
+    // todo
     private CheckingAccount accountList;
     private SavingsAccount savingsAccount;
 
