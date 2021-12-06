@@ -4,6 +4,7 @@ import businessLogic.Inbox_Customer;
 import businessLogic.bankAccounts.*;
 
 public class Customer{
+    static final String EOL = System.lineSeparator();
 
     private String personalNumber;
     private String firstName;
@@ -88,7 +89,7 @@ public class Customer{
         this.pinCode = pinCode;
     }
     public String toString(){
-        return "First name and sur name: " +firstName + lastName +  " Personal number: " + personalNumber; // feel free to edit toString
+        return "Full name: " +firstName +" "+ lastName + EOL + "Personal number: " + personalNumber + EOL + "E-mail: " + email + EOL + "Telephone number: " + telephone + EOL + "PIN-code: " + pinCode + EOL + "Password: " + password + EOL;
     }
     // Inbox methods
     public String addNewMessage(String newMessage){

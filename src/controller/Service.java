@@ -83,22 +83,24 @@ public class Service { // This is like our facade. Where we place all our busine
         return "Verified customer.";
     }
   */
-
+/*
     public String editCustomerDetail(String firstName, String lastName, String email,
                                      String telephone, String password, String pinCode) {
         // Done but 6 methods in total. see below
         return "";
     }
-/*
+
+    */
+
     public String printAllCustomers() {
         String allCustomers = "All registered customers:";
 
         for (Customer customer : customerList) {
             allCustomers = allCustomers + System.lineSeparator() + customer.toString();
         }
-        return allCustomers + System.lineSeparator();
+        return allCustomers;
     }
-*/
+
     public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
         Customer nameToChange = null;
