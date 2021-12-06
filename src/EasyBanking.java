@@ -1,9 +1,9 @@
-import View.StartPage;
+import View.Menu;
 
 public class EasyBanking {
 
     public static void main(String[] args) {
-        StartPage start = new StartPage();
+        Menu start = new Menu();
         start.startPage();
     }
 }

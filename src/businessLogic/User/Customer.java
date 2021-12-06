@@ -1,7 +1,7 @@
 package businessLogic.User;
 
-import businessLogic.bankAccounts.CheckingAccount;
-import businessLogic.bankAccounts.SavingsAccount;
+import businessLogic.Inbox_Customer;
+import businessLogic.bankAccounts.*;
 
 public class Customer{
 
@@ -12,9 +12,10 @@ public class Customer{
     private String telephone;
     private String password;
     private String pinCode;
-    // todo
+
     private CheckingAccount accountList;
     private SavingsAccount savingsAccount;
+    private Inbox_Customer inbox;
 
     public Customer(String personalNumber, String firstName,String lastName, String email, String password, String telephone, String pinCode) {
         this.personalNumber = personalNumber;
@@ -24,11 +25,15 @@ public class Customer{
         this.telephone = telephone;
         this.password = password;
         this.pinCode = pinCode;
-        this.accountList = new CheckingAccount("");
+        this.inbox = new Inbox_Customer();
     }
 
     public String getPersonalNumber() {
         return personalNumber;
+    }
+
+    public boolean verifyCustomer(String password){
+        return this.password.equals(password);
     }
 
     public void setPersonalNumber(String personalNumber) {
@@ -83,8 +88,38 @@ public class Customer{
         this.pinCode = pinCode;
     }
     public String toString(){
-        return firstName + lastName + "'s" + "personal number is" + personalNumber + ", email is "+ email + "and telephone is " + telephone;
+        return "First name and sur name: " +firstName + lastName +  " Personal number: " + personalNumber; // feel free to edit toString
     }
+    // Inbox methods
+    public String addNewMessage(String newMessage){
+        return  inbox.addNewMessage(newMessage);
+    }
+
+    public boolean verifyPassword(String password) {
+        if (password.equals(this.password)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String addReadMessage(){
+        return "";
+    }
+
+    public String printUnreadMessages(){
+        return "";
+    }
+
+    public String printReadMessages(){
+        return "";
+    }
+
+    public String printAllMessages(){
+        return "";
+    }
+
+
 
 }
 

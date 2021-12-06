@@ -1,9 +1,9 @@
 package controller;
 
-import businessLogic.KYC;
 import businessLogic.Transactions.Deposit;
 import businessLogic.Transactions.Transaction;
 import businessLogic.Transactions.Withdrawal;
+import businessLogic.User.KYC;
 import businessLogic.User.Customer;
 import businessLogic.bankAccounts.BankAccount;
 
@@ -14,7 +14,7 @@ public class Service { // This is like our facade. Where we place all our busine
 
     private List<Customer> customerList;
     private List<BankAccount> accountsList;
-    private List<KYC> Kyc;
+    private List<KYC> KycList;
     private List<Transaction> transactions;
     private List<Transaction> savedRecipients;
     // private Account loggedInAccount;
@@ -23,7 +23,7 @@ public class Service { // This is like our facade. Where we place all our busine
     public Service() {
         customerList = new ArrayList<>();
         accountsList = new ArrayList<>();
-        Kyc = new ArrayList<>();
+        KycList = new ArrayList<>();
         transactions = new ArrayList<>();
         savedRecipients = new ArrayList<>();
     }
@@ -38,16 +38,190 @@ public class Service { // This is like our facade. Where we place all our busine
     public String verifyCustomerID(String personalNumber, String password) {
         return "";
     }
-    //todo Adrian
-    public String editCustomerDetail(String firstName, String lastName, String email,
-                                     String telephone, String password, String pinCode) {
 
-        return "";
+    public int getCustomerIndex(String personalNumber){
+        for (int i = 0; i < this.accountsList.size(); i++){
+            if (this.accountsList.get(i).verifyAccountNumber(personalNumber)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean isCustomerExist(String personalNumber){
+        return getCustomerIndex(personalNumber) != -1;
+    }
+
+    public boolean containsCustomer(String personalNumber){
+        for (Customer customer : customerList) {
+            if (customer.getPersonalNumber().equals(personalNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean verifyCustomer(String personalNumber, String password){
+        int index = getCustomerIndex(personalNumber);
+        return !this.customerList.get(index).verifyCustomer(password);
     }
 
     //todo Adrian
+    /*
     public String deleteCustomer(String personalNumber) {
+
+      if(customerList.isEmpty()){ Adrians version of verifyCustomer
+            return "No customers created yet.";
+        }
+        for (Customer customer : customerList) {
+            if(!customer.getPersonalNumber().equals(personalNumber) && !customer.getPassword().equals(password)){
+                return "Wrong personal number or password.";
+            }
+        }
+
+        return "Verified customer.";
+    }
+  */
+
+    public String editCustomerDetail(String firstName, String lastName, String email,
+                                     String telephone, String password, String pinCode) {
+        // Done but 6 methods in total. see below
         return "";
+    }
+/*
+    public String printAllCustomers() {
+        String allCustomers = "All registered customers:";
+
+        for (Customer customer : customerList) {
+            allCustomers = allCustomers + System.lineSeparator() + customer.toString();
+        }
+        return allCustomers + System.lineSeparator();
+    }
+*/
+    public String editCustomerFirstName(String personalNumber, String newFirstName) {
+
+        Customer nameToChange = null;
+        for (Customer currentName : customerList) {
+            if (currentName.getPersonalNumber().equals(personalNumber)) {
+                if (newFirstName.isEmpty()) {
+                    return "Invalid entry.";
+                }
+                nameToChange = currentName;
+                currentName.setFirstName(newFirstName);
+            }
+        }
+        if (nameToChange == null) {
+            return personalNumber + " was not registered yet.";
+        }
+        return personalNumber + "'s " + " first name was edited successfully.";
+    }
+
+    public String editCustomerLastName(String personalNumber, String newLastName) {
+
+        Customer lastNameToChange = null;
+
+        for (Customer currentLastName : customerList) {
+            if (currentLastName.getPersonalNumber().equals(personalNumber)) {
+                if (newLastName.isEmpty() || newLastName.isBlank()) {
+                    return "Invalid entry";
+                }
+                lastNameToChange = currentLastName;
+                currentLastName.setLastName(newLastName);
+            }
+        }
+        if (lastNameToChange == null) {
+            return personalNumber + " was not registered yet.";
+        }
+        return personalNumber + "'s last name was edited successfully.";
+    }
+
+    public String editCustomerEmail(String personalNumber, String newEmail) {
+
+        Customer emailToChange = null;
+        for (Customer currentEmail : customerList) {
+            if (currentEmail.getPersonalNumber().equals(personalNumber)) {
+                if (newEmail.isEmpty() || newEmail.isBlank()) {
+                    return "Invalid entry.";
+                }
+                emailToChange = currentEmail;
+                currentEmail.setEmail(newEmail);
+            }
+            if (emailToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " email was edited successfully.";
+    }
+
+    public String editCustomerTelephone(String personalNumber, String newTelephone) {
+
+        Customer telephoneToChange = null;
+        for (Customer currentPhone : customerList) {
+            if (currentPhone.getPersonalNumber().equals(personalNumber)) {
+                if (newTelephone.isEmpty() || newTelephone.isBlank()) {
+                    return "Invalid entry.";
+                }
+                telephoneToChange = currentPhone;
+                currentPhone.setTelephone(newTelephone);
+            }
+            if (telephoneToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " telephone number was edited successfully.";
+    }
+
+    public boolean employeeLoginCheck(String username, String password){
+        return username.equals("admin") && password.equals("admin");
+    }
+
+    public String editCustomerPassword(String personalNumber, String newPassword) {
+        Customer passwordToChange = null;
+        for (Customer currentPW : customerList) {
+            if (currentPW.getPersonalNumber().equals(personalNumber)) {
+                if (newPassword.isEmpty() || newPassword.isBlank()) {
+                    return "Invalid entry.";
+                }
+                passwordToChange = currentPW;
+                currentPW.setPassword(newPassword);
+            }
+            if (passwordToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " password was edited successfully.";
+    }
+
+    public String editCustomerPincode(String personalNumber, String newPincode) {
+        Customer pinCodeToChange = null;
+        for (Customer currentPinCode : customerList) {
+            if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
+                if (newPincode.isEmpty() || newPincode.isBlank()) {
+                    return "Invalid entry.";
+                }
+                pinCodeToChange = currentPinCode;
+                currentPinCode.setPinCode(newPincode);
+            }
+            if (pinCodeToChange == null) {
+
+                return personalNumber + " was not registered yet.";
+            }
+        }
+        return personalNumber + "'s" + " pincode was edited successfully.";
+    }
+
+
+    public String deleteCustomer(String personalNumber) {
+        Customer customerToBeDeleted = findCustomer(personalNumber);
+        if (customerToBeDeleted != null) {
+            customerList.remove(customerToBeDeleted);
+            return "Customer " + personalNumber + "successfully removed.";
+        }
+        return "Cannot find customer:" + personalNumber;
     }
 
     //todo Christopher
@@ -217,7 +391,7 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     //todo Faiza
-    public String closeAccount() {
+    public String closeAccount(String accountNumber){
         return "";
     }
 
@@ -230,19 +404,51 @@ public class Service { // This is like our facade. Where we place all our busine
 
     }
 
-    public Customer findCustomer(String personalNumber) {
-        try {
-            if (customerList.size() > 0) {
-                for (Customer customer : customerList) {
-                    if (customer.getPersonalNumber().equals(personalNumber)) {
-                        return customer;
-                    }
+
+    public String sendMessage(){
+        return "";
+    }
+
+    public void receiveMessage(){
+
+    }
+
+    public Customer findCustomer(String personalNumber){
+    try {
+        if (customerList.size() > 0) {
+            for (Customer customer : customerList) {
+                if (customer.getPersonalNumber().equals(personalNumber)) {
+                    return customer;
                 }
             }
-        } catch (Exception exception) {
+        }
+        }catch(Exception exception){
             exception.printStackTrace();
         }
         return null;
     }
+
+    //Inbox methods
+    public String addNewMessage(String personalNumber, String newMessage){
+        int index = getCustomerIndex(personalNumber);
+        return this.customerList.get(index).addNewMessage(newMessage);
+    }
+
+    public String addReadMessage(){
+        return "";
+    }
+
+    public String printUnreadMessages(){
+        return "";
+    }
+
+    public String printReadMessages(){
+        return "";
+    }
+
+    public String printAllMessages(){
+        return "";
+    }
+
 
 }

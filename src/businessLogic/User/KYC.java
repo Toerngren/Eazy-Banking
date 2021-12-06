@@ -1,4 +1,4 @@
-package businessLogic;
+package businessLogic.User;
 
 public class KYC {
 

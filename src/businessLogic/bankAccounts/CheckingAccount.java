@@ -7,7 +7,7 @@ public class CheckingAccount extends BankAccount {
     }
 
  //todo unclear what this method is for
-    public void payBill(){
+    public void payBillS(){
 
     }
 
