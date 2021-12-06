@@ -91,6 +91,14 @@ public class Customer{
         return  inbox.addNewMessage(newMessage);
     }
 
+    public boolean verifyPassword(String password) {
+        if (password.equals(this.password)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public String addReadMessage(){
         return "";
     }

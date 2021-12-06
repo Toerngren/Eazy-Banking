@@ -40,6 +40,17 @@ public class Service { // This is like our facade. Where we place all our busine
         return getCustomerIndex(personalNumber) != -1;
     }
 
+    public boolean containsCustomer(String personalNumber){
+        for (Customer customer : customerList) {
+            if (customer.getPersonalNumber().equals(personalNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
     public boolean verifyCustomer(String personalNumber, String password){
         int index = getCustomerIndex(personalNumber);
         return !this.customerList.get(index).verifyCustomer(password);
@@ -61,7 +72,7 @@ public class Service { // This is like our facade. Where we place all our busine
         // Done but 6 methods in total. see below
         return "";
     }
-
+/*
     public String printAllCustomers() {
         String allCustomers = "All registered customers:";
 
@@ -70,7 +81,7 @@ public class Service { // This is like our facade. Where we place all our busine
         }
         return allCustomers + System.lineSeparator();
     }
-
+*/
     public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
         Customer nameToChange = null;
@@ -144,6 +155,10 @@ public class Service { // This is like our facade. Where we place all our busine
             }
         }
         return personalNumber + "'s" + " telephone number was edited successfully.";
+    }
+
+    public boolean employeeLoginCheck(String username, String password){
+        return username.equals("admin") && password.equals("admin");
     }
 
     public String editCustomerPassword(String personalNumber, String newPassword) {
