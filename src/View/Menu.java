@@ -1,6 +1,5 @@
 package View;
-import Utility.Printing;
-import Utility.UserInput;
+import Utility.*;
 import businessLogic.User.Customer;
 import controller.Service;
 
@@ -269,14 +268,14 @@ public class Menu {
     public void deposit(){
         String accountNumber = UserInput.readLine("Enter account number: ");
         double amount = UserInput.readDouble("Enter amount to deposit: ");
-        String message = service.depositMoney(accountNumber, amount);
+        String message = service.deposit(accountNumber, amount);
         System.out.println(message);
     }
 
     public  void withdraw(){
         String accountNumber = UserInput.readLine("Enter account number: ");
         double amount = UserInput.readDouble("Enter amount to withdraw: ");
-        String message = service.withdrawMoney(accountNumber, amount);
+        String message = service.withdraw(accountNumber, amount);
         System.out.println(message);
     }
 
@@ -284,7 +283,7 @@ public class Menu {
         String accountNumber1 = UserInput.readLine("Enter account number to transfer from: ");
         String accountNumber2 = UserInput.readLine("Enter account number to transfer to: ");
         double amount = UserInput.readDouble("Enter amount to transfer: ");
-        String message = service.transferMoney(accountNumber1, accountNumber2, amount);
+        String message = service.transferFunds(amount, accountNumber1, accountNumber2);
         System.out.println(message);
     }
 
