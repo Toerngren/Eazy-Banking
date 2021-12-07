@@ -47,6 +47,10 @@ public class Menu {
                     employeeMenu(employee);
                 }
                 break;
+                case"4":
+                    System.out.println("no feature yet");
+                    break;
+
                 default:
                     Printing.invalidEntry();
                     break;
@@ -235,6 +239,12 @@ public class Menu {
                     break;
                 case "5": {
                     String message = service.printAllCustomers();
+                    System.out.println(message);
+                    break;
+                }
+                case"6": {
+                    String delete = UserInput.readLine("Enter personalnumber of customer you wish to remove: ");
+                    String message = service.deleteCustomer(delete);
                     System.out.println(message);
                     break;
                 }
