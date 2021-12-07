@@ -173,6 +173,9 @@ public class Menu {
                 case "2":
                     System.out.println("no feature yet:");
                     break;
+                case "3":
+                    System.out.println("no feature yet:");
+                    break;
                 default:
                     Printing.invalidEntry();
                     break;

@@ -1,5 +1,7 @@
 package controller;
 
+import businessLogic.Loan.Loan;
+import businessLogic.Loan.LoanApplication;
 import businessLogic.Transactions.Deposit;
 import businessLogic.Transactions.Transaction;
 import businessLogic.Transactions.Withdrawal;
@@ -8,6 +10,7 @@ import businessLogic.User.Customer;
 import businessLogic.bankAccounts.BankAccount;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Service { // This is like our facade. Where we place all our business logic
@@ -17,8 +20,9 @@ public class Service { // This is like our facade. Where we place all our busine
     private List<KYC> KycList;
     private List<Transaction> transactions;
     private List<Transaction> savedRecipients;
+    private List<Loan> loanList;
+    private List<LoanApplication> loanApplicationList;
     // private Account loggedInAccount;
-
 
     public Service() {
         customerList = new ArrayList<>();
@@ -26,6 +30,8 @@ public class Service { // This is like our facade. Where we place all our busine
         KycList = new ArrayList<>();
         transactions = new ArrayList<>();
         savedRecipients = new ArrayList<>();
+        loanList = new ArrayList<>();
+        loanApplicationList = new ArrayList<>();
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
@@ -381,10 +387,42 @@ public class Service { // This is like our facade. Where we place all our busine
         return balance;
     }
 
-    //todo Anna
-    public String applyLoan() {
-        return "";
+    //todo Anna LOAN
+    public int searchForLoanIndex(String loanID){
+        for (int i = 0; i < this.loanList.size(); i++){
+            if (this.loanList.get(i).getLoanID().equals(loanID)){
+                return i;}
+        }
+        return -1;
     }
+
+    public boolean containsLoanID(String loanID){
+        for (Loan loan : loanList) {
+            if (loan.getLoanID().equals(loanID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public String viewLoan (String loanID){
+
+        return loanID;
+    }
+
+    public String applyLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, double appliedLoanAmount, double appliedLoanDuration, Date loanApplicationDate) {
+        LoanApplication loanApplication = new LoanApplication (personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration,loanApplicationDate);
+        loanApplicationList.add(loanApplication);
+        return "Your loan application has been received; we will get back to you within 24 hours.";
+    }
+
+    public String printLoan (String loanID){
+        return loanID;
+    }
+    public String printAllLoanApp (String loanID){
+        return loanID;
+    }
+
+
     //todo Faiza
     public String openNewAccount() {
         return "";
