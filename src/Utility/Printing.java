@@ -23,6 +23,17 @@ public class Printing {
                 "7. Customer support" + EOL);
 
     }
+
+    public static void customerProfileMenu(){
+        System.out.println("Please choose among the options below." + EOL +
+                "0. Go back to My page." + EOL +
+                "1. See all of your details." + EOL +
+                "2. Change telephone number." + EOL +
+                "3. Change e-mail." + EOL +
+                "4. Change password." + EOL +
+                "5. Change PIN-code.");
+
+    }
     public static void employeeMenu(){
         System.out.println("You are now logged in!" + EOL +
                 "Please choose one of the following options:" + EOL +
@@ -31,8 +42,7 @@ public class Printing {
                 "2. Review mortgages." + EOL +
                 "3. Review KYCs" + EOL +
                 "4. Customer Support" + EOL +
-                "5. Edit customer name" + EOL +
-                "6. Print all registered customers."+ EOL);
+                "5. View all customers."+ EOL);
     }
     public static void accountMenu(){
         System.out.println("Please choose one of the following options:" + EOL +

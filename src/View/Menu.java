@@ -22,17 +22,20 @@ public class Menu {
                     break;
                 case "2":
                     String personalNumber = UserInput.readLine("Please enter your personalnumber: ");
-                    if (!service.containsCustomer(personalNumber)){
-                        System.out.println("No customer with that personal number.");
-                        startPage();
+                    if (service.onlyDigits(personalNumber)) {
+                        if (!service.containsCustomer(personalNumber)) {
+                            System.out.println("No customer with that personal number.");
+                            startPage();
+                        }
+                        String password = UserInput.readLine("Please enter your password: ");
+                        Customer foundCustomer = service.findCustomer(personalNumber);
+                        if (foundCustomer.verifyPassword(password)) {
+                            customerMenu(foundCustomer);
+                        } else {
+                            System.out.println("Wrong password.");
+                        }
                     }
-                    String password = UserInput.readLine("Please enter your password: ");
-                    Customer foundCustomer = service.findCustomer(personalNumber);
-                    if (foundCustomer.verifyPassword(password)){
-                        customerMenu(foundCustomer);
-                    } else {
-                        System.out.println("Wrong password.");
-                    }
+                    System.out.println("Personal number needs to only contain digits.");
                     break;
                 case "3": {
                     String username = UserInput.readLine("Please enter your username: ");
@@ -78,7 +81,7 @@ public class Menu {
                     kycMenu(currentUser);
                     break;
                 case "6":
-                    System.out.println("no feature yet.");
+                    customerProfileMenu(currentUser);
                     break;
                 case "7":
                     System.out.println("no feature yet.");
@@ -224,6 +227,57 @@ public class Menu {
                 case "2":
                     System.out.println("no feature yet:");
                     break;
+                case "3":
+                    System.out.println("no feature yet:");
+                    break;
+                case"4":
+                    System.out.println("no feature yet:");
+                    break;
+                case "5": {
+                    String message = service.printAllCustomers();
+                    System.out.println(message);
+                    break;
+                }
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+    }
+        // Todo @Christoph / Adrian, add exceptions so that email must contain @ and so on.
+    public void customerProfileMenu(Customer currentUser) {
+        String option;
+        do {
+            Printing.customerProfileMenu();
+            option = UserInput.readLine("");
+            switch (option) {
+                case "0":
+                    customerMenu(currentUser);
+                    break;
+                case "1":
+                    System.out.println(currentUser.toString());
+                    break;
+                case "2":
+                    String telephoneNumber = UserInput.readLine("Please enter your new telephone number:");
+                    service.editCustomerTelephone(currentUser.getPersonalNumber(), telephoneNumber);
+                    System.out.println("Telephone number successfully updated!");
+                    break;
+                case "3":
+                    String email = UserInput.readLine("Please enter your new email:");
+                    service.editCustomerEmail(currentUser.getPersonalNumber(), email);
+                    System.out.println("E-mail successfully updated!");
+                    break;
+                case "4":
+                    String password = UserInput.readLine("Please enter your new password:");
+                    service.editCustomerPassword(currentUser.getPassword(), password);
+                    System.out.println("Password successfully changed.");
+                    break;
+                case "5":
+                    String pinCode = UserInput.readLine("Please enter your new PIN-code:");
+                    service.editCustomerPincode(currentUser.getPinCode(), pinCode);
+                    System.out.println("PIN-code successfully changed.");
+                    break;
                 default:
                     Printing.invalidEntry();
                     break;
@@ -235,6 +289,10 @@ public class Menu {
 
     public void registerCustomer(){
         String personalNumber = UserInput.readLine("Customer personal number: ");
+        if (!service.onlyDigits(personalNumber)){
+            System.out.println("Please only enter digits.");
+            startPage();
+        }
         String firstName = UserInput.readLine("Customer firstname: ");
         String lastName = UserInput.readLine("Customer lastname: ");
         String email = UserInput.readLine("Customer email: ");
