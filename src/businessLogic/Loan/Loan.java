@@ -10,15 +10,16 @@ public class Loan {
     private String loanID;
     private boolean approvedLoan;
     private java.util.Date loanDate;
-    //private double currentLoanValue;
+    private double loanDebt;
 
-    public Loan(double yearlyInterestRate, int years, double loanAmount, String loanID, Date loanDate, boolean approvedLoan) {
+    public Loan(double yearlyInterestRate, int years, double loanAmount, String loanID, Date loanDate, boolean approvedLoan, double loanDebt) {
         this.yearlyInterestRate = yearlyInterestRate;
         this.years = years;
         this.loanAmount = loanAmount;
         this.loanID = loanID;
         this.loanDate = loanDate;
         this.approvedLoan = approvedLoan;
+        this.loanDebt = 0;
     }
 
     @Override
@@ -34,11 +35,11 @@ public class Loan {
                 '}';
     }
 
-    public String getCustomerID() {
+    public String getPersonalNumber() {
         return personalNumber;
     }
 
-    public void setCustomerID(String customerID) {
+    public void setPersonalNumber(String customerID) {
         this.personalNumber = customerID;
     }
 
@@ -88,5 +89,13 @@ public class Loan {
 
     public void setLoanDate(Date loanDate) {
         this.loanDate = loanDate;
+    }
+
+    public double getLoanDebt() {
+        return loanDebt;
+    }
+
+    public void setLoanDebt(double loanDebt) {
+        this.loanDebt = loanDebt;
     }
 }

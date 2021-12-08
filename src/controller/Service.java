@@ -1,16 +1,15 @@
 package controller;
 
+import businessLogic.Loan.IncreaseLoan;
 import businessLogic.Loan.Loan;
 import businessLogic.Loan.LoanApplication;
 import businessLogic.Transactions.Deposit;
 import businessLogic.Transactions.Transaction;
-import businessLogic.Transactions.Withdrawal;
 import businessLogic.User.KYC;
 import businessLogic.User.Customer;
 import businessLogic.bankAccounts.BankAccount;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Service { // This is like our facade. Where we place all our business logic
@@ -375,7 +374,6 @@ public class Service { // This is like our facade. Where we place all our busine
         }
     }
 
-
     public String checkBalance(String accountNumber) {
         String balance;
         if (!isAccountNumberExist(accountNumber)) {
@@ -388,47 +386,43 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     //todo Anna LOAN
-    public int searchForLoanIndex(String loanID){
+    /**
+     WHERE LOAN BEGIN:
+
+     ╭━┳━╭━╭━╮╮
+     ┃┈┈┈┣▅╋▅┫┃
+     ┃┈┃┈╰━╰━━━━━━╮
+     ╰┳╯┈┈┈┈┈┈┈┈┈◢▉◣
+     ╲┃┈┈┈┈┈┈┈┈┈┈▉▉▉
+     ╲┃┈┈┈┈┈┈┈┈┈┈◥▉◤
+     ╲┃┈┈┈┈╭━┳━━━━╯
+     ╲┣━━━━━━┫
+
+     */
+
+    public int searchForLoanIndex(String personalNumber){
         for (int i = 0; i < this.loanList.size(); i++){
-            if (this.loanList.get(i).getLoanID().equals(loanID)){
+            if (this.loanList.get(i).getPersonalNumber().equals(personalNumber)){
                 return i;}
         }
         return -1;
     }
 
-    public boolean containsLoanID(String loanID){
+    public boolean containsLoanID(String personalNumber){
         for (Loan loan : loanList) {
-            if (loan.getLoanID().equals(loanID)) {
+            if (loan.getPersonalNumber().equals(personalNumber)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isLoanAppValid(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, double appliedLoanAmount, double appliedLoanDuration) {
-        if((personalNumber.isEmpty())) {
-            return Boolean.parseBoolean(("Please enter your personal number."));
-        }
-        if (monthlyIncome <= 0){
-            return Boolean.parseBoolean(("Please enter your monthly income"));
-        }
-        if(currentLoanDebt <= 0){
-            return Boolean.parseBoolean(("Please enter sum of your current loan"));
-        }
-        if(currentCreditDebt <= 0){
-            return Boolean.parseBoolean(("Please enter sum of your current credit"));
-        }
-        if(appliedLoanAmount < 0 || appliedLoanAmount >500000 ){
-            return Boolean.parseBoolean(("Please enter loan amount between 0 - 500.000 SEK"));
-        }
-        if(appliedLoanDuration < 0 ||appliedLoanDuration > 5 ){
-            return Boolean.parseBoolean(("Please enter duration of loan, between 1-5 years."));
-        }
-        /*if(loanApplicationDate.isEmpty()){
-            return Boolean.parseBoolean(("Please choose today's date"));
-        }
-         */
-        return true;
+    public String viewLoan (String personalNumber) {
+        int index = searchForLoanIndex(personalNumber);
+        if(index == -1){
+            return (" No loan. Would you like to apply for a loan?");
+        } else {
+        return loanList.get(index).toString();}
     }
 
     public String applyLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
@@ -437,20 +431,24 @@ public class Service { // This is like our facade. Where we place all our busine
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
 
-    public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
 
+
+    public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
+        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration, loanDebt);
+        loanApplicationList.add(increaseLoan);
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
+    //todo For Employee - to collect and approve loans, add loan list and then I can collect loan debt (-Anna)
 
-    public String viewLoan (String loanID){
-        if (loanList.isEmpty()) {
-            return "No loan. Would you like to take a loan?";
-    }
-        return loanID;
-    }
-
-    public String printAllLoanApp (String loanID){
-        return loanID;
+    public String viewAllLoanApplications(String personalNumber){
+        if(loanApplicationList.isEmpty()){
+            return "Currently no loan applications waiting for review.";
+        }
+        String message = "All loan applications:";
+        for (LoanApplication loanApplication: loanApplicationList) {
+            message += (loanApplication.getPersonalNumber());
+        }
+        return message;
     }
 
 
