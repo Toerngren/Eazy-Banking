@@ -217,7 +217,7 @@ public class Service { // This is like our facade. Where we place all our busine
                 return personalNumber + " was not registered yet.";
             }
         }
-        return personalNumber + "'s" + " pincode was edited successfully.";
+        return personalNumber + "'s" + " pin code was edited successfully.";
     }
 
 
@@ -404,20 +404,51 @@ public class Service { // This is like our facade. Where we place all our busine
         }
         return false;
     }
-    public String viewLoan (String loanID){
 
-        return loanID;
+    public boolean isLoanAppValid(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, double appliedLoanAmount, double appliedLoanDuration) {
+        if((personalNumber.isEmpty())) {
+            return Boolean.parseBoolean(("Please enter your personal number."));
+        }
+        if (monthlyIncome <= 0){
+            return Boolean.parseBoolean(("Please enter your monthly income"));
+        }
+        if(currentLoanDebt <= 0){
+            return Boolean.parseBoolean(("Please enter sum of your current loan"));
+        }
+        if(currentCreditDebt <= 0){
+            return Boolean.parseBoolean(("Please enter sum of your current credit"));
+        }
+        if(appliedLoanAmount < 0 || appliedLoanAmount >500000 ){
+            return Boolean.parseBoolean(("Please enter loan amount between 0 - 500.000 SEK"));
+        }
+        if(appliedLoanDuration < 0 ||appliedLoanDuration > 5 ){
+            return Boolean.parseBoolean(("Please enter duration of loan, between 1-5 years."));
+        }
+        /*if(loanApplicationDate.isEmpty()){
+            return Boolean.parseBoolean(("Please choose today's date"));
+        }
+         */
+        return true;
     }
 
-    public String applyLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, double appliedLoanAmount, double appliedLoanDuration, Date loanApplicationDate) {
-        LoanApplication loanApplication = new LoanApplication (personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration,loanApplicationDate);
+    public String applyLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
+        LoanApplication loanApplication = new LoanApplication (personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration);
         loanApplicationList.add(loanApplication);
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
 
-    public String printLoan (String loanID){
+    public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
+
+        return "Your loan application has been received; we will get back to you within 24 hours.";
+    }
+
+    public String viewLoan (String loanID){
+        if (loanList.isEmpty()) {
+            return "No loan. Would you like to take a loan?";
+    }
         return loanID;
     }
+
     public String printAllLoanApp (String loanID){
         return loanID;
     }

@@ -1,5 +1,6 @@
 package View;
 import Utility.*;
+import businessLogic.Loan.LoanApplication;
 import businessLogic.User.Customer;
 import controller.Service;
 
@@ -21,7 +22,7 @@ public class Menu {
                     registerCustomer();
                     break;
                 case "2":
-                    String personalNumber = UserInput.readLine("Please enter your personalnumber: ");
+                    String personalNumber = UserInput.readLine("Please enter your personal number: ");
                     if (!service.containsCustomer(personalNumber)){
                         System.out.println("No customer with that personal number.");
                         startPage();
@@ -145,7 +146,7 @@ public class Menu {
                     System.out.println("no feature yet:");
                     break;
                 case "2":
-                    System.out.println("no feature yet:");
+                    System.out.println("no feature yet1:");
                     break;
                 default:
                     Printing.invalidEntry();
@@ -171,10 +172,10 @@ public class Menu {
                     System.out.println("no feature yet:");
                     break;
                 case "2":
-                    System.out.println("no feature yet:");
+                    registerLoanApplication(currentUser);
                     break;
                 case "3":
-                    System.out.println("no feature yet:");
+                    System.out.println("no feature yet1:");
                     break;
                 default:
                     Printing.invalidEntry();
@@ -245,6 +246,16 @@ public class Menu {
         String password = UserInput.readLine("Customer password: ");
         String pinCode = UserInput.readLine("Customer pin code: ");
         String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
+        System.out.println(message);
+    }
+    public void registerLoanApplication(Customer currentUser){
+        //String personalNumber = UserInput.readLine("Customer personal number: ");
+        double monthlyIncome = UserInput.readDouble("What is your monthly salary?" );
+        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?" );
+        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?" );
+        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" );
+        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" );
+        String message = service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
         System.out.println(message);
     }
 

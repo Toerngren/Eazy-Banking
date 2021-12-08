@@ -7,35 +7,21 @@ public class LoanApplication {
     private double monthlyIncome;
     private double currentLoanDebt;
     private double currentCreditDebt;
-    private double appliedLoanAmount;
-    private double appliedLoanDuration;
-    private java.util.Date loanApplicationDate;
+    private int appliedLoanAmount;
+    private int appliedLoanDuration;
+    //private java.util.Date loanApplicationDate;
 
-    public LoanApplication(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, double appliedLoanAmount, double appliedLoanDuration, Date loanApplicationDate) {
+    public LoanApplication(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
         this.personalNumber = personalNumber;
         this.monthlyIncome = monthlyIncome;
         this.currentLoanDebt = currentLoanDebt;
         this.currentCreditDebt = currentCreditDebt;
         this.appliedLoanAmount = appliedLoanAmount;
         this.appliedLoanDuration = appliedLoanDuration;
-        this.loanApplicationDate = loanApplicationDate;
+        //this.loanApplicationDate = loanApplicationDate;
     }
 
-    public boolean isLoanAppValid(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, double appliedLoanAmount, double appliedLoanDuration, Date loanApplicationDate) {
-        if((personalNumber.isEmpty())) {
-            System.out.println("Please enter your personal number");
-            return false;
-        }
-        if(monthlyIncome.isEmpty()) {
-            System.out.println("Please enter your monthly income");
-            return false;
-        }
-        if(unitPrice <= 0){
-            System.out.println("Invalid data for item." + " (Wrong price)");
-            return false;
-        }
-        return true;
-    }
+
     
     @Override
     public String toString() {
@@ -46,7 +32,8 @@ public class LoanApplication {
                 ", currentCreditDebt=" + currentCreditDebt +
                 ", appliedLoanAmount=" + appliedLoanAmount +
                 ", appliedLoanDuration=" + appliedLoanDuration +
-                ", loanApplicationDate=" + loanApplicationDate +
+                /*", loanApplicationDate=" + loanApplicationDate +
+                 */
                 '}';
     }
 
@@ -86,7 +73,7 @@ public class LoanApplication {
         return appliedLoanAmount;
     }
 
-    public void setAppliedLoanAmount(double appliedLoanAmount) {
+    public void setAppliedLoanAmount(int appliedLoanAmount) {
         this.appliedLoanAmount = appliedLoanAmount;
     }
 
@@ -94,10 +81,10 @@ public class LoanApplication {
         return appliedLoanDuration;
     }
 
-    public void setAppliedLoanDuration(double appliedLoanDuration) {
+    public void setAppliedLoanDuration(int appliedLoanDuration) {
         this.appliedLoanDuration = appliedLoanDuration;
     }
-
+/*
     public Date getLoanApplicationDate() {
         return loanApplicationDate;
     }
@@ -105,4 +92,7 @@ public class LoanApplication {
     public void setLoanApplicationDate(Date loanApplicationDate) {
         this.loanApplicationDate = loanApplicationDate;
     }
+
+ */
+
 }
