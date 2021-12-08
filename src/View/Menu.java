@@ -1,11 +1,12 @@
 package View;
 import Utility.*;
 import businessLogic.User.Customer;
+import businessLogic.User.Employee;
 import controller.Service;
 
 
 public class Menu {
-     Service service = new Service();
+    Service service = new Service();
 
     public void startPage() {
         String option;
@@ -38,20 +39,23 @@ public class Menu {
                     System.out.println("Personal number needs to only contain digits.");
                     break;
                 case "3": {
-                    String username = UserInput.readLine("Please enter your username: ");
-                    String employeePassword = UserInput.readLine("Please enter your password: ");
-                    if (service.employeeLoginCheck(username, employeePassword)){
-                        employeeMenu();
-                    } else {
-                        System.out.println("Wrong username/password.");
+                    Employee employee = registerEmployee();
+                    if(employee == null){
+                        System.out.println("Invalid username or password.");
+                        break;
                     }
+                    employeeMenu(employee);
                 }
+                break;
+                case"4":
+                    System.out.println("no feature yet");
                     break;
+
                 default:
                     Printing.invalidEntry();
                     break;
             }
-        } while(true);
+        } while (true);
     }
 
     /* ACCOUNTS MENU */
@@ -211,7 +215,7 @@ public class Menu {
     }
 
     /* EMPLOYEE MENU */
-    public void employeeMenu() {
+    public void employeeMenu(Employee employee) {
         String option;
         do {
             Printing.employeeMenu();
@@ -230,11 +234,17 @@ public class Menu {
                 case "3":
                     System.out.println("no feature yet:");
                     break;
-                case"4":
+                case "4":
                     System.out.println("no feature yet:");
                     break;
                 case "5": {
                     String message = service.printAllCustomers();
+                    System.out.println(message);
+                    break;
+                }
+                case"6": {
+                    String delete = UserInput.readLine("Enter personalnumber of customer you wish to remove: ");
+                    String message = service.deleteCustomer(delete);
                     System.out.println(message);
                     break;
                 }
@@ -245,7 +255,8 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
-        // Todo @Christoph / Adrian, add exceptions so that email must contain @ and so on.
+
+    // Todo @Christoph / Adrian, add exceptions so that email must contain @ and so on.
     public void customerProfileMenu(Customer currentUser) {
         String option;
         do {
@@ -287,9 +298,9 @@ public class Menu {
     }
 
 
-    public void registerCustomer(){
+    public void registerCustomer() {
         String personalNumber = UserInput.readLine("Customer personal number: ");
-        if (!service.onlyDigits(personalNumber)){
+        if (!service.onlyDigits(personalNumber)) {
             System.out.println("Please only enter digits.");
             startPage();
         }
@@ -319,25 +330,25 @@ public class Menu {
         System.out.println(verify);
     }
 */
-    public  String getAccountNumber(){
+    public String getAccountNumber() {
         return "";
     }
 
-    public void deposit(){
+    public void deposit() {
         String accountNumber = UserInput.readLine("Enter account number: ");
         double amount = UserInput.readDouble("Enter amount to deposit: ");
         String message = service.deposit(accountNumber, amount);
         System.out.println(message);
     }
 
-    public  void withdraw(){
+    public void withdraw() {
         String accountNumber = UserInput.readLine("Enter account number: ");
         double amount = UserInput.readDouble("Enter amount to withdraw: ");
         String message = service.withdraw(accountNumber, amount);
         System.out.println(message);
     }
 
-    public void transfer(){
+    public void transfer() {
         String accountNumber1 = UserInput.readLine("Enter account number to transfer from: ");
         String accountNumber2 = UserInput.readLine("Enter account number to transfer to: ");
         double amount = UserInput.readDouble("Enter amount to transfer: ");
@@ -345,20 +356,28 @@ public class Menu {
         System.out.println(message);
     }
 
-    public void makePayment(){
+    public void makePayment() {
 
     }
 
-    public void printTransactionHistory(){
+    public void printTransactionHistory() {
 
     }
 
-    public void checkBalance(){
+    public void checkBalance() {
         String balance = service.checkBalance(getAccountNumber());
         System.out.println(" Account balance = " + balance);
+
     }
 
+    public Employee registerEmployee() {
 
+            String employeeUsername = UserInput.readLine("Enter your username: ");
+            String employeePassword = UserInput.readLine("Enter your password: ");
+            if(service.employeeLoginCheck(employeeUsername, employeePassword)){ // If we want to add more employees change in this method
 
-
+                return new Employee(employeeUsername, employeePassword);
+            }
+            return null;
+    }
 }
