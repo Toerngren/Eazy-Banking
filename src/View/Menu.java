@@ -236,7 +236,7 @@ public class Menu {
     }
 
     /* EMPLOYEE MENU */
-    public void employeeMenu(Employee employee) {
+    public void employeeMenu() {
         String option;
         do {
             Printing.employeeMenu();
