@@ -3,6 +3,7 @@ package controller;
 import businessLogic.Transactions.Deposit;
 import businessLogic.Transactions.Transaction;
 import businessLogic.Transactions.Withdrawal;
+import businessLogic.User.Employee;
 import businessLogic.User.KYC;
 import businessLogic.User.Customer;
 import businessLogic.bankAccounts.BankAccount;
@@ -18,6 +19,7 @@ public class Service { // This is like our facade. Where we place all our busine
     private List<Transaction> transactions;
     private List<Transaction> savedRecipients;
     private List<KYC> kycApprovedList;
+    final String EOL = System.lineSeparator();
     // private Account loggedInAccount;
 
 
@@ -43,7 +45,6 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
 
-
     //todo Adrian
     public String verifyCustomerID(String personalNumber, String password) {
         return "";
@@ -57,6 +58,7 @@ public class Service { // This is like our facade. Where we place all our busine
         }
         return -1;
     }
+
 
     public KYC findKYC(Customer customer){
         try{
@@ -332,6 +334,7 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     public boolean employeeLoginCheck(String username, String password){
+
         return username.equals("admin") && password.equals("admin");
     }
 
@@ -376,9 +379,9 @@ public class Service { // This is like our facade. Where we place all our busine
         Customer customerToBeDeleted = findCustomer(personalNumber);
         if (customerToBeDeleted != null) {
             customerList.remove(customerToBeDeleted);
-            return "Customer " + personalNumber + "successfully removed.";
+            return "Customer " + personalNumber + " successfully removed." + EOL;
         }
-        return "Cannot find customer:" + personalNumber;
+        return "Cannot find customer:" + personalNumber + EOL;
     }
 
     //todo Christopher

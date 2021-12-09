@@ -31,7 +31,7 @@ public class Printing {
                 "2. Change telephone number." + EOL +
                 "3. Change e-mail." + EOL +
                 "4. Change password." + EOL +
-                "5. Change PIN-code.");
+                "5. Change PIN-code." + EOL);
 
     }
     public static void employeeMenu(){
@@ -42,7 +42,8 @@ public class Printing {
                 "2. Review mortgages." + EOL +
                 "3. Review KYCs" + EOL +
                 "4. Customer Support" + EOL +
-                "5. View all customers."+ EOL);
+                "5. View all customers."+ EOL +
+                "6. Remove customer." + EOL);
     }
     public static void accountMenu(){
         System.out.println("Please choose one of the following options:" + EOL +
