@@ -423,7 +423,7 @@ public class Menu {
         System.out.println(" Account balance = " + balance);
 
     }
-
+    // todo Adrian - move business logic to Service class
     public Employee registerEmployee() {
 
             String employeeUsername = UserInput.readLine("Enter your username: ");
