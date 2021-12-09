@@ -7,6 +7,5 @@ public class Employee {
     public Employee(String employeeID, String pinCode){
         this.employeeID = employeeID;
         this.pinCode = pinCode;
-
     }
 }
