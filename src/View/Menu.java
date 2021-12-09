@@ -236,7 +236,7 @@ public class Menu {
     }
 
     /* EMPLOYEE MENU */
-    public void employeeMenu() {
+    public void employeeMenu(Employee employee) {
         String option;
         do {
             Printing.employeeMenu();
@@ -352,13 +352,8 @@ public class Menu {
 
 
 
-    public void applyLoan (String personalNumber) {
-
-    }
-
     public void registerCustomer() {
         String personalNumber = UserInput.readLine("Customer personal number: ");
-
         if (!service.onlyDigits(personalNumber)) {
             System.out.println("Please only enter digits.");
             startPage();
@@ -389,10 +384,9 @@ public class Menu {
         System.out.println(verify);
     }
 */
-
-
-
-
+    public String getAccountNumber() {
+        return "";
+    }
 
     public void deposit() {
         String accountNumber = UserInput.readLine("Enter account number: ");
