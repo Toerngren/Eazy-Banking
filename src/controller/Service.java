@@ -15,21 +15,22 @@ public class Service { // This is like our facade. Where we place all our busine
 
     private List<Customer> customerList;
     private List<BankAccount> accountsList;
-    private List<KYC> KycList;
+    private List<KYC> reviewKYCList;
     private List<Transaction> transactions;
     private List<Transaction> savedRecipients;
     private List<KYC> kycApprovedList;
     final String EOL = System.lineSeparator();
+    private List<KYC> approvedKYCList;
     // private Account loggedInAccount;
 
 
     public Service() {
         customerList = new ArrayList<>();
         accountsList = new ArrayList<>();
-        KycList = new ArrayList<>();
+        reviewKYCList = new ArrayList<>();
         transactions = new ArrayList<>();
         savedRecipients = new ArrayList<>();
-        kycApprovedList = new ArrayList<>();
+        approvedKYCList = new ArrayList<>();
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
@@ -41,7 +42,7 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved){
         KYC kyc = new KYC(personalNumber, occupation, salary, pep,fatca,approved);
-        KycList.add(kyc);
+        reviewKYCList.add(kyc);
     }
 
 
@@ -59,21 +60,25 @@ public class Service { // This is like our facade. Where we place all our busine
         return -1;
     }
 
-
-    public KYC findKYC(Customer customer){
-        try{
-            if (KycList.size() > 0){
-                for (KYC kyc : KycList){
-                    if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())){
-                        return kyc;
-                    }
+    public KYC findKYC(Customer customer) {
+        if (reviewKYCList.size() > 0) {
+            for (KYC kyc : reviewKYCList) {
+                if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())) {
+                    return kyc;
                 }
             }
-        } catch (Exception exception){
-            exception.printStackTrace();
         }
-        return null;
+        if (approvedKYCList.size() > 0) {
+            for (KYC kyc : approvedKYCList) {
+                if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())) {
+                    return kyc;
+                }
+
+            }
+        } return null;
     }
+
+
 
     public String viewKYC (Customer customer) {
         if (findKYC(customer) == null) {
@@ -86,12 +91,12 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public String registerKYC (Customer customer, String occupation, double salary, boolean pep, boolean fatca){
         KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca, false);
-        KycList.add(kyc);
+        reviewKYCList.add(kyc);
         return System.lineSeparator() + "KYC awaiting review." + System.lineSeparator();
     }
 
     public boolean approvedKYC (Customer customer){
-        for (KYC approvedKYC : kycApprovedList){
+        for (KYC approvedKYC : approvedKYCList){
             if (customer.getPersonalNumber().equals(approvedKYC.getPersonalNumber())){
                 return true;
             }
@@ -104,10 +109,11 @@ public class Service { // This is like our facade. Where we place all our busine
         String result = "";
         if (review.equals("1")){
             unapprovedKYC.setApproved(true);
-            kycApprovedList.add(unapprovedKYC);
+            approvedKYCList.add(unapprovedKYC);
+            reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been approved.";
         } else if(review.equals("2")){
-            KycList.remove(unapprovedKYC);
+            reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been declined.";
         } else {
             result = "Please input either 1 or 2";
@@ -155,20 +161,20 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public String numberOfApprovedKYCs(){
         String result = "";
-        if (kycApprovedList.isEmpty()){
+        if (approvedKYCList.isEmpty()){
             result = "There are currently no approved KYCs." + System.lineSeparator();
         } else {
-            result = "There are " + kycApprovedList.size() + " approved reviews." + System.lineSeparator();
+            result = "There are " + approvedKYCList.size() + " approved reviews." + System.lineSeparator();
         } return result + System.lineSeparator();
     }
 
     public String numberOfUnapprovedKYCs() {
         String result = "";
         int counter = 0;
-        if (KycList.isEmpty()) {
+        if (reviewKYCList.isEmpty()) {
             result = "There are currently no unapproved KYCs.";
         } else {
-            for (KYC unapprovedKYC : KycList) {
+            for (KYC unapprovedKYC : reviewKYCList) {
                 if (!unapprovedKYC.isApproved()) {
                     counter++;
                 }
@@ -180,14 +186,14 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public String printAllApprovedKYCs(){
             String allApprovedKYCs = "All approved KYCs:";
-            for (KYC approvedKYC : kycApprovedList) {
+            for (KYC approvedKYC : approvedKYCList) {
                 allApprovedKYCs = allApprovedKYCs + System.lineSeparator() + approvedKYC.toString();
             }
             return allApprovedKYCs;
         }
 
     public KYC findUnapprovedKYC (){
-        for (KYC kyc : KycList){
+        for (KYC kyc : reviewKYCList){
             if (!kyc.isApproved()){
                 return kyc;
             }
