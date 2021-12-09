@@ -44,7 +44,7 @@ public class Menu {
                         System.out.println("Invalid username or password.");
                         break;
                     }
-                    employeeMenu(employee);
+                    employeeMenu();
                 }
                 break;
                 case"4":
@@ -201,10 +201,31 @@ public class Menu {
                     startPage();
                     break;
                 case "1":
-                    System.out.println("no feature yet:");
+                    boolean pep = false;
+                    boolean fatca = false;
+                    String occupation = UserInput.readLine("What is your occupation?");
+                    double salary = UserInput.readDouble("Please input your yearly salary before taxes:");
+                    String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Type 1 for yes and 2 for no.");
+                    if (pepQuestion.equals("1")){
+                        pep = true;
+                    } else if (pepQuestion.equals("2")){
+                        pep = false;
+                    } else {
+                        System.out.println("Choose either 1 or 2.");
+                    }
+                    String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Type 1 for yes and 2 for no.");
+                    if (fatcaQuestion.equals("1")){
+                        fatca = true;
+                    } else if (fatcaQuestion.equals("2")){
+                        fatca = false;
+                    } else {
+                        System.out.println("Choose either 1 or 2.");
+                    }
+                    System.out.println(service.registerKYC(currentUser, occupation, salary, pep, fatca));
+
                     break;
                 case "2":
-                    System.out.println("no feature yet:");
+                    System.out.println(service.viewKYC(currentUser));
                     break;
                 default:
                     Printing.invalidEntry();
@@ -232,10 +253,10 @@ public class Menu {
                     System.out.println("no feature yet:");
                     break;
                 case "3":
-                    System.out.println("no feature yet:");
+                    employeeKYCMenu();
                     break;
-                case "4":
-                    System.out.println("no feature yet:");
+                case"4":
+                    System.out.println(service.printAllApprovedKYCs());
                     break;
                 case "5": {
                     String message = service.printAllCustomers();
@@ -296,6 +317,39 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
+
+    public void employeeKYCMenu() {
+        String option;
+        do {
+            Printing.employeeKYCMenu();;
+            option = UserInput.readLine("");
+            switch (option) {
+                case "0":
+                    employeeMenu();
+                    break;
+                case "1":
+                    System.out.println(service.showUnapprovedKYC());
+                    if (service.showUnapprovedKYC().equals("No KYC registered for this customer.")){
+                        employeeMenu();
+                    } else {
+                        String review = UserInput.readLine("Do you want to approve this KYC? 1 for yes 2 for no.");
+                        System.out.println(service.reviewUnapprovedKYC(review));
+                    }
+                    break;
+                case "2":
+                    System.out.println(service.numberOfUnapprovedKYCs());
+                    break;
+                case "3":
+                    System.out.println(service.numberOfApprovedKYCs());
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+    }
+
 
 
     public void registerCustomer() {
@@ -365,7 +419,7 @@ public class Menu {
     }
 
     public void checkBalance() {
-        String balance = service.checkBalance(getAccountNumber());
+        String balance = service.checkBalance("123456");
         System.out.println(" Account balance = " + balance);
 
     }

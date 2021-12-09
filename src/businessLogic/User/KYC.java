@@ -1,14 +1,15 @@
 package businessLogic.User;
 
 public class KYC {
-
+   private String personalNumber;
    private String occupation;
    private double salary;
    private boolean pep;
    private boolean fatca;
    private boolean approved;
 
-   public KYC (String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
+   public KYC (String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
+      this.personalNumber = personalNumber;
       this.occupation = occupation;
       this.salary = salary;
       this.pep = pep;
@@ -17,7 +18,8 @@ public class KYC {
    }
 
    public String toString(){
-      return "Occupation: " + occupation + "Salary: " + salary + " Pep: " +  pep + " FATCA: "+fatca + " Approved: " + approved;
+      return "Personalnumber: " + personalNumber + System.lineSeparator() + "Occupation: " + occupation + System.lineSeparator() + "Salary: " + salary + System.lineSeparator() + "PEP: " +  pep + System.lineSeparator() +
+              "FATCA: "+fatca + System.lineSeparator() + "Approved: " + approved; //Awaiting approval. Kanske bättre att inte använda toStringen?
    }
 
    public void setSalary(double salary) {
@@ -58,6 +60,10 @@ public class KYC {
 
    public void setOccupation(String occupation) {
       this.occupation = occupation;
+   }
+
+   public String getPersonalNumber() {
+      return personalNumber;
    }
 
    @Override

@@ -58,9 +58,8 @@ public class Printing {
     public static void KYCMenu() {
         System.out.println("Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
-                "1. Register KYC." + EOL +
-                "2. View KYC." + EOL +
-                "3. Update KYC." + EOL);
+                "1. Fill in KYC." + EOL +
+                "2. View KYC." + EOL);
     }
     public static void loanMenu() {
         System.out.println("Please choose one of the following options:" + EOL +
@@ -80,6 +79,14 @@ public class Printing {
                 "6. View withdrawals." + EOL +
                 "7. View total deposits for a period." + EOL +
                 "8. View total withdrawals for a period." + EOL);
+    }
+
+    public static void employeeKYCMenu() {
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to Employee Menu." + EOL +
+                "1. Review unapproved KYC." + EOL +
+                "2. View number of KYCs pending review." + EOL +
+                "3. View number of approved KYC's." + EOL);
     }
 
 
