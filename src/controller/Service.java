@@ -18,7 +18,6 @@ public class Service { // This is like our facade. Where we place all our busine
     private List<KYC> reviewKYCList;
     private List<Transaction> transactions;
     private List<Transaction> savedRecipients;
-    private List<KYC> kycApprovedList;
     final String EOL = System.lineSeparator();
     private List<KYC> approvedKYCList;
     // private Account loggedInAccount;
