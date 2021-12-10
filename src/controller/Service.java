@@ -23,6 +23,8 @@ public class Service { // This is like our facade. Where we place all our busine
     private List<Transaction> savedRecipients;
     final String EOL = System.lineSeparator();
     private List<KYC> approvedKYCList;
+    private List<Loan> loanList;
+    private List<LoanApplication> loanApplicationList;
     // private Account loggedInAccount;
 
     public Service() {
@@ -32,6 +34,8 @@ public class Service { // This is like our facade. Where we place all our busine
         transactions = new ArrayList<>();
         savedRecipients = new ArrayList<>();
         approvedKYCList = new ArrayList<>();
+        loanList = new ArrayList<>();
+        loanApplicationList = new ArrayList<>();
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
