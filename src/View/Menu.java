@@ -1,12 +1,15 @@
 package View;
 import Utility.*;
+import businessLogic.Loan.IncreaseLoan;
+import businessLogic.Loan.LoanApplication;
 import businessLogic.User.Customer;
 import businessLogic.User.Employee;
 import controller.Service;
 
 
 public class Menu {
-    Service service = new Service();
+     Service service = new Service();
+    static final String EOL = System.lineSeparator();
 
     public void startPage() {
         String option;
@@ -152,7 +155,7 @@ public class Menu {
                     System.out.println("no feature yet:");
                     break;
                 case "2":
-                    System.out.println("no feature yet:");
+                    System.out.println("no feature yet1:");
                     break;
                 default:
                     Printing.invalidEntry();
@@ -175,10 +178,13 @@ public class Menu {
                     startPage();
                     break;
                 case "1":
-                    System.out.println("no feature yet:");
+                    viewLoan(currentUser);
                     break;
                 case "2":
-                    System.out.println("no feature yet:");
+                    registerLoanApplication(currentUser);
+                    break;
+                case "3":
+                    //registerIncreaseApplication(currentUser);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -367,7 +373,35 @@ public class Menu {
         String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
         System.out.println(message);
     }
+    public void viewLoan(Customer currentUser){
+        String loan = service.viewLoan(currentUser.getPersonalNumber());
+        System.out.println(" Current loan debt: " + loan);
+    }
 
+    public void registerLoanApplication(Customer currentUser){
+        double monthlyIncome = UserInput.readDouble("What is your monthly salary?");
+        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?");
+        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?");
+        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" + EOL);
+        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" + EOL);
+        String message = service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
+        System.out.println(message);
+    }
+//Todo Anna - "works" but missing loanDebt -> from Loan Class, need to be approved by Employee (this is not done yet)
+    /*
+    public void registerIncreaseApplication (Customer currentUser){
+        String debt = service.viewLoan(currentUser.getPersonalNumber());
+        System.out.println ("Current loan debt: "+ debt + "SEK");
+        double monthlyIncome = UserInput.readDouble("What is your monthly salary?" );
+        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?" );
+        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?" );
+        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" );
+        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" );
+        String message = service.increaseLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration,loanDebt);
+        System.out.println(message);
+    }
+
+ */
     /*
     public void loginCustomer(){
         String verify = "";
