@@ -1,21 +1,62 @@
 package View;
+
 import Utility.*;
-import businessLogic.Loan.IncreaseLoan;
-import businessLogic.Loan.LoanApplication;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import businessLogic.Inbox_Customer;
+import businessLogic.Transactions.Deposit;
+import businessLogic.Transactions.Transaction;
+import businessLogic.Transactions.Withdrawal;
 import businessLogic.User.Customer;
-import businessLogic.User.Employee;
+import businessLogic.bankAccounts.BankAccount;
+import businessLogic.bankAccounts.CheckingAccount;
+import businessLogic.bankAccounts.SavingsAccount;
 import controller.Service;
 
 
 public class Menu {
-     Service service = new Service();
-    static final String EOL = System.lineSeparator();
+    public static final String EOL = System.lineSeparator();
+    Service service = new Service();
+
+    public void forTest() {
+        service.createCustomer(
+                "1234",
+                "admin",
+                "admin",
+                "test@gmail.com",
+                "1234",
+                "1234",
+                "1234"
+        );
+        Customer c = service.getCustomerByPN("1234");
+        SavingsAccount sa = new SavingsAccount(c.getPersonalNumber());
+        CheckingAccount ca = new CheckingAccount(c.getPersonalNumber());
+        service.addAccount(sa);
+        service.addAccount(ca);
+        c.addBankAccount(sa);
+        c.addBankAccount(ca);
+        Withdrawal st1 = new Withdrawal(0.0, sa.getAccountNumber(), "123123", "", "Mom" );
+        Withdrawal st2 = new Withdrawal(0.0, ca.getAccountNumber(), "567567", "", "Loan" );
+        c.addRecipient(st1);
+        c.addRecipient(st2);
+        Deposit deposit1 = new Deposit(100, sa.getAccountNumber());
+        Withdrawal withdrawal = new Withdrawal(30, sa.getAccountNumber(), ca.getAccountNumber(), "");
+        Deposit deposit2 = new Deposit(30, ca.getAccountNumber());
+
+        sa.addTransaction(deposit1);
+        ca.addTransaction(deposit2);
+        sa.addTransaction(withdrawal);
+    }
 
     public void startPage() {
+        // TODO REMOVE TEST METHOD
+        forTest();
         String option;
         do {
             Printing.startPage();
-            option = UserInput.readLine("");
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
                     System.out.println("Closing");
@@ -67,7 +108,7 @@ public class Menu {
         String option;
         do {
             Printing.customerMenu();
-            option = UserInput.readLine("");
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
                     startPage();
@@ -76,7 +117,7 @@ public class Menu {
                     payTransferMenu(currentUser);
                     break;
                 case "2":
-                    myAccount(currentUser);
+                    myAccounts(currentUser);
                     break;
                 case "3":
                     loanMenu(currentUser);
@@ -91,7 +132,7 @@ public class Menu {
                     customerProfileMenu(currentUser);
                     break;
                 case "7":
-                    System.out.println("no feature yet.");
+                    System.out.println("Customer Support - coming soon");
                     break;
                 default:
                     Printing.invalidEntry();
@@ -102,34 +143,29 @@ public class Menu {
     }
 
     /* ACCOUNTS MENU */
-    public void myAccount(Customer currentUser) {
+    public void myAccounts(Customer currentUser) {
         String option;
 
         do {
-            Printing.accountMenu();
-            option = UserInput.readLine("");
+            System.out.println(service.printAccountsAndBalance(currentUser));
+            Printing.accountsMenu();
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
 
                 case "0":
-                    startPage();
+                    customerMenu(currentUser);
                     break;
                 case "1":
-                    deposit();
+                    System.out.println("Open Account - coming soon");
                     break;
                 case "2":
-                    withdraw();
+                    System.out.println("Close Account - coming soon");
                     break;
                 case "3":
-                    transfer();
+                    payTransferMenu(currentUser);
                     break;
                 case "4":
-                    makePayment();
-                    break;
-                case "5":
                     printTransactionHistory();
-                    break;
-                case "6":
-                    checkBalance();
                     break;
                 default:
                     Printing.invalidEntry();
@@ -139,23 +175,143 @@ public class Menu {
         UserInput.exitScanner();
     }
 
+
     /* PAY AND TRANSFER MENU */
     public void payTransferMenu(Customer currentUser) {
         String option;
 
         do {
-            Printing.PayTransferMenu();
-            option = UserInput.readLine("");
+            Printing.payTransferMenu();
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
 
                 case "0":
-                    startPage();
+                    customerMenu(currentUser);
                     break;
                 case "1":
-                    System.out.println("no feature yet:");
+                    System.out.println( EOL + "Please choose an account to deposit to or return to the menu: ");
+                    String toAccount = chooseAccount(currentUser);
+                    deposit(toAccount);
                     break;
                 case "2":
-                    System.out.println("no feature yet1:");
+                    System.out.println(EOL + "Please choose an account to transfer from or return to the menu: ");
+                    String fromAccountNumber = chooseAccount(currentUser);
+                    String toAccountNumber = service.chooseSecondAccount(currentUser, fromAccountNumber);
+                    transfer(fromAccountNumber, toAccountNumber);
+                    break;
+                case "3":
+                    System.out.println(EOL + "Please choose your account or return to the menu: ");
+                    fromAccountNumber = chooseAccount(currentUser);
+                    toAccountNumber = UserInput.readLine("Please enter account number for payment / transfer (6 digits): ");
+                    double amount = UserInput.readDouble("Enter amount: ");
+                    String note = UserInput.readLine("Enter note (optional): ");
+                    System.out.println(service.payTransfer(fromAccountNumber, toAccountNumber, amount, note));
+                    askToSaveRecipientMenu(currentUser,fromAccountNumber, toAccountNumber, note);
+                    break;
+                case "4":
+                    System.out.println(service.printTransactionsAndRecipients(currentUser.getSavedRecipients()));
+                    break;
+                case "5":
+                    transactionHistoryMenu(currentUser);
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+    }
+
+    public void askToSaveRecipientMenu(Customer currentUser,String fromAccountNumber, String toAccountNumber, String note) {
+        String option;
+
+        do {
+            option = UserInput.readLine("Would you like to save the recipient for future payments/transfers? " + EOL +
+                    "Type 1 for Yes, 2 for No." + EOL);
+            switch (option) {
+
+                case "1":
+                    String name = UserInput.readLine("Enter transaction/recipient name: ");
+                    System.out.println(service.saveRecipient(currentUser, fromAccountNumber, toAccountNumber, note, name));
+                    customerMenu(currentUser);
+                    break;
+                case "2":
+                    customerMenu(currentUser);
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("2")));
+        UserInput.exitScanner();
+    }
+
+
+    public String chooseAccount(Customer currentUser) {
+        String option;
+        List<BankAccount> accounts = currentUser.getBankAccounts();
+        String operationResult = "";
+
+        do {
+            System.out.println(service.printAccounts(currentUser));
+            option = UserInput.readLine("");
+            switch (option) {
+
+                //todo for Case 0 ->  if previous menu was payTransfer - return to that menu,
+                // if Accounts, return to Accounts.
+                case "0":
+                    payTransferMenu(currentUser);
+                    break;
+                case "1":
+                    for (BankAccount account : accounts) {
+                        if (account instanceof CheckingAccount)
+                            return account.getAccountNumber();
+                    }
+                    break;
+                case "2":
+                    for (BankAccount account : accounts) {
+                        if (account instanceof SavingsAccount)
+                            return account.getAccountNumber();
+                    }
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+        return operationResult;
+    }
+
+
+    /* TRANSACTION HISTORY */
+    public void transactionHistoryMenu(Customer currentUser) {
+        String option;
+
+        do {
+            Printing.transactionHistoryMenu();
+            option = UserInput.readLine("Please type an option number: ");
+            switch (option) {
+
+                case "0":
+                    payTransferMenu(currentUser);
+                    break;
+                case "1":
+                    String accountNumber = chooseAccount(currentUser);
+                    BankAccount account = service.getAccountByAccountNumber(accountNumber);
+                    System.out.println(service.printTransactionsAndRecipients(account.getTransactionList()));
+                    break;
+                case "2":
+                    System.out.println("View deposits - coming soon");
+                    break;
+                case "3":
+                    System.out.println("View withdrawals - coming soon");
+                    break;
+                case "4":
+                    System.out.println("View total deposits for a period - coming in v2");
+                    break;
+                case "5":
+                    System.out.println("View total withdrawals for a period - coming in v2");
                     break;
                 default:
                     Printing.invalidEntry();
@@ -171,7 +327,7 @@ public class Menu {
 
         do {
             Printing.loanMenu();
-            option = UserInput.readLine("");
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
 
                 case "0":
@@ -200,7 +356,7 @@ public class Menu {
 
         do {
             Printing.KYCMenu();
-            option = UserInput.readLine("");
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
 
                 case "0":
@@ -246,7 +402,7 @@ public class Menu {
         String option;
         do {
             Printing.employeeMenu();
-            option = UserInput.readLine("");
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
 
                 case "0":
@@ -419,28 +575,26 @@ public class Menu {
     }
 */
     public String getAccountNumber() {
+
+
         return "";
     }
 
-    public void deposit() {
-        String accountNumber = UserInput.readLine("Enter account number: ");
+    public void deposit(String toAccount) {
         double amount = UserInput.readDouble("Enter amount to deposit: ");
-        String message = service.deposit(accountNumber, amount);
+        String message = service.deposit(toAccount, amount);
         System.out.println(message);
     }
 
-    public void withdraw() {
-        String accountNumber = UserInput.readLine("Enter account number: ");
-        double amount = UserInput.readDouble("Enter amount to withdraw: ");
-        String message = service.withdraw(accountNumber, amount);
+    public void withdraw(String fromAccountNumber) {
+        double amount = UserInput.readDouble("Enter amount: ");
+        String message = service.withdraw(fromAccountNumber, amount);
         System.out.println(message);
     }
 
-    public void transfer() {
-        String accountNumber1 = UserInput.readLine("Enter account number to transfer from: ");
-        String accountNumber2 = UserInput.readLine("Enter account number to transfer to: ");
+    public void transfer(String fromAccount, String toAccount) {
         double amount = UserInput.readDouble("Enter amount to transfer: ");
-        String message = service.transferFunds(amount, accountNumber1, accountNumber2);
+        String message = service.transferFundsBetweenAccounts(amount, fromAccount, toAccount);
         System.out.println(message);
     }
 

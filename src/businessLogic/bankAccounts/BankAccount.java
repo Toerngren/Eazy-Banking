@@ -1,6 +1,8 @@
 package businessLogic.bankAccounts;
 
 import Utility.Calculator;
+import Utility.Utilities;
+
 import businessLogic.Transactions.Transaction;
 
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public abstract class BankAccount {
     }
 
     public double getBalance(){
-        return this.balance;
+        return Utilities.truncateDouble(this.balance, 2);
     }
 
     public void addToUpdateBalance(double amount){
@@ -54,17 +56,11 @@ public abstract class BankAccount {
         this.transactionList.add(tx);
     }
 
-    // todo Margaret
-    public void printLatestTransaction(){
-
+    public List<Transaction> getTransactionList() {
+        return this.transactionList;
     }
 
-    // todo Margaret
-    public void printAllTransaction(){
+    public abstract String toString();
+    public abstract String getType();
 
-    }
-
-    public String toString(){
-        return "Account Number: " + accountNumber + " Balance: " + this.balance;
-    }
 }
