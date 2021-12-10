@@ -27,7 +27,6 @@ public class Service { // This is like our facade. Where we place all our busine
     private List<KYC> reviewKYCList;
     private List<Transaction> transactions;
     private List<Transaction> savedRecipients;
-    final String EOL = System.lineSeparator();
     private List<KYC> approvedKYCList;
     private List<Loan> loanList;
     private List<LoanApplication> loanApplicationList;
@@ -112,6 +111,14 @@ public class Service { // This is like our facade. Where we place all our busine
                 return true;
             }
         } return false;
+    }
+
+    public boolean onlyDigits(String personalNumber){
+        for (int i = 0; i < personalNumber.length(); i++) {
+            if (!Character.isDigit(personalNumber.charAt(i))){
+                return false;
+            }
+        } return true;
     }
 
 
@@ -256,7 +263,8 @@ public class Service { // This is like our facade. Where we place all our busine
     */
 
     public String printAllCustomers() {
-        String allCustomers = "All registered customers:";
+        return "All registered customers:";
+    }
 
     /*
         public String printAllCustomers() {

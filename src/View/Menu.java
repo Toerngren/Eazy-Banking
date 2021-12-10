@@ -10,9 +10,12 @@ import businessLogic.Transactions.Deposit;
 import businessLogic.Transactions.Transaction;
 import businessLogic.Transactions.Withdrawal;
 import businessLogic.User.Customer;
+import businessLogic.User.Employee;
 import businessLogic.bankAccounts.BankAccount;
 import businessLogic.bankAccounts.CheckingAccount;
 import businessLogic.bankAccounts.SavingsAccount;
+import businessLogic.Loan.IncreaseLoan;
+import businessLogic.Loan.LoanApplication;
 import controller.Service;
 
 
@@ -607,10 +610,10 @@ public class Menu {
     }
 
     public void checkBalance() {
-        String balance = service.checkBalance("123456");
+        Double balance = service.checkBalance("123456");
         System.out.println(" Account balance = " + balance);
-
     }
+
     // todo Adrian - move business logic to Service class
     public Employee registerEmployee() {
 

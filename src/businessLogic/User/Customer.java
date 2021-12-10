@@ -4,6 +4,9 @@ import businessLogic.Inbox_Customer;
 import businessLogic.Transactions.Transaction;
 import businessLogic.bankAccounts.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer{
     static final String EOL = System.lineSeparator();
 
@@ -134,7 +137,7 @@ public class Customer{
         return "";
     }
 
-    public List <BankAccount> getBankAccounts() {
+    public List<BankAccount> getBankAccounts() {
         return this.bankAccounts;
     }
 
