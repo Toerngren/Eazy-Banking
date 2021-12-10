@@ -95,8 +95,23 @@ public class Printing {
                 "3. View number of approved KYC's." + EOL);
     }
 
+    public static void customerSupportMenu() {
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to menu." + EOL +
+                "1. Write a message to Customer Support." + EOL +
+                "2. Read latest message." + EOL +
+                "3. Number of messages in inbox." + EOL);
+    }
+
+    public static void employeeSupportMenu() {
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to menu." + EOL +
+                "1. Write message to a customer." + EOL +
+                "2. Read latest message." + EOL +
+                "3. Number of messages in inbox." + EOL);
+    }
 
     public static void invalidEntry() {
-        System.out.println("Invalid menu option. Please type another option." + EOL);
+        System.out.println("\u001B[31m" + "Invalid menu option. Please type another option." + "\u001B[0m" + EOL);
     }
 }

@@ -1,6 +1,5 @@
 package businessLogic.User;
 
-import businessLogic.Inbox_Customer;
 import businessLogic.Transactions.Transaction;
 import businessLogic.bankAccounts.*;
 
@@ -21,14 +20,12 @@ public class Customer{
     // easier to work with 1 list instead of 2.
     private List<BankAccount> bankAccounts;
     private List<Transaction> savedRecipients;
+    private ArrayList<String> customerMessageList;
 
     /*
         private List<CheckingAccount> accountList;
         private List<SavingsAccount> savingsAccount;
-
-     */
-
-    private Inbox_Customer inbox;
+    */
 
     public Customer(String personalNumber, String firstName, String lastName, String email, String password, String telephone, String pinCode) {
         this.personalNumber = personalNumber;
@@ -38,10 +35,28 @@ public class Customer{
         this.telephone = telephone;
         this.password = password;
         this.pinCode = pinCode;
-        this.inbox = new Inbox_Customer();
+        this.customerMessageList = new ArrayList<>();
         this.bankAccounts = new ArrayList<>();
         this.savedRecipients = new ArrayList<>();
     }
+
+    public String addMessage(String message){
+        this.customerMessageList.add(message);
+        return "Message sent.";
+    }
+
+    public String viewMessage(){
+        return customerMessageList.get(0);
+    }
+    public int numberOfMessages(){
+        return customerMessageList.size();
+    }
+
+    public void removeMessage(){
+        customerMessageList.remove(0);
+    }
+
+
 
     public String getPersonalNumber() {
         return personalNumber;
@@ -106,35 +121,12 @@ public class Customer{
         return "Full name: " +firstName +" "+ lastName + EOL + "Personal number: " + personalNumber + EOL + "E-mail: " + email + EOL + "Telephone number: " + telephone + EOL + "PIN-code: " + pinCode + EOL + "Password: " + password + EOL;
     }
 
-    // Inbox methods
-    public String addNewMessage(String newMessage) {
-        return inbox.addNewMessage(newMessage);
-    }
-
     public boolean verifyPassword(String password) {
         if (password.equals(this.password)) {
             return true;
         } else {
             return false;
         }
-    }
-
-
-
-    public String addReadMessage(){
-        return "";
-    }
-
-    public String printUnreadMessages() {
-        return "";
-    }
-
-    public String printReadMessages() {
-        return "";
-    }
-
-    public String printAllMessages() {
-        return "";
     }
 
     public List<BankAccount> getBankAccounts() {

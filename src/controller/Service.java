@@ -15,6 +15,7 @@ import businessLogic.bankAccounts.SavingsAccount;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import Utility.Utilities;
 
@@ -30,6 +31,7 @@ public class Service { // This is like our facade. Where we place all our busine
     private List<KYC> approvedKYCList;
     private List<Loan> loanList;
     private List<LoanApplication> loanApplicationList;
+    private Employee employee;
     // private Account loggedInAccount;
 
     public Service() {
@@ -41,6 +43,7 @@ public class Service { // This is like our facade. Where we place all our busine
         approvedKYCList = new ArrayList<>();
         loanList = new ArrayList<>();
         loanApplicationList = new ArrayList<>();
+        this.employee = new Employee("admin", "admin");
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
@@ -653,6 +656,49 @@ public class Service { // This is like our facade. Where we place all our busine
         return message;
     }
 
+    public String viewMessage(Customer currentUser){
+        return currentUser.viewMessage();
+    }
+
+    // Meddelanden behöver tas bort, både employee och customer
+    //
+    public void removeMessage(Customer currentUser){
+        currentUser.removeMessage();
+    }
+
+    public void removeMessage(){
+        employee.removeMessage();
+    }
+
+    public String viewMessage(){
+        return employee.viewMessage();
+    }
+
+    public String messageToCustomer(String personalNumber, String newMessage){
+        Customer foundCustomer = findCustomer(personalNumber);
+        foundCustomer.addMessage(newMessage);
+        return "Message sent";
+    }
+
+    public int numberOfMessages(){
+        return employee.numberOfMessages();
+    }
+
+    public int numberOfMessages(Customer customer){
+        return customer.numberOfMessages();
+    }
+
+
+    public String messageToEmployee(Customer currentUser, String newMessage){
+        employee.addMessage(newMessage + " Sent from: " + currentUser.getPersonalNumber());
+        return "Message sent.";
+    }
+    public boolean verifyEmployee(String userName, String pinCode){
+        if (employee.getEmployeeID().equals(userName.trim().toLowerCase(Locale.ROOT))&& employee.getPinCode().equals(pinCode.trim().toLowerCase(Locale.ROOT))){
+            return true;
+        } return false;
+    }
+
 
     //todo Faiza
     public String openNewAccount() {
@@ -669,19 +715,6 @@ public class Service { // This is like our facade. Where we place all our busine
 
     }
 
-    //todo Pontus
-    public void checkInbox() {
-
-    }
-
-
-    public String sendMessage() {
-        return "";
-    }
-
-    public void receiveMessage() {
-
-    }
 
     public Customer findCustomer(String personalNumber) {
         try {
@@ -698,27 +731,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return null;
     }
 
-    //Inbox methods
-    public String addNewMessage(String personalNumber, String newMessage) {
-        int index = getCustomerIndex(personalNumber);
-        return this.customerList.get(index).addNewMessage(newMessage);
-    }
-
-    public String addReadMessage() {
-        return "";
-    }
-
-    public String printUnreadMessages() {
-        return "";
-    }
-
-    public String printReadMessages() {
-        return "";
-    }
-
-    public String printAllMessages() {
-        return "";
-    }
 
     public Customer getCustomerByPN(String pn) {
         for (Customer c : customerList) {

@@ -2,20 +2,16 @@ package View;
 
 import Utility.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import businessLogic.Inbox_Customer;
 import businessLogic.Transactions.Deposit;
-import businessLogic.Transactions.Transaction;
 import businessLogic.Transactions.Withdrawal;
 import businessLogic.User.Customer;
 import businessLogic.User.Employee;
 import businessLogic.bankAccounts.BankAccount;
 import businessLogic.bankAccounts.CheckingAccount;
 import businessLogic.bankAccounts.SavingsAccount;
-import businessLogic.Loan.IncreaseLoan;
-import businessLogic.Loan.LoanApplication;
 import controller.Service;
 
 
@@ -86,12 +82,13 @@ public class Menu {
                     System.out.println("Personal number needs to only contain digits.");
                     break;
                 case "3": {
-                    Employee employee = registerEmployee();
-                    if(employee == null){
-                        System.out.println("Invalid username or password.");
-                        break;
+                    String username = UserInput.readLine("Input your username:");
+                    String pinCode = UserInput.readLine("Input your PIN-code:");
+                    if (service.verifyEmployee(username, pinCode)){
+                        employeeMenu();
+                    } else {
+                        startPage();
                     }
-                    employeeMenu();
                 }
                 break;
                 case"4":
@@ -110,6 +107,9 @@ public class Menu {
     public void customerMenu(Customer currentUser) {
         String option;
         do {
+            if (service.numberOfMessages(currentUser) > 0){
+                System.out.println(System.lineSeparator() + "\u001B[32m" + "You have a new message!" + "\u001B[0m" + System.lineSeparator());
+            }
             Printing.customerMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
@@ -135,7 +135,7 @@ public class Menu {
                     customerProfileMenu(currentUser);
                     break;
                 case "7":
-                    System.out.println("Customer Support - coming soon");
+                    customerSupportMenu(currentUser);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -154,7 +154,6 @@ public class Menu {
             Printing.accountsMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
-
                 case "0":
                     customerMenu(currentUser);
                     break;
@@ -421,7 +420,7 @@ public class Menu {
                     employeeKYCMenu();
                     break;
                 case"4":
-                    System.out.println(service.printAllApprovedKYCs());
+                    employeeCustomerSupportMenu();
                     break;
                 case "5": {
                     String message = service.printAllCustomers();
@@ -515,7 +514,74 @@ public class Menu {
         UserInput.exitScanner();
     }
 
+    public void customerSupportMenu(Customer currentUser) {
+        String option;
 
+        do {
+            Printing.customerSupportMenu();
+            option = UserInput.readLine("");
+            switch (option) {
+                case "0":
+                    customerMenu(currentUser);  //Return to Customer Menu
+                    break;
+                case "1":
+                    String message = UserInput.readLine("Message to customer support:");
+                    service.messageToEmployee(currentUser, message);
+                    break;
+                case "2":
+                    System.out.println(service.viewMessage(currentUser));
+                    String reply = UserInput.readLine("Would you like to reply? Yes or No.");
+                    if (reply.equals("yes")){
+                        String replyMessage = UserInput.readLine("What would you like to reply?");
+                        service.messageToEmployee(currentUser, replyMessage);
+                        service.removeMessage(currentUser);
+                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+                        System.out.println("No reply has been sent.");
+                        service.removeMessage(currentUser);
+                    } else {
+                        System.out.println("Input yes or no.");
+                    }
+                    break;
+                case "3":
+                    System.out.println(service.numberOfMessages(currentUser));
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+    }
+
+    public void employeeCustomerSupportMenu() {
+        String option;
+        do {
+            Printing.employeeSupportMenu();
+            option = UserInput.readLine("");
+            switch (option) {
+                case "0":
+                    employeeMenu();
+                    break;
+                case "1":
+                    String personalNumber = UserInput.readLine("What customer would you like to write to? Input personal number:");
+                    String message = UserInput.readLine("What message would you like to send?");
+                    System.out.println(service.messageToCustomer(personalNumber, message));
+                    break;
+                case "2":
+                    System.out.println(service.viewMessage());
+                    break;
+                case "3":
+                    System.out.println(service.numberOfMessages());
+                    break;
+                case"4":
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+    }
 
     public void registerCustomer() {
         String personalNumber = UserInput.readLine("Customer personal number: ");
@@ -602,27 +668,12 @@ public class Menu {
     }
 
     public void makePayment() {
-
     }
-
     public void printTransactionHistory() {
 
     }
-
     public void checkBalance() {
         Double balance = service.checkBalance("123456");
         System.out.println(" Account balance = " + balance);
-    }
-
-    // todo Adrian - move business logic to Service class
-    public Employee registerEmployee() {
-
-            String employeeUsername = UserInput.readLine("Enter your username: ");
-            String employeePassword = UserInput.readLine("Enter your password: ");
-            if(service.employeeLoginCheck(employeeUsername, employeePassword)){ // If we want to add more employees change in this method
-
-                return new Employee(employeeUsername, employeePassword);
-            }
-            return null;
     }
 }
