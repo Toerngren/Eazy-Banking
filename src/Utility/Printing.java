@@ -23,6 +23,17 @@ public class Printing {
                 "7. Customer support" + EOL);
 
     }
+
+    public static void customerProfileMenu(){
+        System.out.println("Please choose among the options below." + EOL +
+                "0. Go back to My page." + EOL +
+                "1. See all of your details." + EOL +
+                "2. Change telephone number." + EOL +
+                "3. Change e-mail." + EOL +
+                "4. Change password." + EOL +
+                "5. Change PIN-code." + EOL);
+
+    }
     public static void employeeMenu(){
         System.out.println("You are now logged in!" + EOL +
                 "Please choose one of the following options:" + EOL +
@@ -31,8 +42,8 @@ public class Printing {
                 "2. Review mortgages." + EOL +
                 "3. Review KYCs" + EOL +
                 "4. Customer Support" + EOL +
-                "5. Edit customer name" + EOL +
-                "6. Print all registered customers."+ EOL);
+                "5. View all customers."+ EOL +
+                "6. Remove customer." + EOL);
     }
     public static void accountMenu(){
         System.out.println("Please choose one of the following options:" + EOL +
@@ -47,9 +58,8 @@ public class Printing {
     public static void KYCMenu() {
         System.out.println("Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
-                "1. Register KYC." + EOL +
-                "2. View KYC." + EOL +
-                "3. Update KYC." + EOL);
+                "1. Fill in KYC." + EOL +
+                "2. View KYC." + EOL);
     }
     public static void loanMenu() {
         System.out.println("Please choose one of the following options:" + EOL +
@@ -70,6 +80,14 @@ public class Printing {
                 "6. View withdrawals." + EOL +
                 "7. View total deposits for a period." + EOL +
                 "8. View total withdrawals for a period." + EOL);
+    }
+
+    public static void employeeKYCMenu() {
+        System.out.println("Please choose one of the following options:" + EOL +
+                "0. Return to Employee Menu." + EOL +
+                "1. Review unapproved KYC." + EOL +
+                "2. View number of KYCs pending review." + EOL +
+                "3. View number of approved KYC's." + EOL);
     }
 
 
