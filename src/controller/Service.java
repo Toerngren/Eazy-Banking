@@ -1,5 +1,8 @@
 package controller;
 
+import businessLogic.Loan.IncreaseLoan;
+import businessLogic.Loan.Loan;
+import businessLogic.Loan.LoanApplication;
 import businessLogic.Transactions.Deposit;
 import businessLogic.Transactions.Transaction;
 import businessLogic.Transactions.Withdrawal;
@@ -20,8 +23,9 @@ public class Service { // This is like our facade. Where we place all our busine
     private List<Transaction> savedRecipients;
     final String EOL = System.lineSeparator();
     private List<KYC> approvedKYCList;
+    private List<Loan> loanList;
+    private List<LoanApplication> loanApplicationList;
     // private Account loggedInAccount;
-
 
     public Service() {
         customerList = new ArrayList<>();
@@ -30,6 +34,8 @@ public class Service { // This is like our facade. Where we place all our busine
         transactions = new ArrayList<>();
         savedRecipients = new ArrayList<>();
         approvedKYCList = new ArrayList<>();
+        loanList = new ArrayList<>();
+        loanApplicationList = new ArrayList<>();
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
@@ -376,7 +382,7 @@ public class Service { // This is like our facade. Where we place all our busine
                 return personalNumber + " was not registered yet.";
             }
         }
-        return personalNumber + "'s" + " pincode was edited successfully.";
+        return personalNumber + "'s" + " pin code was edited successfully.";
     }
 
 
@@ -534,7 +540,6 @@ public class Service { // This is like our facade. Where we place all our busine
         }
     }
 
-
     public String checkBalance(String accountNumber) {
         String balance;
         if (!isAccountNumberExist(accountNumber)) {
@@ -546,10 +551,73 @@ public class Service { // This is like our facade. Where we place all our busine
         return balance;
     }
 
-    //todo Anna
-    public String applyLoan() {
-        return "";
+    //todo Anna LOAN
+    /**
+     WHERE LOAN BEGIN:
+
+     ╭━┳━╭━╭━╮╮
+     ┃┈┈┈┣▅╋▅┫┃
+     ┃┈┃┈╰━╰━━━━━━╮
+     ╰┳╯┈┈┈┈┈┈┈┈┈◢▉◣
+     ╲┃┈┈┈┈┈┈┈┈┈┈▉▉▉
+     ╲┃┈┈┈┈┈┈┈┈┈┈◥▉◤
+     ╲┃┈┈┈┈╭━┳━━━━╯
+     ╲┣━━━━━━┫
+
+     */
+
+    public int searchForLoanIndex(String personalNumber){
+        for (int i = 0; i < this.loanList.size(); i++){
+            if (this.loanList.get(i).getPersonalNumber().equals(personalNumber)){
+                return i;}
+        }
+        return -1;
     }
+
+    public boolean containsLoanID(String personalNumber){
+        for (Loan loan : loanList) {
+            if (loan.getPersonalNumber().equals(personalNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String viewLoan (String personalNumber) {
+        int index = searchForLoanIndex(personalNumber);
+        if(index == -1){
+            return (" No loan. Would you like to apply for a loan?");
+        } else {
+        return loanList.get(index).toString();}
+    }
+
+    public String applyLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
+        LoanApplication loanApplication = new LoanApplication (personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration);
+        loanApplicationList.add(loanApplication);
+        return "Your loan application has been received; we will get back to you within 24 hours.";
+    }
+
+
+
+    public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
+        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration, loanDebt);
+        loanApplicationList.add(increaseLoan);
+        return "Your loan application has been received; we will get back to you within 24 hours.";
+    }
+    //todo For Employee - to collect and approve loans, add loan list and then I can collect loan debt (-Anna)
+
+    public String viewAllLoanApplications(String personalNumber){
+        if(loanApplicationList.isEmpty()){
+            return "Currently no loan applications waiting for review.";
+        }
+        String message = "All loan applications:";
+        for (LoanApplication loanApplication: loanApplicationList) {
+            message += (loanApplication.getPersonalNumber());
+        }
+        return message;
+    }
+
+
     //todo Faiza
     public String openNewAccount() {
         return "";
