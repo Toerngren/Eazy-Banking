@@ -45,41 +45,46 @@ public class Printing {
                 "5. View all customers."+ EOL +
                 "6. Remove customer." + EOL);
     }
-    public static void accountMenu(){
-        System.out.println("Please choose one of the following options:" + EOL +
+    public static void accountsMenu(){
+        System.out.println( EOL + "Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
                 "1. Open account." + EOL +
                 "2. Close account." + EOL +
-                "3. Deposit funds." + EOL +
-                "4. Withdraw funds." + EOL +
-                "5. Transfer." + EOL +
-                "6. Check balance." + EOL);
+                "3. Pay, Deposit or Transfer." + EOL+
+                "4. View Accounts History." + EOL);
     }
+
     public static void KYCMenu() {
-        System.out.println("Please choose one of the following options:" + EOL +
+        System.out.println( EOL + "Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
                 "1. Fill in KYC." + EOL +
                 "2. View KYC." + EOL);
     }
     public static void loanMenu() {
-        System.out.println("Please choose one of the following options:" + EOL +
+        System.out.println( EOL + "Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
                 "1. View loan." + EOL +
                 "2. Apply for a new loan." + EOL +
                 "3. Increase current loan." + EOL);
     }
 
-    public static void PayTransferMenu(){
-        System.out.println("Please choose one of the following options:" + EOL +
-                "0. Return to menu." + EOL +
-                "1. Transfers between accounts." + EOL +
-                "2. Transfer funds or make payment." + EOL +
-                "3. View saved transactions." + EOL +
-                "4. View all transactions." + EOL +
-                "5. View deposits." + EOL +
-                "6. View withdrawals." + EOL +
-                "7. View total deposits for a period." + EOL +
-                "8. View total withdrawals for a period." + EOL);
+    public static void payTransferMenu(){
+        System.out.println( EOL + "Please choose one of the following options:" + EOL +
+                "0. Return to the previous menu." + EOL +
+                "1. Deposit funds." + EOL +
+                "2. Transfers between accounts." + EOL +
+                "3. Transfer funds or make payment." + EOL +
+                "4. View saved recipients." + EOL +
+                "5. View Transactions History." + EOL);
+    }
+    public static void  transactionHistoryMenu(){
+        System.out.println(EOL + "Please choose one of the following options:" + EOL +
+                "0. Return to the previous menu." + EOL +
+                "1. View all transactions." + EOL +
+                "2. View deposits." + EOL +
+                "3. View withdrawals." + EOL +
+                "4. View total deposits for a period. (coming in V2)" + EOL +
+                "5. View total withdrawals for a period. (coming in V2)" + EOL);
     }
 
     public static void employeeKYCMenu() {

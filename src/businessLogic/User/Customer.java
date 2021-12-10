@@ -1,6 +1,7 @@
 package businessLogic.User;
 
 import businessLogic.Inbox_Customer;
+import businessLogic.Transactions.Transaction;
 import businessLogic.bankAccounts.*;
 
 public class Customer{
@@ -14,11 +15,19 @@ public class Customer{
     private String password;
     private String pinCode;
 
-    private CheckingAccount accountList;
-    private SavingsAccount savingsAccount;
+    // easier to work with 1 list instead of 2.
+    private List<BankAccount> bankAccounts;
+    private List<Transaction> savedRecipients;
+
+    /*
+        private List<CheckingAccount> accountList;
+        private List<SavingsAccount> savingsAccount;
+
+     */
+
     private Inbox_Customer inbox;
 
-    public Customer(String personalNumber, String firstName,String lastName, String email, String password, String telephone, String pinCode) {
+    public Customer(String personalNumber, String firstName, String lastName, String email, String password, String telephone, String pinCode) {
         this.personalNumber = personalNumber;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,13 +36,15 @@ public class Customer{
         this.password = password;
         this.pinCode = pinCode;
         this.inbox = new Inbox_Customer();
+        this.bankAccounts = new ArrayList<>();
+        this.savedRecipients = new ArrayList<>();
     }
 
     public String getPersonalNumber() {
         return personalNumber;
     }
 
-    public boolean verifyCustomer(String password){
+    public boolean verifyCustomer(String password) {
         return this.password.equals(password);
     }
 
@@ -91,9 +102,10 @@ public class Customer{
     public String toString(){
         return "Full name: " +firstName +" "+ lastName + EOL + "Personal number: " + personalNumber + EOL + "E-mail: " + email + EOL + "Telephone number: " + telephone + EOL + "PIN-code: " + pinCode + EOL + "Password: " + password + EOL;
     }
+
     // Inbox methods
-    public String addNewMessage(String newMessage){
-        return  inbox.addNewMessage(newMessage);
+    public String addNewMessage(String newMessage) {
+        return inbox.addNewMessage(newMessage);
     }
 
     public boolean verifyPassword(String password) {
@@ -110,19 +122,33 @@ public class Customer{
         return "";
     }
 
-    public String printUnreadMessages(){
+    public String printUnreadMessages() {
         return "";
     }
 
-    public String printReadMessages(){
+    public String printReadMessages() {
         return "";
     }
 
-    public String printAllMessages(){
+    public String printAllMessages() {
         return "";
     }
 
+    public List <BankAccount> getBankAccounts() {
+        return this.bankAccounts;
+    }
 
+    public void addBankAccount(BankAccount account) {
+        bankAccounts.add(account);
+    }
+
+    public List<Transaction> getSavedRecipients() {
+        return this.savedRecipients;
+    }
+
+    public void addRecipient(Transaction transaction){
+        this.savedRecipients.add(transaction);
+    }
 
 }
 

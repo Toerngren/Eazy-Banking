@@ -3,7 +3,7 @@ package businessLogic.Transactions;
 import java.util.Date;
 import java.util.UUID;
 
-public class Transaction {
+public abstract class Transaction {
 
     // withdrawal and deposit can be merged into this class by specifying toStrings with if and
     // adding transactionType with enum. My suggestion is to keep three classes for now.
@@ -11,9 +11,10 @@ public class Transaction {
     private String transactionID;
     private Date date;
     private double amount;
-    private String fromAccount;
-    private String toAccount;
+    private String fromAccount = "";
+    private String toAccount = "";
     private String note = "";
+
 
     //todo add exceptions
     public Transaction(double amount, String fromAccount, String toAccount) {
@@ -52,6 +53,10 @@ public class Transaction {
 
     public String getNote() {
         return note;
+    }
+
+    public String getName() {
+        return "";
     }
 
    /* todo implement if needed

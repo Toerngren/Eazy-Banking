@@ -10,11 +10,17 @@ import businessLogic.User.Employee;
 import businessLogic.User.KYC;
 import businessLogic.User.Customer;
 import businessLogic.bankAccounts.BankAccount;
+import businessLogic.bankAccounts.CheckingAccount;
+import businessLogic.bankAccounts.SavingsAccount;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import Utility.Utilities;
+
 public class Service { // This is like our facade. Where we place all our business logic
+
+    public static final String EOL = System.lineSeparator();
 
     private List<Customer> customerList;
     private List<BankAccount> accountsList;
@@ -56,9 +62,9 @@ public class Service { // This is like our facade. Where we place all our busine
         return "";
     }
 
-    public int getCustomerIndex(String personalNumber){
-        for (int i = 0; i < this.accountsList.size(); i++){
-            if (this.accountsList.get(i).verifyAccountNumber(personalNumber)){
+    public int getCustomerIndex(String personalNumber) {
+        for (int i = 0; i < this.accountsList.size(); i++) {
+            if (this.accountsList.get(i).verifyAccountNumber(personalNumber)) {
                 return i;
             }
         }
@@ -209,7 +215,7 @@ public class Service { // This is like our facade. Where we place all our busine
         return getCustomerIndex(personalNumber) != -1;
     }
 
-    public boolean containsCustomer(String personalNumber){
+    public boolean containsCustomer(String personalNumber) {
         for (Customer customer : customerList) {
             if (customer.getPersonalNumber().equals(personalNumber)) {
                 return true;
@@ -219,7 +225,7 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
 
-    public boolean verifyCustomer(String personalNumber, String password){
+    public boolean verifyCustomer(String personalNumber, String password) {
         int index = getCustomerIndex(personalNumber);
         return !this.customerList.get(index).verifyCustomer(password);
     }
@@ -252,23 +258,16 @@ public class Service { // This is like our facade. Where we place all our busine
     public String printAllCustomers() {
         String allCustomers = "All registered customers:";
 
-        for (Customer customer : customerList) {
-            allCustomers = allCustomers + System.lineSeparator() + customer.toString();
-        }
-        return allCustomers;
-    }
+    /*
+        public String printAllCustomers() {
+            String allCustomers = "All registered customers:";
 
-
-    public boolean onlyDigits(String personalNumber){
-        for (int i = 0; i < personalNumber.length(); i++) {
-            if (!Character.isDigit(personalNumber.charAt(i))){
-                return false;
+            for (Customer customer : customerList) {
+                allCustomers = allCustomers + System.lineSeparator() + customer.toString();
             }
-        } return true;
-    }
-
-
-
+            return allCustomers + System.lineSeparator();
+        }
+    */
     public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
         Customer nameToChange = null;
@@ -424,6 +423,7 @@ public class Service { // This is like our facade. Where we place all our busine
         return getAccountNumberIndex(accountNumber) != -1;
     }
 
+    // todo add exceptions
     // new method for deposit using getAccountByAccountNumber
     public String deposit(String toAccount, double amount) {
         BankAccount account = getAccountByAccountNumber(toAccount);
@@ -437,11 +437,44 @@ public class Service { // This is like our facade. Where we place all our busine
             Deposit deposit = new Deposit(amount, toAccount);
             transactions.add(deposit);
             account.addTransaction(deposit);
-            return "Account balance was update successfully.";
+            return account.getType() + " balance was updated successfully!" + EOL +
+                    "Current balance is: " + account.getBalance() + " SEK.";
         }
     }
 
-    // new method for withdraw using getAccountByAccountNumber
+    // todo add exceptions
+    public String payTransfer(String fromAccountNumber, String toAccountNumber, double amount, String note) {
+        BankAccount account = getAccountByAccountNumber(fromAccountNumber);
+        if (account == null) {
+            return "Account doesn't exist.";
+        }
+        if (amount <= 0) {
+            return "Amount should be greater than 0.";
+        }
+        if (amount > account.getBalance()) {
+            return "Not enough funds on account #" + account.getAccountNumber();
+        }
+        if (toAccountNumber.length() != 6) {
+            return "Account number should be 6 digits.";
+        } else {
+            account.subtractToUpdateBalance(amount);
+            Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
+            transactions.add(withdrawal);
+            account.addTransaction(withdrawal);
+            return "Transaction successful!" + EOL +
+                    account.getType() + " #" + fromAccountNumber + " Current Balance: " + account.getBalance() + " SEK." + EOL;
+        }
+    }
+
+    public String saveRecipient(Customer currentUser, String fromAccount, String toAccountNumber, String note, String name) {
+
+        Withdrawal withdrawal = new Withdrawal(0.0, fromAccount, toAccountNumber, note, name);
+        currentUser.addRecipient(withdrawal);
+        return "Saved!";
+    }
+
+
+    // todo add exceptions
     public String withdraw(String fromAccount, double amount) {
         BankAccount account = getAccountByAccountNumber(fromAccount);
         if (account == null) {
@@ -453,102 +486,97 @@ public class Service { // This is like our facade. Where we place all our busine
         if (amount > account.getBalance()) {
             return "Not enough funds to withdraw from account " + account.getAccountNumber();
         } else {
+            Withdrawal withdrawal = new Withdrawal(amount, fromAccount);
+            transactions.add(withdrawal);
+            account.addTransaction(withdrawal);
             account.subtractToUpdateBalance(amount);
-            return "Account balance was update successfully.";
+            return account.getType() + " balance was updated successfully.";
         }
     }
 
-    // todo transferToYourAccount
-
+    // todo change to exceptions
     // new method for transferring Funds using getAccountByAccountNumber
-    public String transferFunds(double amount, String fromAccountNumber, String toAccountNumber) {
+    public String transferFundsBetweenAccounts(double amount, String fromAccountNumber, String toAccountNumber) {
         BankAccount fromAccount = getAccountByAccountNumber(fromAccountNumber);
         BankAccount toAccount = getAccountByAccountNumber(toAccountNumber);
         if (toAccount == null || fromAccount == null) {
             return "Can't find account. Please check if the accounts' numbers are correct";
-        }
-        if (amount < fromAccount.getBalance()) {
-            return "Amount should be greater than 0.";
+        } else if (checkBalance(fromAccountNumber) < amount) {
+            return "Not enough funds.";
         } else {
-            return withdraw(fromAccountNumber, amount) + " " + deposit(toAccountNumber, amount);
+            withdraw(fromAccountNumber, amount);
+            deposit(toAccountNumber, amount);
+            return "Transfer successful!" + EOL +
+                    fromAccount.getType() + " #" + fromAccount.getAccountNumber() + " Current Balance: " + fromAccount.getBalance() + " SEK." + EOL +
+                    toAccount.getType() + " #" + toAccount.getAccountNumber() + " Current Balance: " + toAccount.getBalance() + " SEK." + EOL;
         }
     }
 
-    /*
-
-    public String depositMoney(String accountNumber, double amount) {
-        if (!isAccountNumberExist(accountNumber)) {
-            return accountNumber + " Account number does not exist.";
-        }
-        if (amount <= 0) {
-            return "Amount must be greater than 0";
-        } else {
-            int index = getAccountNumberIndex(accountNumber);
-            this.accountsList.get(index).addToUpdateBalance(amount);
-        }
-        return amount + " has been deposit to the account " + accountNumber;
-    }
-/*
-    public String withdrawMoney(String accountNumber, double amount) {
-        BankAccount account = getAccountByAccountNumber(accountNumber);
-
-        if (!isAccountNumberExist(accountNumber)) {
-            return accountNumber + " Account number does not exist.";
-        }
-        int index = getAccountNumberIndex(accountNumber);
-        if (this.accountsList.get(index).getBalance() < amount) {
-            return "Not enough money to withdraw from account no. " + accountNumber;
-        } else {
-            // Margaret added the transaction creation
-            Withdrawal wTransaction = new Withdrawal(amount, accountNumber);
-            transactions.add(wTransaction);
-            account.addTransaction(wTransaction);
-            this.accountsList.get(index).subtractToUpdateBalance(wTransaction.getAmount());
-        }
-        return amount + " SEK has been withdrawn from account no. " + accountNumber;
-    }
- */
-    /*
-    public String transferMoney(String accountNumberFrom, String accountNumberTo, double amount) {
-        if (!isAccountNumberExist(accountNumberFrom)) {
-            return accountNumberFrom + " Account number does not exist.";
-        }
-        if (!isAccountNumberExist(accountNumberTo)) {
-            return accountNumberTo + " Account number does not exist.";
-        }
-        int index1 = getAccountNumberIndex(accountNumberFrom);
-        int index2 = getAccountNumberIndex(accountNumberFrom);
-        if (this.accountsList.get(index1).getBalance() < amount) {
-            return "Not enough money to transfer from account no. " + accountNumberFrom;
-        } else {
-            this.accountsList.get(index1).subtractToUpdateBalance(amount);
-            this.accountsList.get(index2).addToUpdateBalance(amount);
-        }
-        return amount + " SEK has been transferred to account no. " + accountNumberTo;
+    public String printAccountsAndBalance(Customer currentUser) {
+        List<BankAccount> accounts = currentUser.getBankAccounts();
+        String checkingAccountOutput = "";
+        String savingsAccountOutput = "";
+        if (accounts.isEmpty()) {
+            return "No accounts open yet.";
+        } else
+            for (BankAccount account : accounts) {
+                if (account instanceof CheckingAccount) {
+                    checkingAccountOutput = account.toString();
+                }
+                if (account instanceof SavingsAccount) {
+                    savingsAccountOutput = account.toString();
+                }
+            }
+        return checkingAccountOutput + EOL +
+                "------------------------------------- " + EOL +
+                savingsAccountOutput + EOL +
+                "------------------------------------- " + EOL;
     }
 
- */
-
-    // Margaret added a new method using getAccountByNumber without indexes
-    public String printBalance(String accountNumber) {
-        BankAccount account = getAccountByAccountNumber(accountNumber);
-        if (account == null) {
-            return accountNumber + " account doesn't exist.";
+    public String printAccounts(Customer currentUser) {
+        String operationResult = "0. Return to the previous menu" + EOL;
+        List<BankAccount> accounts = currentUser.getBankAccounts();
+        String checkingAccountOutput = "";
+        String savingsAccountOutput = "";
+        if (accounts.isEmpty()) {
+            operationResult += "No accounts open yet.";
         } else {
-            Double balance = account.getBalance();
-            return accountNumber + " account balance is " + balance;
+            for (BankAccount account : accounts) {
+                if (account instanceof CheckingAccount) {
+                    checkingAccountOutput = "1. Checking Account: #" + account.getAccountNumber() + EOL;
+                }
+                if (account instanceof SavingsAccount) {
+                    savingsAccountOutput = "2. Savings Account: #" + account.getAccountNumber() + EOL;
+                }
+            }
         }
+        operationResult += checkingAccountOutput + savingsAccountOutput;
+        return operationResult;
     }
 
-    public String checkBalance(String accountNumber) {
-        String balance;
-        if (!isAccountNumberExist(accountNumber)) {
-            return accountNumber + " Account number does not exist.";
-        } else {
-            int index = getAccountNumberIndex(accountNumber);
-            balance = Double.toString(this.accountsList.get(index).getBalance());
+    public String chooseSecondAccount(Customer currentUser, String fromAccount) {
+        List<BankAccount> accounts = currentUser.getBankAccounts();
+        for (BankAccount account : accounts) {
+            if (!account.getAccountNumber().equals(fromAccount)) {
+                return account.getAccountNumber();
+            }
         }
-        return balance;
+        return "";
+    }
+
+    public String printTransactionsAndRecipients(List<Transaction> transactions) {
+        int index = 1;
+        String operationResult = "";
+        for (Transaction tx : transactions) {
+            operationResult += index + ". " + tx.toString();
+            index++;
+        }
+        return operationResult;
+    }
+
+
+    public double checkBalance(String accountNumber) {
+        return getAccountByAccountNumber(accountNumber).getBalance();
     }
 
     //todo Anna LOAN
@@ -624,7 +652,7 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     //todo Faiza
-    public String closeAccount(String accountNumber){
+    public String closeAccount(String accountNumber) {
         return "";
     }
 
@@ -632,56 +660,70 @@ public class Service { // This is like our facade. Where we place all our busine
     public void chooseAccount() {
 
     }
+
     //todo Pontus
     public void checkInbox() {
 
     }
 
 
-    public String sendMessage(){
+    public String sendMessage() {
         return "";
     }
 
-    public void receiveMessage(){
+    public void receiveMessage() {
 
     }
 
-    public Customer findCustomer(String personalNumber){
-    try {
-        if (customerList.size() > 0) {
-            for (Customer customer : customerList) {
-                if (customer.getPersonalNumber().equals(personalNumber)) {
-                    return customer;
+    public Customer findCustomer(String personalNumber) {
+        try {
+            if (customerList.size() > 0) {
+                for (Customer customer : customerList) {
+                    if (customer.getPersonalNumber().equals(personalNumber)) {
+                        return customer;
+                    }
                 }
             }
-        }
-        }catch(Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
         return null;
     }
 
     //Inbox methods
-    public String addNewMessage(String personalNumber, String newMessage){
+    public String addNewMessage(String personalNumber, String newMessage) {
         int index = getCustomerIndex(personalNumber);
         return this.customerList.get(index).addNewMessage(newMessage);
     }
 
-    public String addReadMessage(){
+    public String addReadMessage() {
         return "";
     }
 
-    public String printUnreadMessages(){
+    public String printUnreadMessages() {
         return "";
     }
 
-    public String printReadMessages(){
+    public String printReadMessages() {
         return "";
     }
 
-    public String printAllMessages(){
+    public String printAllMessages() {
         return "";
     }
 
+    public Customer getCustomerByPN(String pn) {
+        for (Customer c : customerList) {
+            if (c.getPersonalNumber().equals(pn)) {
+                return c;
+            }
+        }
+        return null;
+    }
 
+    //TODO DELETE
+    public void addAccount(BankAccount acc) {
+        accountsList.add(acc);
+    }
 }
+

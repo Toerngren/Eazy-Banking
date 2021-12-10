@@ -2,6 +2,10 @@ package businessLogic.Transactions;
 
 public class Withdrawal extends Transaction {
 
+    public static final String EOL = System.lineSeparator();
+
+    private String name = "";
+
     public Withdrawal(double amount, String fromAccount, String toAccount) {
         super(amount, fromAccount, toAccount);
     }
@@ -13,13 +17,26 @@ public class Withdrawal extends Transaction {
     public Withdrawal (double amount, String fromAccount) {
         super(amount, fromAccount, "");
     }
+    public Withdrawal (double amount, String fromAccount, String toAccount, String note, String name) {
+        super(amount, fromAccount, toAccount, note);
+        this.name = name;
+    }
+
 
     @Override
     public String toString() {
-        if (!getNote().isEmpty()) {
-           return getDate() + " Withdrawal to " + getToAccount() + " : SEK " + getAmount() + " - " + getNote();
+        if(!getName().isEmpty()) {
+            return  "Transaction (Recipient) name: " + getName() + EOL +
+                    "   Recipient Account #" + getToAccount() + EOL +
+                    "   Note: " + getNote() + EOL;
+        } else if (!getNote().isEmpty()) {
+           return getDate() + " Withdrawal from #" + getFromAccount() + " to #" + getToAccount() + " : SEK " + getAmount() + " - " + getNote() + EOL;
         } else {
-         return getDate() + " Withdrawal to " + getToAccount() + " : SEK " + getAmount();
+         return getDate() + " Withdrawal from #" + getFromAccount() + " to #" + getToAccount() + " : SEK " + getAmount() + EOL;
         }
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

@@ -19,7 +19,7 @@ public class UserInput {
     }
 
     public static double readDouble(String message) {
-        System.out.println(message);
+        System.out.print(message);
         double value = input.nextDouble();
         input.nextLine();
         return value;
