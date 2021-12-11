@@ -690,9 +690,16 @@ public class Service { // This is like our facade. Where we place all our busine
 
 
     public String messageToEmployee(Customer currentUser, String newMessage){
-        employee.addMessage(newMessage + " Sent from: " + currentUser.getPersonalNumber());
+        employee.addMessage("Message from: " + currentUser.getPersonalNumber() + System.lineSeparator() + newMessage);
         return "Message sent.";
     }
+
+    public String fetchPersonalNumber(){
+        String message = viewMessage();
+        String personalNumber = message.substring(14,24);
+        return personalNumber;
+    }
+
     public boolean verifyEmployee(String userName, String pinCode){
         if (employee.getEmployeeID().equals(userName.trim().toLowerCase(Locale.ROOT))&& employee.getPinCode().equals(pinCode.trim().toLowerCase(Locale.ROOT))){
             return true;

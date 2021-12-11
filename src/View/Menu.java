@@ -485,7 +485,7 @@ public class Menu {
     public void employeeKYCMenu() {
         String option;
         do {
-            Printing.employeeKYCMenu();;
+            Printing.employeeKYCMenu();
             option = UserInput.readLine("");
             switch (option) {
                 case "0":
@@ -569,6 +569,17 @@ public class Menu {
                     break;
                 case "2":
                     System.out.println(service.viewMessage());
+                    String reply = UserInput.readLine("Would you like to reply? Yes or No.");
+                    if (reply.equals("yes")){
+                        String replyMessage = UserInput.readLine("What would you like to reply?");
+                        service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);
+                        service.removeMessage();
+                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+                        System.out.println("No reply has been sent.");
+                        service.removeMessage();
+                    } else {
+                        System.out.println("Input yes or no.");
+                    }
                     break;
                 case "3":
                     System.out.println(service.numberOfMessages());
