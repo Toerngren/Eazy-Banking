@@ -88,9 +88,8 @@ public class Printing {
     public static void employeeKYCMenu() {
         System.out.println("Please choose one of the following options:" + EOL +
                 "0. Return to Employee Menu." + EOL +
-                "1. Review unapproved KYC." + EOL +
-                "2. View number of KYCs pending review." + EOL +
-                "3. View number of approved KYCs." + EOL);
+                "1. Review KYC." + EOL +
+                "2. View number of approved KYC's." + EOL);
     }
 
     public static void customerSupportMenu() {

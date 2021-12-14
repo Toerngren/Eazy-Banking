@@ -6,7 +6,6 @@ public class KYC {
    private double salary;
    private boolean pep;
    private boolean fatca;
-   private boolean approved;
 
    public KYC (String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
       this.personalNumber = personalNumber;
@@ -14,12 +13,11 @@ public class KYC {
       this.salary = salary;
       this.pep = pep;
       this.fatca = fatca;
-      this.approved = approved;
    }
 
    public String toString(){
       return "Personalnumber: " + personalNumber + System.lineSeparator() + "Occupation: " + occupation + System.lineSeparator() + "Salary: " + salary + System.lineSeparator() + "PEP: " +  pep + System.lineSeparator() +
-              "FATCA: "+fatca + System.lineSeparator() + "Approved: " + approved; //Awaiting approval. Kanske bättre att inte använda toStringen?
+              "FATCA: "+fatca + System.lineSeparator() + "Approved: ";
    }
 
    public void setSalary(double salary) {
@@ -48,14 +46,6 @@ public class KYC {
 
    public double getSalary() {
       return salary;
-   }
-
-   public void setApproved(boolean approved) {
-      this.approved = approved;
-   }
-
-   public boolean isApproved() {
-      return approved;
    }
 
    public void setOccupation(String occupation) {

@@ -92,17 +92,114 @@ public class Service { // This is like our facade. Where we place all our busine
         return null;
     }
 
-
-    public String viewKYC(Customer customer) {
-        if (findKYC(customer) == null) {
-            return "No KYC registered yet.";
-        } else {
-            KYC customersKYC = findKYC(customer);
-            return displayKYC(customersKYC);
-        }
+    public boolean pendingKYC(Customer customer){
+        for (KYC kyc: reviewKYCList){
+            if(customer.getPersonalNumber().equals(kyc.getPersonalNumber())){
+                return true;
+            }
+        } return false;
     }
 
-    public String registerKYC(Customer customer, String occupation, double salary, boolean pep, boolean fatca) {
+    public String customerDisplayKYC(KYC kyc){
+        String pepStatus = "";
+        String fatcaStatus = "";
+        if (kyc.isPep()){
+            pepStatus = "Yes";
+        } else {
+            pepStatus = "No";
+        }
+        if (kyc.isFatca()){
+            fatcaStatus = "Yes";
+        } else {
+            fatcaStatus = "No";
+        }
+
+        String result =
+                "Occupation: " + kyc.getOccupation() + System.lineSeparator() +
+                        "Salary: " + kyc.getSalary() + System.lineSeparator() +
+                        "Politically exposed customer: " + pepStatus + System.lineSeparator() +
+                        "Affected by FATCA: " + fatcaStatus + System.lineSeparator();
+        return result;
+    }
+
+
+
+    public String viewKYC (Customer customer) {
+        if (findKYC(customer) == null) {
+            return "No KYC registered yet.";
+        } else if (approvedKYC(customer)){
+            KYC customersKYC = findKYC(customer);
+            return "Status: Approved." + EOL + customerDisplayKYC(customersKYC);
+        } else if (pendingKYC(customer)){
+            KYC customersKYC = findKYC(customer);
+            return "Status: Under review. " + EOL + customerDisplayKYC(customersKYC);
+        } return "";
+    }
+
+
+    public boolean emptyReviewList(){
+        return reviewKYCList.isEmpty();
+    }
+
+    public String KYCToBeReviewed(){
+        if (reviewKYCList.isEmpty()){
+            return "There are currently no KYC's to review.";
+        }
+        KYC unapprovedKYC = findUnapprovedKYC();
+        if (unapprovedKYC == null){
+            return "No KYCs to review";
+        }
+        return employeeDisplayKYC(unapprovedKYC);
+    }
+
+    public String employeeDisplayKYC(KYC kyc){
+        String pepStatus = "";
+        String fatcaStatus = "";
+        if (kyc.isPep()){
+            pepStatus = "Yes";
+        } else {
+            pepStatus = "No";
+        }
+        if (kyc.isFatca()){
+            fatcaStatus = "Yes";
+        } else {
+            fatcaStatus = "No";
+        }
+        String result = "Personalnumber: " + kyc.getPersonalNumber() + System.lineSeparator() +
+                "Occupation: " + kyc.getOccupation() + System.lineSeparator() +
+                "Salary: " + kyc.getSalary() + System.lineSeparator() +
+                "Politically exposed customer: " + pepStatus + System.lineSeparator() +
+                "Affected by FATCA: " + fatcaStatus + System.lineSeparator();
+        return result;
+    }
+
+    public String registerKYC (Customer customer, String occupation, double salary, String pepQuestion, String fatcaQuestion) {
+        boolean pep = false;
+        boolean fatca = false;
+        if (pendingKYC(customer)){
+            return "KYC has already been filled in.";
+        }
+
+        if (salary < 0) {
+            return "Salary cannot be lower than zero. Please try again.";
+        }
+        if (occupation.isBlank()) {
+            return "You need to fill in your occupation. Please try again.";
+        }
+        if (pepQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")) {
+            pep = true;
+        } else if (pepQuestion.trim().toLowerCase(Locale.ROOT).equals("no")) {
+            pep = false;
+        } else {
+            return "Please write either Yes or No";
+        }
+        if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")){
+            fatca = true;
+        } else if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("no")){
+            fatca = false;
+        } else {
+            return "Please write either Yes or No";
+        }
         KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca, false);
         reviewKYCList.add(kyc);
         return System.lineSeparator() + "KYC awaiting review." + System.lineSeparator();
@@ -131,7 +228,6 @@ public class Service { // This is like our facade. Where we place all our busine
         KYC unapprovedKYC = findUnapprovedKYC();
         String result = "";
         if (review.equals("1")) {
-            unapprovedKYC.setApproved(true);
             approvedKYCList.add(unapprovedKYC);
             OpenAccounts(unapprovedKYC.getPersonalNumber());
             reviewKYCList.remove(unapprovedKYC);
@@ -155,38 +251,12 @@ public class Service { // This is like our facade. Where we place all our busine
         accountsList.add(sA);
     }
 
-    public String displayKYC(KYC kyc) {
-        String pepStatus = "";
-        String fatcaStatus = "";
-        String approvedStatus = "";
-        if (kyc.isPep()) {
-            pepStatus = "Yes";
-        } else {
-            pepStatus = "No";
-        }
-        if (kyc.isFatca()) {
-            fatcaStatus = "Yes";
-        } else {
-            fatcaStatus = "No";
-        }
-        if (kyc.isApproved()) {
-            approvedStatus = "Yes";
-        } else {
-            approvedStatus = "Awaiting review";
-        }
-        String result = "Personalnumber: " + kyc.getPersonalNumber() + System.lineSeparator() +
-                "Occupation: " + kyc.getOccupation() + System.lineSeparator() +
-                "Salary: " + kyc.getSalary() + System.lineSeparator() +
-                "Politically exposed customer: " + pepStatus + System.lineSeparator() +
-                "Affected by FATCA: " + fatcaStatus + System.lineSeparator() +
-                "Status: " + approvedStatus + System.lineSeparator();
-        return result;
-    }
+
 
     public String showUnapprovedKYC() {
         KYC unapprovedKYC = findUnapprovedKYC();
         if (unapprovedKYC != null) {
-            return displayKYC(unapprovedKYC);
+            return employeeDisplayKYC(unapprovedKYC);
         } else {
             return "No KYC registered for this customer." + System.lineSeparator();
         }
@@ -204,16 +274,10 @@ public class Service { // This is like our facade. Where we place all our busine
 
     public String numberOfUnapprovedKYCs() {
         String result = "";
-        int counter = 0;
         if (reviewKYCList.isEmpty()) {
-            result = "There are currently no unapproved KYCs.";
+            result = ""; // Returns an empty string as option one displays information if there are no KYCs to review
         } else {
-            for (KYC unapprovedKYC : reviewKYCList) {
-                if (!unapprovedKYC.isApproved()) {
-                    counter++;
-                }
-                result = "There are currently " + counter + " unapproved KYCs." + System.lineSeparator();
-            }
+            result = "The number of unapproved KYC's is: " + reviewKYCList.size() + System.lineSeparator();
         }
         return result;
     }
@@ -227,13 +291,10 @@ public class Service { // This is like our facade. Where we place all our busine
         return allApprovedKYCs;
     }
 
-    public KYC findUnapprovedKYC() {
-        for (KYC kyc : reviewKYCList) {
-            if (!kyc.isApproved()) {
-                return kyc;
-            }
-        }
-        return null;
+    public KYC findUnapprovedKYC (){
+        for (KYC kyc : reviewKYCList){
+            return kyc;
+        } return null;
     }
 
     public boolean isCustomerExist(String personalNumber) {

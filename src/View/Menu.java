@@ -4,7 +4,7 @@ import Utility.*;
 
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Scanner;
 import businessLogic.Transactions.Deposit;
 import businessLogic.Transactions.Withdrawal;
 import businessLogic.User.Customer;
@@ -18,6 +18,7 @@ import controller.Service;
 public class Menu {
     public static final String EOL = System.lineSeparator();
     Service service = new Service();
+    Scanner input = new Scanner(System.in);
 /*
     public void forTest() {
         service.createCustomer(
@@ -367,38 +368,30 @@ public class Menu {
     /* KYC MENU */
     public void kycMenu(Customer currentUser) {
         String option;
-
         do {
             Printing.KYCMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
-
                 case "0":
-                    startPage();
+                    customerMenu(currentUser);
                     break;
                 case "1":
-                    boolean pep = false;
-                    boolean fatca = false;
-                    String occupation = UserInput.readLine("What is your occupation?");
-                    double salary = UserInput.readDouble("Please input your yearly salary before taxes:");
-                    String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Type 1 for yes and 2 for no.");
-                    if (pepQuestion.equals("1")){
-                        pep = true;
-                    } else if (pepQuestion.equals("2")){
-                        pep = false;
+                    if (service.pendingKYC(currentUser)){
+                        System.out.println("KYC is pending review.");
+                    } else if (service.approvedKYC(currentUser)) {
+                        System.out.println("KYC has already been approved.");
                     } else {
-                        System.out.println("Choose either 1 or 2.");
+                        String occupation = UserInput.readLine("What is your occupation?");
+                        System.out.println("Please input your yearly salary before taxes:");
+                        while (!input.hasNextDouble()) {
+                            input.nextLine();
+                            System.out.println("Please only use digits.");
+                        }
+                        double salary = input.nextDouble();
+                        String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Type 1 for yes and 2 for no.");
+                        String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Type 1 for yes and 2 for no.");
+                        System.out.println(service.registerKYC(currentUser, occupation, salary, pepQuestion, fatcaQuestion));
                     }
-                    String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Type 1 for yes and 2 for no.");
-                    if (fatcaQuestion.equals("1")){
-                        fatca = true;
-                    } else if (fatcaQuestion.equals("2")){
-                        fatca = false;
-                    } else {
-                        System.out.println("Choose either 1 or 2.");
-                    }
-                    System.out.println(service.registerKYC(currentUser, occupation, salary, pep, fatca));
-
                     break;
                 case "2":
                     System.out.println(service.viewKYC(currentUser));
@@ -497,6 +490,7 @@ public class Menu {
     public void employeeKYCMenu() {
         String option;
         do {
+            System.out.println(service.numberOfUnapprovedKYCs());
             Printing.employeeKYCMenu();
             option = UserInput.readLine("");
             switch (option) {
@@ -504,18 +498,15 @@ public class Menu {
                     employeeMenu();
                     break;
                 case "1":
-                    System.out.println(service.showUnapprovedKYC());
-                    if (service.showUnapprovedKYC().equals("No KYC registered for this customer.")){
-                        employeeMenu();
-                    } else {
+                    if(!service.emptyReviewList()) {
+                        System.out.println(service.KYCToBeReviewed());
                         String review = UserInput.readLine("Do you want to approve this KYC? 1 for yes 2 for no.");
                         System.out.println(service.reviewUnapprovedKYC(review));
+                    } else {
+                        System.out.println("There are currently no KYC's to review.");
                     }
                     break;
                 case "2":
-                    System.out.println(service.numberOfUnapprovedKYCs());
-                    break;
-                case "3":
                     System.out.println(service.numberOfApprovedKYCs());
                     break;
                 default:
