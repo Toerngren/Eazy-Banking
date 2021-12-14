@@ -207,8 +207,11 @@ public class Menu {
                     toAccountNumber = UserInput.readLine("Please enter account number for payment / transfer (6 digits): ");
                     double amount = UserInput.readDouble("Enter amount: ");
                     String note = UserInput.readLine("Enter note (optional): ");
-                    System.out.println(service.payTransfer(fromAccountNumber, toAccountNumber, amount, note));
-                    askToSaveRecipientMenu(currentUser,fromAccountNumber, toAccountNumber, note);
+                    String result = service.payTransfer(fromAccountNumber, toAccountNumber, amount, note);
+                    System.out.println(result);
+                    if (result.contains("successful")) {
+                        askToSaveRecipientMenu(currentUser, fromAccountNumber, toAccountNumber, note);
+                    }
                     break;
                 case "4":
                     System.out.println(service.printAllRecipients(currentUser.getSavedRecipients()));
