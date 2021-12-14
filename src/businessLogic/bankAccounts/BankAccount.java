@@ -24,7 +24,7 @@ public abstract class BankAccount {
     }
 
     private String generateAccountNumber(){
-        return Integer.toString(Calculator.randomNumberGenerator(999999,555555)) ;
+        return Calculator.randomNumberGenerator() ;
     }
 
     public String getCustomerPersonalNumber(){

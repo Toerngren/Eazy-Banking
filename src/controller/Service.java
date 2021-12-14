@@ -53,8 +53,8 @@ public class Service { // This is like our facade. Where we place all our busine
         return System.lineSeparator() + "You have now been registered!" + System.lineSeparator();
     }
 
-    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved){
-        KYC kyc = new KYC(personalNumber, occupation, salary, pep,fatca,approved);
+    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
+        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca, approved);
         reviewKYCList.add(kyc);
     }
 
@@ -88,12 +88,12 @@ public class Service { // This is like our facade. Where we place all our busine
                 }
 
             }
-        } return null;
+        }
+        return null;
     }
 
 
-
-    public String viewKYC (Customer customer) {
+    public String viewKYC(Customer customer) {
         if (findKYC(customer) == null) {
             return "No KYC registered yet.";
         } else {
@@ -102,38 +102,40 @@ public class Service { // This is like our facade. Where we place all our busine
         }
     }
 
-    public String registerKYC (Customer customer, String occupation, double salary, boolean pep, boolean fatca){
+    public String registerKYC(Customer customer, String occupation, double salary, boolean pep, boolean fatca) {
         KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca, false);
         reviewKYCList.add(kyc);
         return System.lineSeparator() + "KYC awaiting review." + System.lineSeparator();
     }
 
-    public boolean approvedKYC (Customer customer){
-        for (KYC approvedKYC : approvedKYCList){
-            if (customer.getPersonalNumber().equals(approvedKYC.getPersonalNumber())){
+    public boolean approvedKYC(Customer customer) {
+        for (KYC approvedKYC : approvedKYCList) {
+            if (customer.getPersonalNumber().equals(approvedKYC.getPersonalNumber())) {
                 return true;
             }
-        } return false;
+        }
+        return false;
     }
 
-    public boolean onlyDigits(String personalNumber){
+    public boolean onlyDigits(String personalNumber) {
         for (int i = 0; i < personalNumber.length(); i++) {
-            if (!Character.isDigit(personalNumber.charAt(i))){
+            if (!Character.isDigit(personalNumber.charAt(i))) {
                 return false;
             }
-        } return true;
+        }
+        return true;
     }
 
 
-    public String reviewUnapprovedKYC (String review){
+    public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
         String result = "";
-        if (review.equals("1")){
+        if (review.equals("1")) {
             unapprovedKYC.setApproved(true);
             approvedKYCList.add(unapprovedKYC);
             reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been approved.";
-        } else if(review.equals("2")){
+        } else if (review.equals("2")) {
             reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been declined.";
         } else {
@@ -142,21 +144,21 @@ public class Service { // This is like our facade. Where we place all our busine
         return result + System.lineSeparator();
     }
 
-    public String displayKYC(KYC kyc){
+    public String displayKYC(KYC kyc) {
         String pepStatus = "";
         String fatcaStatus = "";
         String approvedStatus = "";
-        if (kyc.isPep()){
+        if (kyc.isPep()) {
             pepStatus = "Yes";
         } else {
             pepStatus = "No";
         }
-        if (kyc.isFatca()){
+        if (kyc.isFatca()) {
             fatcaStatus = "Yes";
         } else {
             fatcaStatus = "No";
         }
-        if (kyc.isApproved()){
+        if (kyc.isApproved()) {
             approvedStatus = "Yes";
         } else {
             approvedStatus = "Awaiting review";
@@ -170,23 +172,23 @@ public class Service { // This is like our facade. Where we place all our busine
         return result;
     }
 
-    public String showUnapprovedKYC (){
+    public String showUnapprovedKYC() {
         KYC unapprovedKYC = findUnapprovedKYC();
-        if (unapprovedKYC != null){
+        if (unapprovedKYC != null) {
             return displayKYC(unapprovedKYC);
-        }
-        else {
+        } else {
             return "No KYC registered for this customer." + System.lineSeparator();
         }
     }
 
-    public String numberOfApprovedKYCs(){
+    public String numberOfApprovedKYCs() {
         String result = "";
-        if (approvedKYCList.isEmpty()){
+        if (approvedKYCList.isEmpty()) {
             result = "There are currently no approved KYCs." + System.lineSeparator();
         } else {
             result = "There are " + approvedKYCList.size() + " approved reviews." + System.lineSeparator();
-        } return result + System.lineSeparator();
+        }
+        return result + System.lineSeparator();
     }
 
     public String numberOfUnapprovedKYCs() {
@@ -199,29 +201,31 @@ public class Service { // This is like our facade. Where we place all our busine
                 if (!unapprovedKYC.isApproved()) {
                     counter++;
                 }
-                result = "There are currently " + counter +" unapproved KYCs." + System.lineSeparator();
+                result = "There are currently " + counter + " unapproved KYCs." + System.lineSeparator();
             }
-        } return result;
+        }
+        return result;
     }
 
 
-    public String printAllApprovedKYCs(){
-            String allApprovedKYCs = "All approved KYCs:";
-            for (KYC approvedKYC : approvedKYCList) {
-                allApprovedKYCs = allApprovedKYCs + System.lineSeparator() + approvedKYC.toString();
-            }
-            return allApprovedKYCs;
+    public String printAllApprovedKYCs() {
+        String allApprovedKYCs = "All approved KYCs:";
+        for (KYC approvedKYC : approvedKYCList) {
+            allApprovedKYCs = allApprovedKYCs + System.lineSeparator() + approvedKYC.toString();
         }
+        return allApprovedKYCs;
+    }
 
-    public KYC findUnapprovedKYC (){
-        for (KYC kyc : reviewKYCList){
-            if (!kyc.isApproved()){
+    public KYC findUnapprovedKYC() {
+        for (KYC kyc : reviewKYCList) {
+            if (!kyc.isApproved()) {
                 return kyc;
             }
-        } return null;
+        }
+        return null;
     }
 
-    public boolean isCustomerExist(String personalNumber){
+    public boolean isCustomerExist(String personalNumber) {
         return getCustomerIndex(personalNumber) != -1;
     }
 
@@ -354,7 +358,7 @@ public class Service { // This is like our facade. Where we place all our busine
         return personalNumber + "'s" + " telephone number was edited successfully.";
     }
 
-    public boolean employeeLoginCheck(String username, String password){
+    public boolean employeeLoginCheck(String username, String password) {
 
         return username.equals("admin") && password.equals("admin");
     }
@@ -575,12 +579,59 @@ public class Service { // This is like our facade. Where we place all our busine
         return "";
     }
 
-    public String printTransactionsAndRecipients(List<Transaction> transactions) {
-        int index = 1;
+    public String printAllTransactions(List<Transaction> transactions) {
+        int index = 0;
+        String operationResult = "All transactions:" + EOL;
+        for (Transaction tx : transactions) {
+            index++;
+            operationResult += index + ". " + tx.toString();
+        }
+        if (index == 0) {
+            operationResult = "No transactions so far.";
+        }
+        return operationResult;
+    }
+
+    public String printAllRecipients(List<Transaction> transactions) {
+        int index = 0;
         String operationResult = "";
         for (Transaction tx : transactions) {
-            operationResult += index + ". " + tx.toString();
             index++;
+            operationResult += index + ". " + tx.toString();
+        }
+        if (index == 0) {
+            operationResult = "No recipients has been saved so far.";
+        }
+        return operationResult;
+    }
+
+    public String printAllWithdrawals(List<Transaction> transactions) {
+        int index = 0;
+        String operationResult = "All withdrawals:" + EOL;
+        for (Transaction tx : transactions) {
+            if (tx instanceof Withdrawal) {
+                index++;
+                operationResult += index + ". " + tx;
+            }
+        }
+        if (index == 0) {
+            operationResult = "No withdrawals so far.";
+        }
+        return operationResult;
+    }
+
+    public String printAllDeposits(List<Transaction> transactions) {
+        int index = 0;
+        String operationResult = "All deposits:" + EOL;
+        for (Transaction tx : transactions) {
+            if (tx instanceof Deposit) {
+                index++;
+                operationResult += index + ". " + tx;
+            }
+
+        }
+        if (index == 0) {
+            operationResult = "No deposits so far.";
         }
         return operationResult;
     }
@@ -591,29 +642,30 @@ public class Service { // This is like our facade. Where we place all our busine
     }
 
     //todo Anna LOAN
+
     /**
-     WHERE LOAN BEGIN:
-
-     ╭━┳━╭━╭━╮╮
-     ┃┈┈┈┣▅╋▅┫┃
-     ┃┈┃┈╰━╰━━━━━━╮
-     ╰┳╯┈┈┈┈┈┈┈┈┈◢▉◣
-     ╲┃┈┈┈┈┈┈┈┈┈┈▉▉▉
-     ╲┃┈┈┈┈┈┈┈┈┈┈◥▉◤
-     ╲┃┈┈┈┈╭━┳━━━━╯
-     ╲┣━━━━━━┫
-
+     * WHERE LOAN BEGIN:
+     * <p>
+     * ╭━┳━╭━╭━╮╮
+     * ┃┈┈┈┣▅╋▅┫┃
+     * ┃┈┃┈╰━╰━━━━━━╮
+     * ╰┳╯┈┈┈┈┈┈┈┈┈◢▉◣
+     * ╲┃┈┈┈┈┈┈┈┈┈┈▉▉▉
+     * ╲┃┈┈┈┈┈┈┈┈┈┈◥▉◤
+     * ╲┃┈┈┈┈╭━┳━━━━╯
+     * ╲┣━━━━━━┫
      */
 
-    public int searchForLoanIndex(String personalNumber){
-        for (int i = 0; i < this.loanList.size(); i++){
-            if (this.loanList.get(i).getPersonalNumber().equals(personalNumber)){
-                return i;}
+    public int searchForLoanIndex(String personalNumber) {
+        for (int i = 0; i < this.loanList.size(); i++) {
+            if (this.loanList.get(i).getPersonalNumber().equals(personalNumber)) {
+                return i;
+            }
         }
         return -1;
     }
 
-    public boolean containsLoanID(String personalNumber){
+    public boolean containsLoanID(String personalNumber) {
         for (Loan loan : loanList) {
             if (loan.getPersonalNumber().equals(personalNumber)) {
                 return true;
@@ -622,88 +674,89 @@ public class Service { // This is like our facade. Where we place all our busine
         return false;
     }
 
-    public String viewLoan (String personalNumber) {
+    public String viewLoan(String personalNumber) {
         int index = searchForLoanIndex(personalNumber);
-        if(index == -1){
+        if (index == -1) {
             return (" No loan. Would you like to apply for a loan?");
         } else {
-        return loanList.get(index).toString();}
+            return loanList.get(index).toString();
+        }
     }
 
-    public String applyLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
-        LoanApplication loanApplication = new LoanApplication (personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration);
+    public String applyLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
+        LoanApplication loanApplication = new LoanApplication(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration);
         loanApplicationList.add(loanApplication);
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
 
 
-
-    public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
-        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration, loanDebt);
+    public String increaseLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
+        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration, loanDebt);
         loanApplicationList.add(increaseLoan);
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
     //todo For Employee - to collect and approve loans, add loan list and then I can collect loan debt (-Anna)
 
-    public String viewAllLoanApplications(String personalNumber){
-        if(loanApplicationList.isEmpty()){
+    public String viewAllLoanApplications(String personalNumber) {
+        if (loanApplicationList.isEmpty()) {
             return "Currently no loan applications waiting for review.";
         }
         String message = "All loan applications:";
-        for (LoanApplication loanApplication: loanApplicationList) {
+        for (LoanApplication loanApplication : loanApplicationList) {
             message += (loanApplication.getPersonalNumber());
         }
         return message;
     }
 
-    public String viewMessage(Customer currentUser){
+    public String viewMessage(Customer currentUser) {
         return currentUser.viewMessage();
     }
 
     // Meddelanden behöver tas bort, både employee och customer
     //
-    public void removeMessage(Customer currentUser){
+    public void removeMessage(Customer currentUser) {
         currentUser.removeMessage();
     }
 
-    public void removeMessage(){
+    public void removeMessage() {
         employee.removeMessage();
     }
 
-    public String viewMessage(){
+    public String viewMessage() {
         return employee.viewMessage();
     }
 
-    public String messageToCustomer(String personalNumber, String newMessage){
+    public String messageToCustomer(String personalNumber, String newMessage) {
         Customer foundCustomer = findCustomer(personalNumber);
         foundCustomer.addMessage(newMessage);
         return "Message sent";
     }
 
-    public int numberOfMessages(){
+    public int numberOfMessages() {
         return employee.numberOfMessages();
     }
 
-    public int numberOfMessages(Customer customer){
+    public int numberOfMessages(Customer customer) {
         return customer.numberOfMessages();
     }
 
 
-    public String messageToEmployee(Customer currentUser, String newMessage){
+    public String messageToEmployee(Customer currentUser, String newMessage) {
         employee.addMessage("Message from: " + currentUser.getPersonalNumber() + System.lineSeparator() + newMessage);
         return "Message sent.";
     }
 
-    public String fetchPersonalNumber(){
+    public String fetchPersonalNumber() {
         String message = viewMessage();
-        String personalNumber = message.substring(14,24);
+        String personalNumber = message.substring(14, 24);
         return personalNumber;
     }
 
-    public boolean verifyEmployee(String userName, String pinCode){
-        if (employee.getEmployeeID().equals(userName.trim().toLowerCase(Locale.ROOT))&& employee.getPinCode().equals(pinCode.trim().toLowerCase(Locale.ROOT))){
+    public boolean verifyEmployee(String userName, String pinCode) {
+        if (employee.getEmployeeID().equals(userName.trim().toLowerCase(Locale.ROOT)) && employee.getPinCode().equals(pinCode.trim().toLowerCase(Locale.ROOT))) {
             return true;
-        } return false;
+        }
+        return false;
     }
 
 

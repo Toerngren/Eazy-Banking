@@ -207,11 +207,14 @@ public class Menu {
                     toAccountNumber = UserInput.readLine("Please enter account number for payment / transfer (6 digits): ");
                     double amount = UserInput.readDouble("Enter amount: ");
                     String note = UserInput.readLine("Enter note (optional): ");
-                    System.out.println(service.payTransfer(fromAccountNumber, toAccountNumber, amount, note));
-                    askToSaveRecipientMenu(currentUser,fromAccountNumber, toAccountNumber, note);
+                    String result = service.payTransfer(fromAccountNumber, toAccountNumber, amount, note);
+                    System.out.println(result);
+                    if (result.contains("successful")) {
+                        askToSaveRecipientMenu(currentUser, fromAccountNumber, toAccountNumber, note);
+                    }
                     break;
                 case "4":
-                    System.out.println(service.printTransactionsAndRecipients(currentUser.getSavedRecipients()));
+                    System.out.println(service.printAllRecipients(currentUser.getSavedRecipients()));
                     break;
                 case "5":
                     transactionHistoryMenu(currentUser);
@@ -301,13 +304,17 @@ public class Menu {
                 case "1":
                     String accountNumber = chooseAccount(currentUser);
                     BankAccount account = service.getAccountByAccountNumber(accountNumber);
-                    System.out.println(service.printTransactionsAndRecipients(account.getTransactionList()));
+                    System.out.println(service.printAllTransactions(account.getTransactionList()));
                     break;
                 case "2":
-                    System.out.println("View deposits - coming soon");
+                    accountNumber = chooseAccount(currentUser);
+                    account = service.getAccountByAccountNumber(accountNumber);
+                    System.out.println(service.printAllDeposits(account.getTransactionList()));
                     break;
                 case "3":
-                    System.out.println("View withdrawals - coming soon");
+                    accountNumber = chooseAccount(currentUser);
+                    account = service.getAccountByAccountNumber(accountNumber);
+                    System.out.println(service.printAllWithdrawals(account.getTransactionList()));
                     break;
                 case "4":
                     System.out.println("View total deposits for a period - coming in v2");

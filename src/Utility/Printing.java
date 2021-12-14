@@ -48,8 +48,8 @@ public class Printing {
     public static void accountsMenu(){
         System.out.println( EOL + "Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
-                "1. Open account." + EOL +
-                "2. Close account." + EOL +
+                "1. Open account - coming soon." + EOL +
+                "2. Close account - coming soon." + EOL +
                 "3. Pay, Deposit or Transfer." + EOL+
                 "4. View Accounts History." + EOL);
     }
