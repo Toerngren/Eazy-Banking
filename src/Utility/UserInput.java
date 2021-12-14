@@ -1,4 +1,5 @@
 package Utility;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class UserInput {
@@ -20,8 +21,14 @@ public class UserInput {
 
     public static double readDouble(String message) {
         System.out.print(message);
-        double value = input.nextDouble();
-        input.nextLine();
+        double value = 0;
+        while (value == 0) {
+            try {
+                value = Double.parseDouble(input.next());
+            } catch (Exception e) {
+                System.out.print("Invalid input. Please type digits only: ");
+            }
+        }
         return value;
     }
 

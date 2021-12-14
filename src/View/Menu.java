@@ -18,7 +18,7 @@ import controller.Service;
 public class Menu {
     public static final String EOL = System.lineSeparator();
     Service service = new Service();
-
+/*
     public void forTest() {
         service.createCustomer(
                 "1234",
@@ -48,10 +48,11 @@ public class Menu {
         ca.addTransaction(deposit2);
         sa.addTransaction(withdrawal);
     }
+ */
 
     public void startPage() {
         // TODO REMOVE TEST METHOD
-        forTest();
+        //forTest();
         String option;
         do {
             Printing.startPage();
@@ -157,16 +158,18 @@ public class Menu {
                 case "0":
                     customerMenu(currentUser);
                     break;
-                case "1":
+                /*case "1":
                     System.out.println("Open Account - coming soon");
                     break;
                 case "2":
                     System.out.println("Close Account - coming soon");
                     break;
-                case "3":
+
+                 */
+                case "1":
                     payTransferMenu(currentUser);
                     break;
-                case "4":
+                case "2":
                     printTransactionHistory();
                     break;
                 default:
@@ -231,11 +234,13 @@ public class Menu {
         String option;
 
         do {
+            //todo Margaret add handle user input
             option = UserInput.readLine("Would you like to save the recipient for future payments/transfers? " + EOL +
                     "Type 1 for Yes, 2 for No." + EOL);
             switch (option) {
 
                 case "1":
+                    //todo Margaret add handle user input
                     String name = UserInput.readLine("Enter transaction/recipient name: ");
                     System.out.println(service.saveRecipient(currentUser, fromAccountNumber, toAccountNumber, note, name));
                     customerMenu(currentUser);
@@ -435,7 +440,7 @@ public class Menu {
                     break;
                 }
                 case"6": {
-                    String delete = UserInput.readLine("Enter personalnumber of customer you wish to remove: ");
+                    String delete = UserInput.readLine("Enter personal number of customer you wish to remove: ");
                     String message = service.deleteCustomer(delete);
                     System.out.println(message);
                     break;

@@ -133,6 +133,7 @@ public class Service { // This is like our facade. Where we place all our busine
         if (review.equals("1")) {
             unapprovedKYC.setApproved(true);
             approvedKYCList.add(unapprovedKYC);
+            OpenAccounts(unapprovedKYC.getPersonalNumber());
             reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been approved.";
         } else if (review.equals("2")) {
@@ -142,6 +143,16 @@ public class Service { // This is like our facade. Where we place all our busine
             result = "Please input either 1 or 2";
         }
         return result + System.lineSeparator();
+    }
+
+    public void OpenAccounts(String customerPersonalNumber){
+        Customer currentUser = findCustomer(customerPersonalNumber);
+        CheckingAccount cH = new CheckingAccount(customerPersonalNumber);
+        SavingsAccount sA = new SavingsAccount(customerPersonalNumber);
+        currentUser.addBankAccount(cH);
+        currentUser.addBankAccount(sA);
+        accountsList.add(cH);
+        accountsList.add(sA);
     }
 
     public String displayKYC(KYC kyc) {
@@ -168,7 +179,7 @@ public class Service { // This is like our facade. Where we place all our busine
                 "Salary: " + kyc.getSalary() + System.lineSeparator() +
                 "Politically exposed customer: " + pepStatus + System.lineSeparator() +
                 "Affected by FATCA: " + fatcaStatus + System.lineSeparator() +
-                "Approved: " + approvedStatus + System.lineSeparator();
+                "Status: " + approvedStatus + System.lineSeparator();
         return result;
     }
 
@@ -532,7 +543,7 @@ public class Service { // This is like our facade. Where we place all our busine
         String checkingAccountOutput = "";
         String savingsAccountOutput = "";
         if (accounts.isEmpty()) {
-            return "No accounts open yet.";
+            return "No accounts open yet. Please return to the menu and register KYC first.";
         } else
             for (BankAccount account : accounts) {
                 if (account instanceof CheckingAccount) {
@@ -554,7 +565,7 @@ public class Service { // This is like our facade. Where we place all our busine
         String checkingAccountOutput = "";
         String savingsAccountOutput = "";
         if (accounts.isEmpty()) {
-            operationResult += "No accounts open yet.";
+            operationResult += "No accounts open yet. Please return to the menu and register KYC first.";
         } else {
             for (BankAccount account : accounts) {
                 if (account instanceof CheckingAccount) {
