@@ -105,7 +105,6 @@ public class Menu {
     }
 
     /* ACCOUNTS MENU */
-
     public void customerMenu(Customer currentUser) {
         String option;
         do {
@@ -180,7 +179,6 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
-
 
     /* PAY AND TRANSFER MENU */
     public void payTransferMenu(Customer currentUser) {
@@ -257,7 +255,6 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-
     public String chooseAccount(Customer currentUser) {
         String option;
         List<BankAccount> accounts = currentUser.getBankAccounts();
@@ -293,7 +290,6 @@ public class Menu {
         UserInput.exitScanner();
         return operationResult;
     }
-
 
     /* TRANSACTION HISTORY */
     public void transactionHistoryMenu(Customer currentUser) {
@@ -612,6 +608,7 @@ public class Menu {
         String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
         System.out.println(message);
     }
+
     public void viewLoan(Customer currentUser){
         String loan = service.viewLoan(currentUser.getPersonalNumber());
         System.out.println(" Current loan debt: " + loan);
@@ -683,9 +680,11 @@ public class Menu {
 
     public void makePayment() {
     }
+
     public void printTransactionHistory() {
 
     }
+
     public void checkBalance() {
         Double balance = service.checkBalance("123456");
         System.out.println(" Account balance = " + balance);

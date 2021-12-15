@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import Utility.Utilities;
+import com.google.gson.Gson;
 
-public class Service { // This is like our facade. Where we place all our business logic
+public class Service {
 
     public static final String EOL = System.lineSeparator();
 
@@ -50,14 +50,27 @@ public class Service { // This is like our facade. Where we place all our busine
                                  String telephone, String password, String pinCode) {
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
         customerList.add(customer);
+        serializeCustomer(customer);
+        serializeCustomerList(customerList);
         return System.lineSeparator() + "You have now been registered!" + System.lineSeparator();
     }
 
-    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
-        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca, approved);
-        reviewKYCList.add(kyc);
+    public void serializeCustomer(Customer customer){
+        Gson gson = new Gson();
+        String json = gson.toJson(customer);
+        System.out.println(json);
     }
 
+    public void serializeCustomerList(List<Customer> customerList){
+        Gson gson = new Gson();
+        String json = gson.toJson(customerList);
+        System.out.println("jsonList: " + json);
+    }
+
+    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved){
+        KYC kyc = new KYC(personalNumber, occupation, salary, pep,fatca,approved);
+        reviewKYCList.add(kyc);
+    }
 
     //todo Adrian
     public String verifyCustomerID(String personalNumber, String password) {
@@ -122,8 +135,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return result;
     }
 
-
-
     public String viewKYC (Customer customer) {
         if (findKYC(customer) == null) {
             return "No KYC registered yet.";
@@ -135,7 +146,6 @@ public class Service { // This is like our facade. Where we place all our busine
             return "Status: Under review. " + EOL + customerDisplayKYC(customersKYC);
         } return "";
     }
-
 
     public boolean emptyReviewList(){
         return reviewKYCList.isEmpty();
@@ -223,7 +233,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return true;
     }
 
-
     public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
         String result = "";
@@ -250,8 +259,6 @@ public class Service { // This is like our facade. Where we place all our busine
         accountsList.add(cH);
         accountsList.add(sA);
     }
-
-
 
     public String showUnapprovedKYC() {
         KYC unapprovedKYC = findUnapprovedKYC();
@@ -282,7 +289,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return result;
     }
 
-
     public String printAllApprovedKYCs() {
         String allApprovedKYCs = "All approved KYCs:";
         for (KYC approvedKYC : approvedKYCList) {
@@ -309,7 +315,6 @@ public class Service { // This is like our facade. Where we place all our busine
         }
         return false;
     }
-
 
     public boolean verifyCustomer(String personalNumber, String password) {
         int index = getCustomerIndex(personalNumber);
@@ -471,7 +476,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return personalNumber + "'s" + " pin code was edited successfully.";
     }
 
-
     public String deleteCustomer(String personalNumber) {
         Customer customerToBeDeleted = findCustomer(personalNumber);
         if (customerToBeDeleted != null) {
@@ -559,7 +563,6 @@ public class Service { // This is like our facade. Where we place all our busine
         currentUser.addRecipient(withdrawal);
         return "Saved!";
     }
-
 
     // todo add exceptions
     public String withdraw(String fromAccount, double amount) {
@@ -708,7 +711,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return operationResult;
     }
 
-
     public double checkBalance(String accountNumber) {
         return getAccountByAccountNumber(accountNumber).getBalance();
     }
@@ -761,7 +763,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
 
-
     public String increaseLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
         IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration, loanDebt);
         loanApplicationList.add(increaseLoan);
@@ -812,7 +813,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return customer.numberOfMessages();
     }
 
-
     public String messageToEmployee(Customer currentUser, String newMessage) {
         employee.addMessage("Message from: " + currentUser.getPersonalNumber() + System.lineSeparator() + newMessage);
         return "Message sent.";
@@ -831,7 +831,6 @@ public class Service { // This is like our facade. Where we place all our busine
         return false;
     }
 
-
     //todo Faiza
     public String openNewAccount() {
         return "";
@@ -847,7 +846,6 @@ public class Service { // This is like our facade. Where we place all our busine
 
     }
 
-
     public Customer findCustomer(String personalNumber) {
         try {
             if (customerList.size() > 0) {
@@ -862,7 +860,6 @@ public class Service { // This is like our facade. Where we place all our busine
         }
         return null;
     }
-
 
     public Customer getCustomerByPN(String pn) {
         for (Customer c : customerList) {
