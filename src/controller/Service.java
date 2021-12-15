@@ -13,6 +13,9 @@ import businessLogic.bankAccounts.BankAccount;
 import businessLogic.bankAccounts.CheckingAccount;
 import businessLogic.bankAccounts.SavingsAccount;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -50,8 +53,7 @@ public class Service {
                                  String telephone, String password, String pinCode) {
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
         customerList.add(customer);
-        serializeCustomer(customer);
-        serializeCustomerList(customerList);
+
         return System.lineSeparator() + "You have now been registered!" + System.lineSeparator();
     }
 
@@ -232,6 +234,38 @@ public class Service {
         }
         return true;
     }
+    public boolean onlyDigitsName(String firstName) {
+        for (int i = 0; i < firstName.length(); i++) {
+            if (!Character.isDigit(firstName.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean onlyDigitsLastName(String lastName) {
+        for (int i = 0; i < lastName.length(); i++) {
+            if (!Character.isDigit(lastName.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean onlyDigitsT(String telephoneNumber) {
+        for (int i = 0; i < telephoneNumber.length(); i++) {
+            if (!Character.isDigit(telephoneNumber.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean onlyDigitsP(String pinCode) {
+        for (int i = 0; i < pinCode.length(); i++) {
+            if (!Character.isDigit(pinCode.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
@@ -337,20 +371,7 @@ public class Service {
         return "Verified customer.";
     }
   */
-/*
-    public String editCustomerDetail(String firstName, String lastName, String email,
-                                     String telephone, String password, String pinCode) {
-        // Done but 6 methods in total. see below
-        return "";
-    }
 
-    */
-
-    public String printAllCustomers() {
-        return "All registered customers:";
-    }
-
-    /*
         public String printAllCustomers() {
             String allCustomers = "All registered customers:";
 
@@ -359,7 +380,7 @@ public class Service {
             }
             return allCustomers + System.lineSeparator();
         }
-    */
+
     public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
         Customer nameToChange = null;
@@ -873,6 +894,78 @@ public class Service {
     //TODO DELETE
     public void addAccount(BankAccount acc) {
         accountsList.add(acc);
+    }
+
+    public List<Customer> getCustomerList() {
+        return customerList;
+    }
+
+    public List<BankAccount> getAccountsList() {
+        return accountsList;
+    }
+
+    public List<KYC> getReviewKYCList() {
+        return reviewKYCList;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public List<Transaction> getSavedRecipients() {
+        return savedRecipients;
+    }
+
+    public List<KYC> getApprovedKYCList() {
+        return approvedKYCList;
+    }
+
+    public List<Loan> getLoanList() {
+        return loanList;
+    }
+
+    public List<LoanApplication> getLoanApplicationList() {
+        return loanApplicationList;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setCustomerList(List<Customer> customerList) {
+        this.customerList = customerList;
+    }
+
+    public void setAccountsList(List<BankAccount> accountsList) {
+        this.accountsList = accountsList;
+    }
+
+    public void setReviewKYCList(List<KYC> reviewKYCList) {
+        this.reviewKYCList = reviewKYCList;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public void setSavedRecipients(List<Transaction> savedRecipients) {
+        this.savedRecipients = savedRecipients;
+    }
+
+    public void setApprovedKYCList(List<KYC> approvedKYCList) {
+        this.approvedKYCList = approvedKYCList;
+    }
+
+    public void setLoanList(List<Loan> loanList) {
+        this.loanList = loanList;
+    }
+
+    public void setLoanApplicationList(List<LoanApplication> loanApplicationList) {
+        this.loanApplicationList = loanApplicationList;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }
 
