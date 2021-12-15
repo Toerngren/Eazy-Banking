@@ -2,6 +2,7 @@ package View;
 
 import Utility.*;
 
+import java.io.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ import businessLogic.User.Employee;
 import businessLogic.bankAccounts.BankAccount;
 import businessLogic.bankAccounts.CheckingAccount;
 import businessLogic.bankAccounts.SavingsAccount;
+import com.google.gson.Gson;
 import controller.Service;
 
 
@@ -19,52 +21,34 @@ public class Menu {
     public static final String EOL = System.lineSeparator();
     Service service = new Service();
     Scanner input = new Scanner(System.in);
-/*
-    public void forTest() {
-        service.createCustomer(
-                "1234",
-                "admin",
-                "admin",
-                "test@gmail.com",
-                "1234",
-                "1234",
-                "1234"
-        );
-        Customer c = service.getCustomerByPN("1234");
-        SavingsAccount sa = new SavingsAccount(c.getPersonalNumber());
-        CheckingAccount ca = new CheckingAccount(c.getPersonalNumber());
-        service.addAccount(sa);
-        service.addAccount(ca);
-        c.addBankAccount(sa);
-        c.addBankAccount(ca);
-        Withdrawal st1 = new Withdrawal(0.0, sa.getAccountNumber(), "123123", "", "Mom" );
-        Withdrawal st2 = new Withdrawal(0.0, ca.getAccountNumber(), "567567", "", "Loan" );
-        c.addRecipient(st1);
-        c.addRecipient(st2);
-        Deposit deposit1 = new Deposit(100, sa.getAccountNumber());
-        Withdrawal withdrawal = new Withdrawal(30, sa.getAccountNumber(), ca.getAccountNumber(), "");
-        Deposit deposit2 = new Deposit(30, ca.getAccountNumber());
 
-        sa.addTransaction(deposit1);
-        ca.addTransaction(deposit2);
-        sa.addTransaction(withdrawal);
-    }
- */
+    public void startPage() throws Exception {
 
-    public void startPage() {
-        // TODO REMOVE TEST METHOD
-        //forTest();
         String option;
+        
+        Gson gson = new Gson();
+        Customer[] customerList = gson.fromJson(new FileReader(".\\src\\controller\\Customer.json"), Customer[].class);
+        for(Customer customer : customerList){
+            service.getCustomerList().add(customer);
+        }
+        // Läs in all info från Customer.Json och lägger till i listorna
         do {
             Printing.startPage();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
                     System.out.println("Closing");
+                    try {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(".\\src\\controller\\Customer.json"));
+                        writer.write(gson.toJson(service.getCustomerList()));
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     System.exit(0);
                     break;
                 case "1":
-                    registerCustomer();
+                        registerCustomer();
                     break;
                 case "2":
                     String personalNumber = UserInput.readLine("Please enter your personalnumber: ");
@@ -105,7 +89,7 @@ public class Menu {
     }
 
     /* ACCOUNTS MENU */
-    public void customerMenu(Customer currentUser) {
+    public void customerMenu(Customer currentUser) throws Exception {
         String option;
         do {
             if (service.numberOfMessages(currentUser) > 0){
@@ -147,7 +131,7 @@ public class Menu {
     }
 
     /* ACCOUNTS MENU */
-    public void myAccounts(Customer currentUser) {
+    public void myAccounts(Customer currentUser) throws Exception {
         String option;
 
         do {
@@ -181,7 +165,7 @@ public class Menu {
     }
 
     /* PAY AND TRANSFER MENU */
-    public void payTransferMenu(Customer currentUser) {
+    public void payTransferMenu(Customer currentUser) throws Exception {
         String option;
 
         do {
@@ -229,7 +213,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    public void askToSaveRecipientMenu(Customer currentUser,String fromAccountNumber, String toAccountNumber, String note) {
+    public void askToSaveRecipientMenu(Customer currentUser,String fromAccountNumber, String toAccountNumber, String note) throws Exception {
         String option;
 
         do {
@@ -255,7 +239,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    public String chooseAccount(Customer currentUser) {
+    public String chooseAccount(Customer currentUser) throws Exception {
         String option;
         List<BankAccount> accounts = currentUser.getBankAccounts();
         String operationResult = "";
@@ -292,7 +276,7 @@ public class Menu {
     }
 
     /* TRANSACTION HISTORY */
-    public void transactionHistoryMenu(Customer currentUser) {
+    public void transactionHistoryMenu(Customer currentUser) throws Exception {
         String option;
 
         do {
@@ -333,7 +317,7 @@ public class Menu {
     }
 
     /* LOAN MENU */
-    public void loanMenu(Customer currentUser) {
+    public void loanMenu(Customer currentUser) throws Exception {
         String option;
 
         do {
@@ -362,7 +346,7 @@ public class Menu {
     }
 
     /* KYC MENU */
-    public void kycMenu(Customer currentUser) {
+    public void kycMenu(Customer currentUser) throws Exception {
         String option;
         do {
             Printing.KYCMenu();
@@ -401,7 +385,7 @@ public class Menu {
     }
 
     /* EMPLOYEE MENU */
-    public void employeeMenu() {
+    public void employeeMenu() throws Exception {
         String option;
         do {
             Printing.employeeMenu();
@@ -443,7 +427,7 @@ public class Menu {
     }
 
     // Todo @Christoph / Adrian, add exceptions so that email must contain @ and so on.
-    public void customerProfileMenu(Customer currentUser) {
+    public void customerProfileMenu(Customer currentUser) throws Exception {
         String option;
         do {
             Printing.customerProfileMenu();
@@ -483,7 +467,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    public void employeeKYCMenu() {
+    public void employeeKYCMenu() throws Exception {
         String option;
         do {
             System.out.println(service.numberOfUnapprovedKYCs());
@@ -513,7 +497,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    public void customerSupportMenu(Customer currentUser) {
+    public void customerSupportMenu(Customer currentUser) throws Exception {
         String option;
 
         do {
@@ -552,7 +536,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    public void employeeCustomerSupportMenu() {
+    public void employeeCustomerSupportMenu() throws Exception {
         String option;
         do {
             Printing.employeeSupportMenu();
@@ -592,23 +576,43 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
-
-    public void registerCustomer() {
-        String personalNumber = UserInput.readLine("Customer personal number: ");
-        if (!service.onlyDigits(personalNumber)) {
-            System.out.println("Please only enter digits.");
-            startPage();
+    //TODO Adrian lägga till så att + funkar i telefonumret och PIN-code 4siffror
+    public void registerCustomer() throws Exception {
+        try {
+            String personalNumber = UserInput.readLine("Customer personal number: ");
+            if (!service.onlyDigits(personalNumber) || (!personalNumber.matches("[1-9][0-9]{9}"))) {
+                throw new Exception("10 digits only.");
+            }
+            String firstName = UserInput.readLine("Customer firstname: ");
+            if(firstName.isEmpty() || firstName.isBlank() || service.onlyDigitsName(firstName)) {
+                throw new Exception("Name cannot be blank or contain digits.");
+            }
+            String lastName = UserInput.readLine("Customer lastname: ");
+            if(lastName.isEmpty() || lastName.isBlank() || service.onlyDigitsLastName(lastName)) {
+                throw new Exception("Name cannot be blank or contain digits.");
+            }
+            String email = UserInput.readLine("Customer email: ");
+            if(email.isBlank() || !email.contains("@")){
+                throw new Exception("Email must contain @.");
+            }
+            String telephone = UserInput.readLine("Customer telephone number: ");
+            if(telephone.isBlank() || !service.onlyDigitsT(telephone)){
+                throw new Exception("Telephone must contain digits only.");
+            }
+            String password = UserInput.readLine("Customer password: ");
+            if(password.isBlank() || password.isEmpty()){
+                throw new Exception("You must have a password.");
+            }
+            String pinCode = UserInput.readLine("Customer pin code: ");
+            if(pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode)){
+                throw new Exception("PIN-code must be digits and contain four numbers.");
+            }
+            String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
+            System.out.println(message);
+        }catch (Exception exception){
+            System.out.println(exception.getMessage());
         }
-        String firstName = UserInput.readLine("Customer firstname: ");
-        String lastName = UserInput.readLine("Customer lastname: ");
-        String email = UserInput.readLine("Customer email: ");
-        String telephone = UserInput.readLine("Customer telephone number: ");
-        String password = UserInput.readLine("Customer password: ");
-        String pinCode = UserInput.readLine("Customer pin code: ");
-        String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
-        System.out.println(message);
     }
-
     public void viewLoan(Customer currentUser){
         String loan = service.viewLoan(currentUser.getPersonalNumber());
         System.out.println(" Current loan debt: " + loan);
