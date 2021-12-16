@@ -1,6 +1,5 @@
 package businessLogic.Loan;
 
-import java.util.Date;
 
 public class LoanApplication {
     private String personalNumber;
@@ -9,7 +8,6 @@ public class LoanApplication {
     private double currentCreditDebt;
     private int appliedLoanAmount;
     private int appliedLoanDuration;
-    //private java.util.Date loanApplicationDate;
 
     public LoanApplication(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
         this.personalNumber = personalNumber;
@@ -18,24 +16,8 @@ public class LoanApplication {
         this.currentCreditDebt = currentCreditDebt;
         this.appliedLoanAmount = appliedLoanAmount;
         this.appliedLoanDuration = appliedLoanDuration;
-        //this.loanApplicationDate = loanApplicationDate;
     }
 
-
-    
-    @Override
-    public String toString() {
-        return "LoanApplication{" +
-                "personalNumber='" + personalNumber + '\'' +
-                ", monthlyIncome=" + monthlyIncome +
-                ", currentLoanDebt=" + currentLoanDebt +
-                ", currentCreditDebt=" + currentCreditDebt +
-                ", appliedLoanAmount=" + appliedLoanAmount +
-                ", appliedLoanDuration=" + appliedLoanDuration +
-                /*", loanApplicationDate=" + loanApplicationDate +
-                 */
-                '}';
-    }
 
     public String getPersonalNumber() {
         return personalNumber;
@@ -84,15 +66,5 @@ public class LoanApplication {
     public void setAppliedLoanDuration(int appliedLoanDuration) {
         this.appliedLoanDuration = appliedLoanDuration;
     }
-/*
-    public Date getLoanApplicationDate() {
-        return loanApplicationDate;
-    }
-
-    public void setLoanApplicationDate(Date loanApplicationDate) {
-        this.loanApplicationDate = loanApplicationDate;
-    }
-
- */
 
 }

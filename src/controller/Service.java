@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -355,7 +356,6 @@ public class Service {
         return !this.customerList.get(index).verifyCustomer(password);
     }
 
-    //todo Adrian
     /*
     public String deleteCustomer(String personalNumber) {
 
@@ -506,7 +506,6 @@ public class Service {
         return "Cannot find customer:" + personalNumber + EOL;
     }
 
-    //todo Christopher
     public String updateKYC(String occupation, double salary, String PEP, String FATCA) {
         return "";
     }
@@ -535,7 +534,6 @@ public class Service {
         return getAccountNumberIndex(accountNumber) != -1;
     }
 
-    // todo add exceptions
     // new method for deposit using getAccountByAccountNumber
     public String deposit(String toAccount, double amount) {
         BankAccount account = getAccountByAccountNumber(toAccount);
@@ -554,7 +552,6 @@ public class Service {
         }
     }
 
-    // todo add exceptions
     public String payTransfer(String fromAccountNumber, String toAccountNumber, double amount, String note) {
         BankAccount account = getAccountByAccountNumber(fromAccountNumber);
         if (account == null) {
@@ -605,7 +602,6 @@ public class Service {
         }
     }
 
-    // todo change to exceptions
     // new method for transferring Funds using getAccountByAccountNumber
     public String transferFundsBetweenAccounts(double amount, String fromAccountNumber, String toAccountNumber) {
         BankAccount fromAccount = getAccountByAccountNumber(fromAccountNumber);
@@ -773,6 +769,7 @@ public class Service {
         int index = searchForLoanIndex(personalNumber);
         if (index == -1) {
             return (" No loan. Would you like to apply for a loan?");
+            // Todo Connect to loan application?
         } else {
             return loanList.get(index).toString();
         }
@@ -781,18 +778,41 @@ public class Service {
     public String applyLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
         LoanApplication loanApplication = new LoanApplication(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration);
         loanApplicationList.add(loanApplication);
-        return "Your loan application has been received; we will get back to you within 24 hours.";
+        return null;
     }
 
-    public String increaseLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
-        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration, loanDebt);
+    public String autoApproval (Customer currentUser) {
+        LoanApplication unapprovedLoan = findLoanApplication(currentUser);
+        String personalNumber = unapprovedLoan.getPersonalNumber();
+        double monthlyIncome = unapprovedLoan.getMonthlyIncome();
+        double currentLoanDebt = unapprovedLoan.getCurrentLoanDebt();
+        double currentCreditDebt = unapprovedLoan.getCurrentCreditDebt();
+        double appliedLoanDuration = unapprovedLoan.getAppliedLoanDuration();
+        if ( monthlyIncome <= 10000  || currentLoanDebt >= 500000 || currentCreditDebt >= 500000 || appliedLoanDuration >= 5 ){
+            return ("Loan application was declined, contact 24|7 Service for more information.");
+        } else {
+        double yearlyInterestRate = 2.3;
+        int numOfYears = 5;
+        double loanAmount = unapprovedLoan.getAppliedLoanAmount();
+        Date date = new Date();
+        Loan loan = new Loan(personalNumber,yearlyInterestRate,numOfYears,loanAmount,date);
+        loanList.add(loan);
+        }
+        return "Your loan has been approved.";
+    }
+
+
+
+
+    public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
+        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration, loanDebt);
         loanApplicationList.add(increaseLoan);
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
-    //todo For Employee - to collect and approve loans, add loan list and then I can collect loan debt (-Anna)
 
-    public String viewAllLoanApplications(String personalNumber) {
-        if (loanApplicationList.isEmpty()) {
+    /*
+    public String viewLoanApplications(String personalNumber){
+        if(loanApplicationList.isEmpty()){
             return "Currently no loan applications waiting for review.";
         }
         String message = "All loan applications:";
@@ -802,7 +822,18 @@ public class Service {
         return message;
     }
 
-    public String viewMessage(Customer currentUser) {
+     */
+    public LoanApplication findLoanApplication(Customer currentUser) {
+        for (LoanApplication loanApplication: loanApplicationList) {
+            if(loanApplication.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
+                return loanApplication;
+            }
+        }
+        return null;
+    }
+
+
+    public String viewMessage(Customer currentUser){
         return currentUser.viewMessage();
     }
 
@@ -857,12 +888,10 @@ public class Service {
         return "";
     }
 
-    //todo Faiza
     public String closeAccount(String accountNumber) {
         return "";
     }
 
-    //todo Faiza
     public void chooseAccount() {
 
     }
@@ -891,7 +920,6 @@ public class Service {
         return null;
     }
 
-    //TODO DELETE
     public void addAccount(BankAccount acc) {
         accountsList.add(acc);
     }

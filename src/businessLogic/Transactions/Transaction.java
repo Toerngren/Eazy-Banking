@@ -16,7 +16,6 @@ public abstract class Transaction {
     private String note = "";
 
 
-    //todo add exceptions
     public Transaction(double amount, String fromAccount, String toAccount) {
         this.transactionID = UUID.randomUUID().toString();
         this.date = new Date();
@@ -25,7 +24,6 @@ public abstract class Transaction {
         this.toAccount = toAccount;
     }
 
-    //todo add exceptions
     public Transaction(double amount, String fromAccount, String toAccount, String note) {
         this(amount, fromAccount,toAccount);
         this.note = note;
@@ -59,7 +57,7 @@ public abstract class Transaction {
         return "";
     }
 
-   /* todo implement if needed
+   /*
     public boolean equalTo() {
         return false;
     }*/
