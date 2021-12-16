@@ -50,7 +50,6 @@ public class Menu {
     }
 
     public void startPage() {
-        // TODO REMOVE TEST METHOD
         forTest();
         String option;
         do {
@@ -259,8 +258,6 @@ public class Menu {
             option = UserInput.readLine("");
             switch (option) {
 
-                //todo for Case 0 ->  if previous menu was payTransfer - return to that menu,
-                // if Accounts, return to Accounts.
                 case "0":
                     payTransferMenu(currentUser);
                     break;
@@ -441,7 +438,6 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    // Todo @Christoph / Adrian, add exceptions so that email must contain @ and so on.
     public void customerProfileMenu(Customer currentUser) {
         String option;
         do {
@@ -620,10 +616,11 @@ public class Menu {
         double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?");
         int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" + EOL);
         int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" + EOL);
-        String message = service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
+        service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
+        String message = service.autoApproval(currentUser);
         System.out.println(message);
     }
-//Todo Anna - "works" but missing loanDebt -> from Loan Class, need to be approved by Employee (this is not done yet)
+
     /*
     public void registerIncreaseApplication (Customer currentUser){
         String debt = service.viewLoan(currentUser.getPersonalNumber());

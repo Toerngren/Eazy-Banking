@@ -9,7 +9,6 @@ public class CheckingAccount extends BankAccount {
         super(customerPersonalNumber);
     }
 
- //todo unclear what this method is for
     public void payBillS(){
 
     }

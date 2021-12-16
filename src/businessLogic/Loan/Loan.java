@@ -1,39 +1,51 @@
 package businessLogic.Loan;
 
+import Utility.Utilities;
+
 import java.util.Date;
 
 public class Loan {
     private String personalNumber;
     private double loanAmount;
     private double yearlyInterestRate;
-    private int years;
-    private String loanID;
-    private boolean approvedLoan;
-    private java.util.Date loanDate;
-    private double loanDebt;
+    private int numOfYears;
+    private java.util.Date date;
 
-    public Loan(double yearlyInterestRate, int years, double loanAmount, String loanID, Date loanDate, boolean approvedLoan, double loanDebt) {
+    public static final String EOL = System.lineSeparator();
+
+
+    public Loan(String personalNumber, double yearlyInterestRate, int numOfYears, double loanAmount, Date date) {
+        this.personalNumber =personalNumber;
         this.yearlyInterestRate = yearlyInterestRate;
-        this.years = years;
+        this.numOfYears = numOfYears;
         this.loanAmount = loanAmount;
-        this.loanID = loanID;
-        this.loanDate = loanDate;
-        this.approvedLoan = approvedLoan;
-        this.loanDebt = 0;
+        this.date = date;
     }
 
     @Override
     public String toString() {
-        return "Loan{" +
-                "customerID='" + personalNumber + '\'' +
-                ", loanAmount=" + loanAmount +
-                ", yearlyInterestRate=" + yearlyInterestRate +
-                ", years=" + years +
-                ", loanID='" + loanID + '\'' +
-                ", approvedLoan=" + approvedLoan +
-                ", loanDate=" + loanDate +
-                '}';
+        return "Loan:" + EOL +
+                "--------------------------" + EOL +
+                "Loan amount: " + loanAmount + " SEK" + EOL +
+                "Yearly interest rate: " + yearlyInterestRate + "%" + EOL +
+                "Duration:" + numOfYears + " years" + EOL +
+                "Start date:" + date + EOL;
+        //Turns out this, want it to be trimmed to yyyy-MM-dd
+        // Start date:Thu Dec 16 19:00:15 CET 2021
     }
+
+    public double getMonthlyPayment() {
+        double monthlyInterestRate = yearlyInterestRate / 1200;
+        return loanAmount * monthlyInterestRate / (1 -
+                (Math.pow(1 / (1 + monthlyInterestRate), numOfYears * 12)));
+    }
+
+    public double getTotalPayment() {
+        double totalPayment = getMonthlyPayment() * numOfYears * 12;
+        return totalPayment;
+    }
+
+
 
     public String getPersonalNumber() {
         return personalNumber;
@@ -59,43 +71,20 @@ public class Loan {
         this.yearlyInterestRate = yearlyInterestRate;
     }
 
-    public int getYears() {
-        return years;
+    public int getNumOfYears() {
+        return numOfYears;
     }
 
-    public void setYears(int years) {
-        this.years = years;
+    public void setNumOfYears(int numOfYears) {
+        this.numOfYears = numOfYears;
     }
 
-    public String getLoanID() {
-        return loanID;
+    public Date getDate() {
+        return date;
     }
 
-    public void setLoanID(String loanID) {
-        this.loanID = loanID;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public boolean isApprovedLoan() {
-        return approvedLoan;
-    }
-
-    public void setApprovedLoan(boolean approvedLoan) {
-        this.approvedLoan = approvedLoan;
-    }
-
-    public Date getLoanDate() {
-        return loanDate;
-    }
-
-    public void setLoanDate(Date loanDate) {
-        this.loanDate = loanDate;
-    }
-
-    public double getLoanDebt() {
-        return loanDebt;
-    }
-
-    public void setLoanDebt(double loanDebt) {
-        this.loanDebt = loanDebt;
-    }
 }
