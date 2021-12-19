@@ -73,7 +73,7 @@ public class Service {
     }
 
     public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
-        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca, approved);
+        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca);
         reviewKYCList.add(kyc);
     }
 
@@ -208,7 +208,7 @@ public class Service {
         } else if (pepQuestion.trim().toLowerCase(Locale.ROOT).equals("no")) {
             pep = false;
         } else {
-            return "Please write either Yes or No";
+            return "Please input either Yes or No.";
         }
         if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")) {
             fatca = true;
@@ -217,7 +217,7 @@ public class Service {
         } else {
             return "Please write either Yes or No";
         }
-        KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca, false);
+        KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca);
         reviewKYCList.add(kyc);
         return System.lineSeparator() + "KYC awaiting review." + System.lineSeparator();
     }
@@ -279,16 +279,16 @@ public class Service {
     public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
         String result = "";
-        if (review.equals("1")) {
+        if (review.trim().toLowerCase(Locale.ROOT).equals("yes")) {
             approvedKYCList.add(unapprovedKYC);
             OpenAccounts(unapprovedKYC.getPersonalNumber());
             reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been approved.";
-        } else if (review.equals("2")) {
+        } else if (review.trim().toLowerCase(Locale.ROOT).equals("no")) {
             reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been declined.";
         } else {
-            result = "Please input either 1 or 2";
+            result = "Please input either Yes or No.";
         }
         return result + System.lineSeparator();
     }
@@ -317,7 +317,7 @@ public class Service {
         if (approvedKYCList.isEmpty()) {
             result = "There are currently no approved KYCs." + System.lineSeparator();
         } else {
-            result = "There are " + approvedKYCList.size() + " approved reviews." + System.lineSeparator();
+            result = "The number of approved KYC's is: " + approvedKYCList.size();
         }
         return result + System.lineSeparator();
     }

@@ -350,15 +350,15 @@ public class Menu {
                     } else if (service.approvedKYC(currentUser)) {
                         System.out.println("KYC has already been approved.");
                     } else {
-                        String occupation = UserInput.readLine("What is your occupation?");
-                        System.out.println("Please input your yearly salary before taxes:");
+                        String occupation = UserInput.readLine("What is your occupation? ");
+                        System.out.print("Please input your yearly salary before taxes: ");
                         while (!input.hasNextDouble()) {
                             input.nextLine();
                             System.out.println("Please only use digits.");
                         }
                         double salary = input.nextDouble();
-                        String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Type 1 for yes and 2 for no.");
-                        String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Type 1 for yes and 2 for no.");
+                        String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Input Yes or No: ");
+                        String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Input Yes or No: ");
                         System.out.println(service.registerKYC(currentUser, occupation, salary, pepQuestion, fatcaQuestion));
                     }
                     break;
@@ -469,7 +469,7 @@ public class Menu {
                 case "1":
                     if(!service.emptyReviewList()) {
                         System.out.println(service.KYCToBeReviewed());
-                        String review = UserInput.readLine("Do you want to approve this KYC? 1 for yes 2 for no.");
+                        String review = UserInput.readLine("Do you want to approve this KYC? Input Yes or No: ");
                         System.out.println(service.reviewUnapprovedKYC(review));
                     } else {
                         System.out.println("There are currently no KYC's to review.");
