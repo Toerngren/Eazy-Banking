@@ -1,5 +1,7 @@
 package controller;
 
+import Utility.Printing;
+import Utility.UserInput;
 import businessLogic.Loan.IncreaseLoan;
 import businessLogic.Loan.Loan;
 import businessLogic.Loan.LoanApplication;
@@ -58,20 +60,20 @@ public class Service {
         return System.lineSeparator() + "You have now been registered!" + System.lineSeparator();
     }
 
-    public void serializeCustomer(Customer customer){
+    public void serializeCustomer(Customer customer) {
         Gson gson = new Gson();
         String json = gson.toJson(customer);
         System.out.println(json);
     }
 
-    public void serializeCustomerList(List<Customer> customerList){
+    public void serializeCustomerList(List<Customer> customerList) {
         Gson gson = new Gson();
         String json = gson.toJson(customerList);
         System.out.println("jsonList: " + json);
     }
 
-    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved){
-        KYC kyc = new KYC(personalNumber, occupation, salary, pep,fatca,approved);
+    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
+        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca, approved);
         reviewKYCList.add(kyc);
     }
 
@@ -108,23 +110,24 @@ public class Service {
         return null;
     }
 
-    public boolean pendingKYC(Customer customer){
-        for (KYC kyc: reviewKYCList){
-            if(customer.getPersonalNumber().equals(kyc.getPersonalNumber())){
+    public boolean pendingKYC(Customer customer) {
+        for (KYC kyc : reviewKYCList) {
+            if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())) {
                 return true;
             }
-        } return false;
+        }
+        return false;
     }
 
-    public String customerDisplayKYC(KYC kyc){
+    public String customerDisplayKYC(KYC kyc) {
         String pepStatus = "";
         String fatcaStatus = "";
-        if (kyc.isPep()){
+        if (kyc.isPep()) {
             pepStatus = "Yes";
         } else {
             pepStatus = "No";
         }
-        if (kyc.isFatca()){
+        if (kyc.isFatca()) {
             fatcaStatus = "Yes";
         } else {
             fatcaStatus = "No";
@@ -138,42 +141,43 @@ public class Service {
         return result;
     }
 
-    public String viewKYC (Customer customer) {
+    public String viewKYC(Customer customer) {
         if (findKYC(customer) == null) {
             return "No KYC registered yet.";
-        } else if (approvedKYC(customer)){
+        } else if (approvedKYC(customer)) {
             KYC customersKYC = findKYC(customer);
             return "Status: Approved." + EOL + customerDisplayKYC(customersKYC);
-        } else if (pendingKYC(customer)){
+        } else if (pendingKYC(customer)) {
             KYC customersKYC = findKYC(customer);
             return "Status: Under review. " + EOL + customerDisplayKYC(customersKYC);
-        } return "";
+        }
+        return "";
     }
 
-    public boolean emptyReviewList(){
+    public boolean emptyReviewList() {
         return reviewKYCList.isEmpty();
     }
 
-    public String KYCToBeReviewed(){
-        if (reviewKYCList.isEmpty()){
+    public String KYCToBeReviewed() {
+        if (reviewKYCList.isEmpty()) {
             return "There are currently no KYC's to review.";
         }
         KYC unapprovedKYC = findUnapprovedKYC();
-        if (unapprovedKYC == null){
+        if (unapprovedKYC == null) {
             return "No KYCs to review";
         }
         return employeeDisplayKYC(unapprovedKYC);
     }
 
-    public String employeeDisplayKYC(KYC kyc){
+    public String employeeDisplayKYC(KYC kyc) {
         String pepStatus = "";
         String fatcaStatus = "";
-        if (kyc.isPep()){
+        if (kyc.isPep()) {
             pepStatus = "Yes";
         } else {
             pepStatus = "No";
         }
-        if (kyc.isFatca()){
+        if (kyc.isFatca()) {
             fatcaStatus = "Yes";
         } else {
             fatcaStatus = "No";
@@ -186,10 +190,10 @@ public class Service {
         return result;
     }
 
-    public String registerKYC (Customer customer, String occupation, double salary, String pepQuestion, String fatcaQuestion) {
+    public String registerKYC(Customer customer, String occupation, double salary, String pepQuestion, String fatcaQuestion) {
         boolean pep = false;
         boolean fatca = false;
-        if (pendingKYC(customer)){
+        if (pendingKYC(customer)) {
             return "KYC has already been filled in.";
         }
 
@@ -206,9 +210,9 @@ public class Service {
         } else {
             return "Please write either Yes or No";
         }
-        if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")){
+        if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")) {
             fatca = true;
-        } else if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("no")){
+        } else if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("no")) {
             fatca = false;
         } else {
             return "Please write either Yes or No";
@@ -235,6 +239,7 @@ public class Service {
         }
         return true;
     }
+
     public boolean onlyDigitsName(String firstName) {
         for (int i = 0; i < firstName.length(); i++) {
             if (!Character.isDigit(firstName.charAt(i))) {
@@ -243,6 +248,7 @@ public class Service {
         }
         return true;
     }
+
     public boolean onlyDigitsLastName(String lastName) {
         for (int i = 0; i < lastName.length(); i++) {
             if (!Character.isDigit(lastName.charAt(i))) {
@@ -251,6 +257,7 @@ public class Service {
         }
         return true;
     }
+
     public boolean onlyDigitsT(String telephoneNumber) {
         for (int i = 0; i < telephoneNumber.length(); i++) {
             if (!Character.isDigit(telephoneNumber.charAt(i))) {
@@ -259,6 +266,7 @@ public class Service {
         }
         return true;
     }
+
     public boolean onlyDigitsP(String pinCode) {
         for (int i = 0; i < pinCode.length(); i++) {
             if (!Character.isDigit(pinCode.charAt(i))) {
@@ -285,7 +293,7 @@ public class Service {
         return result + System.lineSeparator();
     }
 
-    public void OpenAccounts(String customerPersonalNumber){
+    public void OpenAccounts(String customerPersonalNumber) {
         Customer currentUser = findCustomer(customerPersonalNumber);
         CheckingAccount cH = new CheckingAccount(customerPersonalNumber);
         SavingsAccount sA = new SavingsAccount(customerPersonalNumber);
@@ -332,10 +340,11 @@ public class Service {
         return allApprovedKYCs;
     }
 
-    public KYC findUnapprovedKYC (){
-        for (KYC kyc : reviewKYCList){
+    public KYC findUnapprovedKYC() {
+        for (KYC kyc : reviewKYCList) {
             return kyc;
-        } return null;
+        }
+        return null;
     }
 
     public boolean isCustomerExist(String personalNumber) {
@@ -372,14 +381,14 @@ public class Service {
     }
   */
 
-        public String printAllCustomers() {
-            String allCustomers = "All registered customers:";
+    public String printAllCustomers() {
+        String allCustomers = "All registered customers:";
 
-            for (Customer customer : customerList) {
-                allCustomers = allCustomers + System.lineSeparator() + customer.toString();
-            }
-            return allCustomers + System.lineSeparator();
+        for (Customer customer : customerList) {
+            allCustomers = allCustomers + System.lineSeparator() + customer.toString();
         }
+        return allCustomers + System.lineSeparator();
+    }
 
     public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
@@ -728,6 +737,23 @@ public class Service {
         return operationResult;
     }
 
+    public String getCheckingAccountNumber(Customer currentUser) {
+        List<BankAccount> accounts = currentUser.getBankAccounts();
+        for (BankAccount account : accounts) {
+            if (account instanceof CheckingAccount)
+                return account.getAccountNumber();
+        }
+        return "";
+    }
+
+    public String getSavingsAccountNumber(Customer currentUser) {
+        List<BankAccount> accounts = currentUser.getBankAccounts();
+        for (BankAccount account : accounts) {
+            if (account instanceof SavingsAccount)
+                return account.getAccountNumber();
+        }
+        return "";
+    }
     public double checkBalance(String accountNumber) {
         return getAccountByAccountNumber(accountNumber).getBalance();
     }

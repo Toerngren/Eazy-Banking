@@ -6,13 +6,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
-import businessLogic.Transactions.Deposit;
-import businessLogic.Transactions.Withdrawal;
 import businessLogic.User.Customer;
-import businessLogic.User.Employee;
-import businessLogic.bankAccounts.BankAccount;
-import businessLogic.bankAccounts.CheckingAccount;
-import businessLogic.bankAccounts.SavingsAccount;
 import com.google.gson.Gson;
 import controller.Service;
 
@@ -25,12 +19,15 @@ public class Menu {
     public void startPage() throws Exception {
 
         String option;
-        
         Gson gson = new Gson();
-        Customer[] customerList = gson.fromJson(new FileReader(".\\src\\controller\\Customer.json"), Customer[].class);
+        // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
+        // This is "/" on UNIX and "\" on Windows.
+        Customer[] customerList = gson.fromJson(new FileReader("src"+System.getProperty("file.separator")+
+                "controller"+System.getProperty("file.separator")+"Customer.json"), Customer[].class);
         for(Customer customer : customerList){
             service.getCustomerList().add(customer);
         }
+
         // Läs in all info från Customer.Json och lägger till i listorna
         do {
             Printing.startPage();
@@ -39,7 +36,8 @@ public class Menu {
                 case "0":
                     System.out.println("Closing");
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(".\\src\\controller\\Customer.json"));
+                        BufferedWriter writer = new BufferedWriter(new FileWriter("src"+System.getProperty("file.separator")+
+                                "controller"+System.getProperty("file.separator")+"Customer.json"));
                         writer.write(gson.toJson(service.getCustomerList()));
                         writer.close();
                     } catch (IOException e) {
@@ -51,7 +49,7 @@ public class Menu {
                         registerCustomer();
                     break;
                 case "2":
-                    String personalNumber = UserInput.readLine("Please enter your personalnumber: ");
+                    String personalNumber = UserInput.readLine("Please enter your personal number: ");
                     if (service.onlyDigits(personalNumber)) {
                         if (!service.containsCustomer(personalNumber)) {
                             System.out.println("No customer with that personal number.");
@@ -217,13 +215,13 @@ public class Menu {
         String option;
 
         do {
-            //todo Margaret add handle user input
+            //todo Margaret - handle user input
             option = UserInput.readLine("Would you like to save the recipient for future payments/transfers? " + EOL +
                     "Type 1 for Yes, 2 for No." + EOL);
             switch (option) {
 
                 case "1":
-                    //todo Margaret add handle user input
+                    //todo Margaret - handle user input
                     String name = UserInput.readLine("Enter transaction/recipient name: ");
                     System.out.println(service.saveRecipient(currentUser, fromAccountNumber, toAccountNumber, note, name));
                     customerMenu(currentUser);
@@ -241,7 +239,6 @@ public class Menu {
 
     public String chooseAccount(Customer currentUser) throws Exception {
         String option;
-        List<BankAccount> accounts = currentUser.getBankAccounts();
         String operationResult = "";
 
         do {
@@ -253,16 +250,10 @@ public class Menu {
                     payTransferMenu(currentUser);
                     break;
                 case "1":
-                    for (BankAccount account : accounts) {
-                        if (account instanceof CheckingAccount)
-                            return account.getAccountNumber();
-                    }
+                    operationResult = service.getCheckingAccountNumber(currentUser);
                     break;
                 case "2":
-                    for (BankAccount account : accounts) {
-                        if (account instanceof SavingsAccount)
-                            return account.getAccountNumber();
-                    }
+                    operationResult = service.getSavingsAccountNumber(currentUser);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -287,18 +278,18 @@ public class Menu {
                     break;
                 case "1":
                     String accountNumber = chooseAccount(currentUser);
-                    BankAccount account = service.getAccountByAccountNumber(accountNumber);
-                    System.out.println(service.printAllTransactions(account.getTransactionList()));
+                    System.out.println(service.printAllTransactions(
+                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
                     break;
                 case "2":
                     accountNumber = chooseAccount(currentUser);
-                    account = service.getAccountByAccountNumber(accountNumber);
-                    System.out.println(service.printAllDeposits(account.getTransactionList()));
+                    System.out.println(service.printAllDeposits(
+                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
                     break;
                 case "3":
                     accountNumber = chooseAccount(currentUser);
-                    account = service.getAccountByAccountNumber(accountNumber);
-                    System.out.println(service.printAllWithdrawals(account.getTransactionList()));
+                    System.out.println(service.printAllWithdrawals(
+                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
                     break;
                 case "4":
                     System.out.println("View total deposits for a period - coming in v2");
