@@ -1,0 +1,441 @@
+Index: src/controller/Customer.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>[{\"personalNumber\":\"9602037955\",\"firstName\":\"Adrian\",\"lastName\":\"Niklasson\",\"email\":\"@\",\"telephone\":\"0703481458\",\"password\":\"1234\",\"pinCode\":\"1234\",\"bankAccounts\":[],\"savedRecipients\":[],\"customerMessageList\":[]},{\"personalNumber\":\"1234567890\",\"firstName\":\"Ba\",\"lastName\":\"De\",\"email\":\"@@\",\"telephone\":\"0703\",\"password\":\"1234\",\"pinCode\":\"4444\",\"bankAccounts\":[],\"savedRecipients\":[],\"customerMessageList\":[]}]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/controller/Customer.json b/src/controller/Customer.json
+--- a/src/controller/Customer.json	(revision 92a47178964f5c8a2763e9e29df80ffb43425b59)
++++ b/src/controller/Customer.json	(date 1639828315322)
+@@ -1,1 +1,1 @@
+-[{"personalNumber":"9602037955","firstName":"Adrian","lastName":"Niklasson","email":"@","telephone":"0703481458","password":"1234","pinCode":"1234","bankAccounts":[],"savedRecipients":[],"customerMessageList":[]},{"personalNumber":"1234567890","firstName":"Ba","lastName":"De","email":"@@","telephone":"0703","password":"1234","pinCode":"4444","bankAccounts":[],"savedRecipients":[],"customerMessageList":[]}]
+\ No newline at end of file
++[{"personalNumber":"9602037955","firstName":"Adrian","lastName":"Niklasson","email":"@","telephone":"0703481458","password":"1234","pinCode":"1234","bankAccounts":[],"savedRecipients":[],"customerMessageList":[]},{"personalNumber":"1234567890","firstName":"Ba","lastName":"De","email":"@@","telephone":"0703","password":"1234","pinCode":"4444","bankAccounts":[],"savedRecipients":[],"customerMessageList":[]}]
+Index: src/controller/Service.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package controller;\n\nimport businessLogic.Loan.IncreaseLoan;\nimport businessLogic.Loan.Loan;\nimport businessLogic.Loan.LoanApplication;\nimport businessLogic.Transactions.Deposit;\nimport businessLogic.Transactions.Transaction;\nimport businessLogic.Transactions.Withdrawal;\nimport businessLogic.User.Employee;\nimport businessLogic.User.KYC;\nimport businessLogic.User.Customer;\nimport businessLogic.bankAccounts.BankAccount;\nimport businessLogic.bankAccounts.CheckingAccount;\nimport businessLogic.bankAccounts.SavingsAccount;\n\nimport java.io.File;\nimport java.io.FileWriter;\nimport java.io.IOException;\nimport java.util.ArrayList;\nimport java.util.List;\nimport java.util.Locale;\n\nimport com.google.gson.Gson;\n\npublic class Service {\n\n    public static final String EOL = System.lineSeparator();\n\n    private List<Customer> customerList;\n    private List<BankAccount> accountsList;\n    private List<KYC> reviewKYCList;\n    private List<Transaction> transactions;\n    private List<Transaction> savedRecipients;\n    private List<KYC> approvedKYCList;\n    private List<Loan> loanList;\n    private List<LoanApplication> loanApplicationList;\n    private Employee employee;\n    // private Account loggedInAccount;\n\n    public Service() {\n        customerList = new ArrayList<>();\n        accountsList = new ArrayList<>();\n        reviewKYCList = new ArrayList<>();\n        transactions = new ArrayList<>();\n        savedRecipients = new ArrayList<>();\n        approvedKYCList = new ArrayList<>();\n        loanList = new ArrayList<>();\n        loanApplicationList = new ArrayList<>();\n        this.employee = new Employee(\"admin\", \"admin\");\n    }\n\n    public String createCustomer(String personalNumber, String firstName, String lastName, String email,\n                                 String telephone, String password, String pinCode) {\n        Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);\n        customerList.add(customer);\n\n        return System.lineSeparator() + \"You have now been registered!\" + System.lineSeparator();\n    }\n\n    public void serializeCustomer(Customer customer){\n        Gson gson = new Gson();\n        String json = gson.toJson(customer);\n        System.out.println(json);\n    }\n\n    public void serializeCustomerList(List<Customer> customerList){\n        Gson gson = new Gson();\n        String json = gson.toJson(customerList);\n        System.out.println(\"jsonList: \" + json);\n    }\n\n    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved){\n        KYC kyc = new KYC(personalNumber, occupation, salary, pep,fatca,approved);\n        reviewKYCList.add(kyc);\n    }\n\n    //todo Adrian\n    public String verifyCustomerID(String personalNumber, String password) {\n        return \"\";\n    }\n\n    public int getCustomerIndex(String personalNumber) {\n        for (int i = 0; i < this.accountsList.size(); i++) {\n            if (this.accountsList.get(i).verifyAccountNumber(personalNumber)) {\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public KYC findKYC(Customer customer) {\n        if (reviewKYCList.size() > 0) {\n            for (KYC kyc : reviewKYCList) {\n                if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())) {\n                    return kyc;\n                }\n            }\n        }\n        if (approvedKYCList.size() > 0) {\n            for (KYC kyc : approvedKYCList) {\n                if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())) {\n                    return kyc;\n                }\n\n            }\n        }\n        return null;\n    }\n\n    public boolean pendingKYC(Customer customer){\n        for (KYC kyc: reviewKYCList){\n            if(customer.getPersonalNumber().equals(kyc.getPersonalNumber())){\n                return true;\n            }\n        } return false;\n    }\n\n    public String customerDisplayKYC(KYC kyc){\n        String pepStatus = \"\";\n        String fatcaStatus = \"\";\n        if (kyc.isPep()){\n            pepStatus = \"Yes\";\n        } else {\n            pepStatus = \"No\";\n        }\n        if (kyc.isFatca()){\n            fatcaStatus = \"Yes\";\n        } else {\n            fatcaStatus = \"No\";\n        }\n\n        String result =\n                \"Occupation: \" + kyc.getOccupation() + System.lineSeparator() +\n                        \"Salary: \" + kyc.getSalary() + System.lineSeparator() +\n                        \"Politically exposed customer: \" + pepStatus + System.lineSeparator() +\n                        \"Affected by FATCA: \" + fatcaStatus + System.lineSeparator();\n        return result;\n    }\n\n    public String viewKYC (Customer customer) {\n        if (findKYC(customer) == null) {\n            return \"No KYC registered yet.\";\n        } else if (approvedKYC(customer)){\n            KYC customersKYC = findKYC(customer);\n            return \"Status: Approved.\" + EOL + customerDisplayKYC(customersKYC);\n        } else if (pendingKYC(customer)){\n            KYC customersKYC = findKYC(customer);\n            return \"Status: Under review. \" + EOL + customerDisplayKYC(customersKYC);\n        } return \"\";\n    }\n\n    public boolean emptyReviewList(){\n        return reviewKYCList.isEmpty();\n    }\n\n    public String KYCToBeReviewed(){\n        if (reviewKYCList.isEmpty()){\n            return \"There are currently no KYC's to review.\";\n        }\n        KYC unapprovedKYC = findUnapprovedKYC();\n        if (unapprovedKYC == null){\n            return \"No KYCs to review\";\n        }\n        return employeeDisplayKYC(unapprovedKYC);\n    }\n\n    public String employeeDisplayKYC(KYC kyc){\n        String pepStatus = \"\";\n        String fatcaStatus = \"\";\n        if (kyc.isPep()){\n            pepStatus = \"Yes\";\n        } else {\n            pepStatus = \"No\";\n        }\n        if (kyc.isFatca()){\n            fatcaStatus = \"Yes\";\n        } else {\n            fatcaStatus = \"No\";\n        }\n        String result = \"Personalnumber: \" + kyc.getPersonalNumber() + System.lineSeparator() +\n                \"Occupation: \" + kyc.getOccupation() + System.lineSeparator() +\n                \"Salary: \" + kyc.getSalary() + System.lineSeparator() +\n                \"Politically exposed customer: \" + pepStatus + System.lineSeparator() +\n                \"Affected by FATCA: \" + fatcaStatus + System.lineSeparator();\n        return result;\n    }\n\n    public String registerKYC (Customer customer, String occupation, double salary, String pepQuestion, String fatcaQuestion) {\n        boolean pep = false;\n        boolean fatca = false;\n        if (pendingKYC(customer)){\n            return \"KYC has already been filled in.\";\n        }\n\n        if (salary < 0) {\n            return \"Salary cannot be lower than zero. Please try again.\";\n        }\n        if (occupation.isBlank()) {\n            return \"You need to fill in your occupation. Please try again.\";\n        }\n        if (pepQuestion.trim().toLowerCase(Locale.ROOT).equals(\"yes\")) {\n            pep = true;\n        } else if (pepQuestion.trim().toLowerCase(Locale.ROOT).equals(\"no\")) {\n            pep = false;\n        } else {\n            return \"Please write either Yes or No\";\n        }\n        if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals(\"yes\")){\n            fatca = true;\n        } else if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals(\"no\")){\n            fatca = false;\n        } else {\n            return \"Please write either Yes or No\";\n        }\n        KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca, false);\n        reviewKYCList.add(kyc);\n        return System.lineSeparator() + \"KYC awaiting review.\" + System.lineSeparator();\n    }\n\n    public boolean approvedKYC(Customer customer) {\n        for (KYC approvedKYC : approvedKYCList) {\n            if (customer.getPersonalNumber().equals(approvedKYC.getPersonalNumber())) {\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public boolean onlyDigits(String personalNumber) {\n        for (int i = 0; i < personalNumber.length(); i++) {\n            if (!Character.isDigit(personalNumber.charAt(i))) {\n                return false;\n            }\n        }\n        return true;\n    }\n    public boolean onlyDigitsName(String firstName) {\n        for (int i = 0; i < firstName.length(); i++) {\n            if (!Character.isDigit(firstName.charAt(i))) {\n                return false;\n            }\n        }\n        return true;\n    }\n    public boolean onlyDigitsLastName(String lastName) {\n        for (int i = 0; i < lastName.length(); i++) {\n            if (!Character.isDigit(lastName.charAt(i))) {\n                return false;\n            }\n        }\n        return true;\n    }\n    public boolean onlyDigitsT(String telephoneNumber) {\n        for (int i = 0; i < telephoneNumber.length(); i++) {\n            if (!Character.isDigit(telephoneNumber.charAt(i))) {\n                return false;\n            }\n        }\n        return true;\n    }\n    public boolean onlyDigitsP(String pinCode) {\n        for (int i = 0; i < pinCode.length(); i++) {\n            if (!Character.isDigit(pinCode.charAt(i))) {\n                return false;\n            }\n        }\n        return true;\n    }\n\n    public String reviewUnapprovedKYC(String review) {\n        KYC unapprovedKYC = findUnapprovedKYC();\n        String result = \"\";\n        if (review.equals(\"1\")) {\n            approvedKYCList.add(unapprovedKYC);\n            OpenAccounts(unapprovedKYC.getPersonalNumber());\n            reviewKYCList.remove(unapprovedKYC);\n            result = \"Customers KYC has been approved.\";\n        } else if (review.equals(\"2\")) {\n            reviewKYCList.remove(unapprovedKYC);\n            result = \"Customers KYC has been declined.\";\n        } else {\n            result = \"Please input either 1 or 2\";\n        }\n        return result + System.lineSeparator();\n    }\n\n    public void OpenAccounts(String customerPersonalNumber){\n        Customer currentUser = findCustomer(customerPersonalNumber);\n        CheckingAccount cH = new CheckingAccount(customerPersonalNumber);\n        SavingsAccount sA = new SavingsAccount(customerPersonalNumber);\n        currentUser.addBankAccount(cH);\n        currentUser.addBankAccount(sA);\n        accountsList.add(cH);\n        accountsList.add(sA);\n    }\n\n    public String showUnapprovedKYC() {\n        KYC unapprovedKYC = findUnapprovedKYC();\n        if (unapprovedKYC != null) {\n            return employeeDisplayKYC(unapprovedKYC);\n        } else {\n            return \"No KYC registered for this customer.\" + System.lineSeparator();\n        }\n    }\n\n    public String numberOfApprovedKYCs() {\n        String result = \"\";\n        if (approvedKYCList.isEmpty()) {\n            result = \"There are currently no approved KYCs.\" + System.lineSeparator();\n        } else {\n            result = \"There are \" + approvedKYCList.size() + \" approved reviews.\" + System.lineSeparator();\n        }\n        return result + System.lineSeparator();\n    }\n\n    public String numberOfUnapprovedKYCs() {\n        String result = \"\";\n        if (reviewKYCList.isEmpty()) {\n            result = \"\"; // Returns an empty string as option one displays information if there are no KYCs to review\n        } else {\n            result = \"The number of unapproved KYC's is: \" + reviewKYCList.size() + System.lineSeparator();\n        }\n        return result;\n    }\n\n    public String printAllApprovedKYCs() {\n        String allApprovedKYCs = \"All approved KYCs:\";\n        for (KYC approvedKYC : approvedKYCList) {\n            allApprovedKYCs = allApprovedKYCs + System.lineSeparator() + approvedKYC.toString();\n        }\n        return allApprovedKYCs;\n    }\n\n    public KYC findUnapprovedKYC (){\n        for (KYC kyc : reviewKYCList){\n            return kyc;\n        } return null;\n    }\n\n    public boolean isCustomerExist(String personalNumber) {\n        return getCustomerIndex(personalNumber) != -1;\n    }\n\n    public boolean containsCustomer(String personalNumber) {\n        for (Customer customer : customerList) {\n            if (customer.getPersonalNumber().equals(personalNumber)) {\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public boolean verifyCustomer(String personalNumber, String password) {\n        int index = getCustomerIndex(personalNumber);\n        return !this.customerList.get(index).verifyCustomer(password);\n    }\n\n    //todo Adrian\n    /*\n    public String deleteCustomer(String personalNumber) {\n\n      if(customerList.isEmpty()){ Adrians version of verifyCustomer\n            return \"No customers created yet.\";\n        }\n        for (Customer customer : customerList) {\n            if(!customer.getPersonalNumber().equals(personalNumber) && !customer.getPassword().equals(password)){\n                return \"Wrong personal number or password.\";\n            }\n        }\n\n        return \"Verified customer.\";\n    }\n  */\n\n        public String printAllCustomers() {\n            String allCustomers = \"All registered customers:\";\n\n            for (Customer customer : customerList) {\n                allCustomers = allCustomers + System.lineSeparator() + customer.toString();\n            }\n            return allCustomers + System.lineSeparator();\n        }\n\n    public String editCustomerFirstName(String personalNumber, String newFirstName) {\n\n        Customer nameToChange = null;\n        for (Customer currentName : customerList) {\n            if (currentName.getPersonalNumber().equals(personalNumber)) {\n                if (newFirstName.isEmpty()) {\n                    return \"Invalid entry.\";\n                }\n                nameToChange = currentName;\n                currentName.setFirstName(newFirstName);\n            }\n        }\n        if (nameToChange == null) {\n            return personalNumber + \" was not registered yet.\";\n        }\n        return personalNumber + \"'s \" + \" first name was edited successfully.\";\n    }\n\n    public String editCustomerLastName(String personalNumber, String newLastName) {\n\n        Customer lastNameToChange = null;\n\n        for (Customer currentLastName : customerList) {\n            if (currentLastName.getPersonalNumber().equals(personalNumber)) {\n                if (newLastName.isEmpty() || newLastName.isBlank()) {\n                    return \"Invalid entry\";\n                }\n                lastNameToChange = currentLastName;\n                currentLastName.setLastName(newLastName);\n            }\n        }\n        if (lastNameToChange == null) {\n            return personalNumber + \" was not registered yet.\";\n        }\n        return personalNumber + \"'s last name was edited successfully.\";\n    }\n\n    public String editCustomerEmail(String personalNumber, String newEmail) {\n\n        Customer emailToChange = null;\n        for (Customer currentEmail : customerList) {\n            if (currentEmail.getPersonalNumber().equals(personalNumber)) {\n                if (newEmail.isEmpty() || newEmail.isBlank()) {\n                    return \"Invalid entry.\";\n                }\n                emailToChange = currentEmail;\n                currentEmail.setEmail(newEmail);\n            }\n            if (emailToChange == null) {\n\n                return personalNumber + \" was not registered yet.\";\n            }\n        }\n        return personalNumber + \"'s\" + \" email was edited successfully.\";\n    }\n\n    public String editCustomerTelephone(String personalNumber, String newTelephone) {\n\n        Customer telephoneToChange = null;\n        for (Customer currentPhone : customerList) {\n            if (currentPhone.getPersonalNumber().equals(personalNumber)) {\n                if (newTelephone.isEmpty() || newTelephone.isBlank()) {\n                    return \"Invalid entry.\";\n                }\n                telephoneToChange = currentPhone;\n                currentPhone.setTelephone(newTelephone);\n            }\n            if (telephoneToChange == null) {\n\n                return personalNumber + \" was not registered yet.\";\n            }\n        }\n        return personalNumber + \"'s\" + \" telephone number was edited successfully.\";\n    }\n\n    public boolean employeeLoginCheck(String username, String password) {\n\n        return username.equals(\"admin\") && password.equals(\"admin\");\n    }\n\n    public String editCustomerPassword(String personalNumber, String newPassword) {\n        Customer passwordToChange = null;\n        for (Customer currentPW : customerList) {\n            if (currentPW.getPersonalNumber().equals(personalNumber)) {\n                if (newPassword.isEmpty() || newPassword.isBlank()) {\n                    return \"Invalid entry.\";\n                }\n                passwordToChange = currentPW;\n                currentPW.setPassword(newPassword);\n            }\n            if (passwordToChange == null) {\n\n                return personalNumber + \" was not registered yet.\";\n            }\n        }\n        return personalNumber + \"'s\" + \" password was edited successfully.\";\n    }\n\n    public String editCustomerPincode(String personalNumber, String newPincode) {\n        Customer pinCodeToChange = null;\n        for (Customer currentPinCode : customerList) {\n            if (currentPinCode.getPersonalNumber().equals(personalNumber)) {\n                if (newPincode.isEmpty() || newPincode.isBlank()) {\n                    return \"Invalid entry.\";\n                }\n                pinCodeToChange = currentPinCode;\n                currentPinCode.setPinCode(newPincode);\n            }\n            if (pinCodeToChange == null) {\n\n                return personalNumber + \" was not registered yet.\";\n            }\n        }\n        return personalNumber + \"'s\" + \" pin code was edited successfully.\";\n    }\n\n    public String deleteCustomer(String personalNumber) {\n        Customer customerToBeDeleted = findCustomer(personalNumber);\n        if (customerToBeDeleted != null) {\n            customerList.remove(customerToBeDeleted);\n            return \"Customer \" + personalNumber + \" successfully removed.\" + EOL;\n        }\n        return \"Cannot find customer:\" + personalNumber + EOL;\n    }\n\n    //todo Christopher\n    public String updateKYC(String occupation, double salary, String PEP, String FATCA) {\n        return \"\";\n    }\n\n    // method for finding account object by Account Number\n    public BankAccount getAccountByAccountNumber(String accountNumber) {\n        for (BankAccount account : accountsList) {\n            if (accountNumber.equals(account.getAccountNumber())) {\n                return account;\n            }\n        }\n        return null;\n    }\n\n    // ? discuss if this is needed. returns Account index in the list\n    public int getAccountNumberIndex(String accountNumber) {\n        for (int i = 0; i < this.accountsList.size(); i++) {\n            if (this.accountsList.get(i).verifyAccountNumber(accountNumber)) {\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public boolean isAccountNumberExist(String accountNumber) {\n        return getAccountNumberIndex(accountNumber) != -1;\n    }\n\n    // todo add exceptions\n    // new method for deposit using getAccountByAccountNumber\n    public String deposit(String toAccount, double amount) {\n        BankAccount account = getAccountByAccountNumber(toAccount);\n        if (account == null) {\n            return \"Account doesn't exist.\";\n        }\n        if (amount < 0) {\n            return \"Amount should be greater than 0.\";\n        } else {\n            account.addToUpdateBalance(amount);\n            Deposit deposit = new Deposit(amount, toAccount);\n            transactions.add(deposit);\n            account.addTransaction(deposit);\n            return account.getType() + \" balance was updated successfully!\" + EOL +\n                    \"Current balance is: \" + account.getBalance() + \" SEK.\";\n        }\n    }\n\n    // todo add exceptions\n    public String payTransfer(String fromAccountNumber, String toAccountNumber, double amount, String note) {\n        BankAccount account = getAccountByAccountNumber(fromAccountNumber);\n        if (account == null) {\n            return \"Account doesn't exist.\";\n        }\n        if (amount <= 0) {\n            return \"Amount should be greater than 0.\";\n        }\n        if (amount > account.getBalance()) {\n            return \"Not enough funds on account #\" + account.getAccountNumber();\n        }\n        if (toAccountNumber.length() != 6) {\n            return \"Account number should be 6 digits.\";\n        } else {\n            account.subtractToUpdateBalance(amount);\n            Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);\n            transactions.add(withdrawal);\n            account.addTransaction(withdrawal);\n            return \"Transaction successful!\" + EOL +\n                    account.getType() + \" #\" + fromAccountNumber + \" Current Balance: \" + account.getBalance() + \" SEK.\" + EOL;\n        }\n    }\n\n    public String saveRecipient(Customer currentUser, String fromAccount, String toAccountNumber, String note, String name) {\n\n        Withdrawal withdrawal = new Withdrawal(0.0, fromAccount, toAccountNumber, note, name);\n        currentUser.addRecipient(withdrawal);\n        return \"Saved!\";\n    }\n\n    // todo add exceptions\n    public String withdraw(String fromAccount, double amount) {\n        BankAccount account = getAccountByAccountNumber(fromAccount);\n        if (account == null) {\n            return \"Account doesn't exist.\";\n        }\n        if (amount <= 0) {\n            return \"Amount should be greater than 0.\";\n        }\n        if (amount > account.getBalance()) {\n            return \"Not enough funds to withdraw from account \" + account.getAccountNumber();\n        } else {\n            Withdrawal withdrawal = new Withdrawal(amount, fromAccount);\n            transactions.add(withdrawal);\n            account.addTransaction(withdrawal);\n            account.subtractToUpdateBalance(amount);\n            return account.getType() + \" balance was updated successfully.\";\n        }\n    }\n\n    // todo change to exceptions\n    // new method for transferring Funds using getAccountByAccountNumber\n    public String transferFundsBetweenAccounts(double amount, String fromAccountNumber, String toAccountNumber) {\n        BankAccount fromAccount = getAccountByAccountNumber(fromAccountNumber);\n        BankAccount toAccount = getAccountByAccountNumber(toAccountNumber);\n        if (toAccount == null || fromAccount == null) {\n            return \"Can't find account. Please check if the accounts' numbers are correct\";\n        } else if (checkBalance(fromAccountNumber) < amount) {\n            return \"Not enough funds.\";\n        } else {\n            withdraw(fromAccountNumber, amount);\n            deposit(toAccountNumber, amount);\n            return \"Transfer successful!\" + EOL +\n                    fromAccount.getType() + \" #\" + fromAccount.getAccountNumber() + \" Current Balance: \" + fromAccount.getBalance() + \" SEK.\" + EOL +\n                    toAccount.getType() + \" #\" + toAccount.getAccountNumber() + \" Current Balance: \" + toAccount.getBalance() + \" SEK.\" + EOL;\n        }\n    }\n\n    public String printAccountsAndBalance(Customer currentUser) {\n        List<BankAccount> accounts = currentUser.getBankAccounts();\n        String checkingAccountOutput = \"\";\n        String savingsAccountOutput = \"\";\n        if (accounts.isEmpty()) {\n            return \"No accounts open yet. Please return to the menu and register KYC first.\";\n        } else\n            for (BankAccount account : accounts) {\n                if (account instanceof CheckingAccount) {\n                    checkingAccountOutput = account.toString();\n                }\n                if (account instanceof SavingsAccount) {\n                    savingsAccountOutput = account.toString();\n                }\n            }\n        return checkingAccountOutput + EOL +\n                \"------------------------------------- \" + EOL +\n                savingsAccountOutput + EOL +\n                \"------------------------------------- \" + EOL;\n    }\n\n    public String printAccounts(Customer currentUser) {\n        String operationResult = \"0. Return to the previous menu\" + EOL;\n        List<BankAccount> accounts = currentUser.getBankAccounts();\n        String checkingAccountOutput = \"\";\n        String savingsAccountOutput = \"\";\n        if (accounts.isEmpty()) {\n            operationResult += \"No accounts open yet. Please return to the menu and register KYC first.\";\n        } else {\n            for (BankAccount account : accounts) {\n                if (account instanceof CheckingAccount) {\n                    checkingAccountOutput = \"1. Checking Account: #\" + account.getAccountNumber() + EOL;\n                }\n                if (account instanceof SavingsAccount) {\n                    savingsAccountOutput = \"2. Savings Account: #\" + account.getAccountNumber() + EOL;\n                }\n            }\n        }\n        operationResult += checkingAccountOutput + savingsAccountOutput;\n        return operationResult;\n    }\n\n    public String chooseSecondAccount(Customer currentUser, String fromAccount) {\n        List<BankAccount> accounts = currentUser.getBankAccounts();\n        for (BankAccount account : accounts) {\n            if (!account.getAccountNumber().equals(fromAccount)) {\n                return account.getAccountNumber();\n            }\n        }\n        return \"\";\n    }\n\n    public String printAllTransactions(List<Transaction> transactions) {\n        int index = 0;\n        String operationResult = \"All transactions:\" + EOL;\n        for (Transaction tx : transactions) {\n            index++;\n            operationResult += index + \". \" + tx.toString();\n        }\n        if (index == 0) {\n            operationResult = \"No transactions so far.\";\n        }\n        return operationResult;\n    }\n\n    public String printAllRecipients(List<Transaction> transactions) {\n        int index = 0;\n        String operationResult = \"\";\n        for (Transaction tx : transactions) {\n            index++;\n            operationResult += index + \". \" + tx.toString();\n        }\n        if (index == 0) {\n            operationResult = \"No recipients has been saved so far.\";\n        }\n        return operationResult;\n    }\n\n    public String printAllWithdrawals(List<Transaction> transactions) {\n        int index = 0;\n        String operationResult = \"All withdrawals:\" + EOL;\n        for (Transaction tx : transactions) {\n            if (tx instanceof Withdrawal) {\n                index++;\n                operationResult += index + \". \" + tx;\n            }\n        }\n        if (index == 0) {\n            operationResult = \"No withdrawals so far.\";\n        }\n        return operationResult;\n    }\n\n    public String printAllDeposits(List<Transaction> transactions) {\n        int index = 0;\n        String operationResult = \"All deposits:\" + EOL;\n        for (Transaction tx : transactions) {\n            if (tx instanceof Deposit) {\n                index++;\n                operationResult += index + \". \" + tx;\n            }\n\n        }\n        if (index == 0) {\n            operationResult = \"No deposits so far.\";\n        }\n        return operationResult;\n    }\n\n    public double checkBalance(String accountNumber) {\n        return getAccountByAccountNumber(accountNumber).getBalance();\n    }\n\n    //todo Anna LOAN\n\n    /**\n     * WHERE LOAN BEGIN:\n     * <p>\n     * ╭━┳━╭━╭━╮╮\n     * ┃┈┈┈┣▅╋▅┫┃\n     * ┃┈┃┈╰━╰━━━━━━╮\n     * ╰┳╯┈┈┈┈┈┈┈┈┈◢▉◣\n     * ╲┃┈┈┈┈┈┈┈┈┈┈▉▉▉\n     * ╲┃┈┈┈┈┈┈┈┈┈┈◥▉◤\n     * ╲┃┈┈┈┈╭━┳━━━━╯\n     * ╲┣━━━━━━┫\n     */\n\n    public int searchForLoanIndex(String personalNumber) {\n        for (int i = 0; i < this.loanList.size(); i++) {\n            if (this.loanList.get(i).getPersonalNumber().equals(personalNumber)) {\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    public boolean containsLoanID(String personalNumber) {\n        for (Loan loan : loanList) {\n            if (loan.getPersonalNumber().equals(personalNumber)) {\n                return true;\n            }\n        }\n        return false;\n    }\n\n    public String viewLoan(String personalNumber) {\n        int index = searchForLoanIndex(personalNumber);\n        if (index == -1) {\n            return (\" No loan. Would you like to apply for a loan?\");\n        } else {\n            return loanList.get(index).toString();\n        }\n    }\n\n    public String applyLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {\n        LoanApplication loanApplication = new LoanApplication(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration);\n        loanApplicationList.add(loanApplication);\n        return \"Your loan application has been received; we will get back to you within 24 hours.\";\n    }\n\n    public String increaseLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {\n        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration, loanDebt);\n        loanApplicationList.add(increaseLoan);\n        return \"Your loan application has been received; we will get back to you within 24 hours.\";\n    }\n    //todo For Employee - to collect and approve loans, add loan list and then I can collect loan debt (-Anna)\n\n    public String viewAllLoanApplications(String personalNumber) {\n        if (loanApplicationList.isEmpty()) {\n            return \"Currently no loan applications waiting for review.\";\n        }\n        String message = \"All loan applications:\";\n        for (LoanApplication loanApplication : loanApplicationList) {\n            message += (loanApplication.getPersonalNumber());\n        }\n        return message;\n    }\n\n    public String viewMessage(Customer currentUser) {\n        return currentUser.viewMessage();\n    }\n\n    // Meddelanden behöver tas bort, både employee och customer\n    //\n    public void removeMessage(Customer currentUser) {\n        currentUser.removeMessage();\n    }\n\n    public void removeMessage() {\n        employee.removeMessage();\n    }\n\n    public String viewMessage() {\n        return employee.viewMessage();\n    }\n\n    public String messageToCustomer(String personalNumber, String newMessage) {\n        Customer foundCustomer = findCustomer(personalNumber);\n        foundCustomer.addMessage(newMessage);\n        return \"Message sent\";\n    }\n\n    public int numberOfMessages() {\n        return employee.numberOfMessages();\n    }\n\n    public int numberOfMessages(Customer customer) {\n        return customer.numberOfMessages();\n    }\n\n    public String messageToEmployee(Customer currentUser, String newMessage) {\n        employee.addMessage(\"Message from: \" + currentUser.getPersonalNumber() + System.lineSeparator() + newMessage);\n        return \"Message sent.\";\n    }\n\n    public String fetchPersonalNumber() {\n        String message = viewMessage();\n        String personalNumber = message.substring(14, 24);\n        return personalNumber;\n    }\n\n    public boolean verifyEmployee(String userName, String pinCode) {\n        if (employee.getEmployeeID().equals(userName.trim().toLowerCase(Locale.ROOT)) && employee.getPinCode().equals(pinCode.trim().toLowerCase(Locale.ROOT))) {\n            return true;\n        }\n        return false;\n    }\n\n    //todo Faiza\n    public String openNewAccount() {\n        return \"\";\n    }\n\n    //todo Faiza\n    public String closeAccount(String accountNumber) {\n        return \"\";\n    }\n\n    //todo Faiza\n    public void chooseAccount() {\n\n    }\n\n    public Customer findCustomer(String personalNumber) {\n        try {\n            if (customerList.size() > 0) {\n                for (Customer customer : customerList) {\n                    if (customer.getPersonalNumber().equals(personalNumber)) {\n                        return customer;\n                    }\n                }\n            }\n        } catch (Exception exception) {\n            exception.printStackTrace();\n        }\n        return null;\n    }\n\n    public Customer getCustomerByPN(String pn) {\n        for (Customer c : customerList) {\n            if (c.getPersonalNumber().equals(pn)) {\n                return c;\n            }\n        }\n        return null;\n    }\n\n    //TODO DELETE\n    public void addAccount(BankAccount acc) {\n        accountsList.add(acc);\n    }\n\n    public List<Customer> getCustomerList() {\n        return customerList;\n    }\n\n    public List<BankAccount> getAccountsList() {\n        return accountsList;\n    }\n\n    public List<KYC> getReviewKYCList() {\n        return reviewKYCList;\n    }\n\n    public List<Transaction> getTransactions() {\n        return transactions;\n    }\n\n    public List<Transaction> getSavedRecipients() {\n        return savedRecipients;\n    }\n\n    public List<KYC> getApprovedKYCList() {\n        return approvedKYCList;\n    }\n\n    public List<Loan> getLoanList() {\n        return loanList;\n    }\n\n    public List<LoanApplication> getLoanApplicationList() {\n        return loanApplicationList;\n    }\n\n    public Employee getEmployee() {\n        return employee;\n    }\n\n    public void setCustomerList(List<Customer> customerList) {\n        this.customerList = customerList;\n    }\n\n    public void setAccountsList(List<BankAccount> accountsList) {\n        this.accountsList = accountsList;\n    }\n\n    public void setReviewKYCList(List<KYC> reviewKYCList) {\n        this.reviewKYCList = reviewKYCList;\n    }\n\n    public void setTransactions(List<Transaction> transactions) {\n        this.transactions = transactions;\n    }\n\n    public void setSavedRecipients(List<Transaction> savedRecipients) {\n        this.savedRecipients = savedRecipients;\n    }\n\n    public void setApprovedKYCList(List<KYC> approvedKYCList) {\n        this.approvedKYCList = approvedKYCList;\n    }\n\n    public void setLoanList(List<Loan> loanList) {\n        this.loanList = loanList;\n    }\n\n    public void setLoanApplicationList(List<LoanApplication> loanApplicationList) {\n        this.loanApplicationList = loanApplicationList;\n    }\n\n    public void setEmployee(Employee employee) {\n        this.employee = employee;\n    }\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/controller/Service.java b/src/controller/Service.java
+--- a/src/controller/Service.java	(revision 92a47178964f5c8a2763e9e29df80ffb43425b59)
++++ b/src/controller/Service.java	(date 1639827934744)
+@@ -1,5 +1,7 @@
+ package controller;
+ 
++import Utility.Printing;
++import Utility.UserInput;
+ import businessLogic.Loan.IncreaseLoan;
+ import businessLogic.Loan.Loan;
+ import businessLogic.Loan.LoanApplication;
+@@ -57,20 +59,20 @@
+         return System.lineSeparator() + "You have now been registered!" + System.lineSeparator();
+     }
+ 
+-    public void serializeCustomer(Customer customer){
++    public void serializeCustomer(Customer customer) {
+         Gson gson = new Gson();
+         String json = gson.toJson(customer);
+         System.out.println(json);
+     }
+ 
+-    public void serializeCustomerList(List<Customer> customerList){
++    public void serializeCustomerList(List<Customer> customerList) {
+         Gson gson = new Gson();
+         String json = gson.toJson(customerList);
+         System.out.println("jsonList: " + json);
+     }
+ 
+-    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved){
+-        KYC kyc = new KYC(personalNumber, occupation, salary, pep,fatca,approved);
++    public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
++        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca, approved);
+         reviewKYCList.add(kyc);
+     }
+ 
+@@ -107,23 +109,24 @@
+         return null;
+     }
+ 
+-    public boolean pendingKYC(Customer customer){
+-        for (KYC kyc: reviewKYCList){
+-            if(customer.getPersonalNumber().equals(kyc.getPersonalNumber())){
++    public boolean pendingKYC(Customer customer) {
++        for (KYC kyc : reviewKYCList) {
++            if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())) {
+                 return true;
+             }
+-        } return false;
++        }
++        return false;
+     }
+ 
+-    public String customerDisplayKYC(KYC kyc){
++    public String customerDisplayKYC(KYC kyc) {
+         String pepStatus = "";
+         String fatcaStatus = "";
+-        if (kyc.isPep()){
++        if (kyc.isPep()) {
+             pepStatus = "Yes";
+         } else {
+             pepStatus = "No";
+         }
+-        if (kyc.isFatca()){
++        if (kyc.isFatca()) {
+             fatcaStatus = "Yes";
+         } else {
+             fatcaStatus = "No";
+@@ -137,42 +140,43 @@
+         return result;
+     }
+ 
+-    public String viewKYC (Customer customer) {
++    public String viewKYC(Customer customer) {
+         if (findKYC(customer) == null) {
+             return "No KYC registered yet.";
+-        } else if (approvedKYC(customer)){
++        } else if (approvedKYC(customer)) {
+             KYC customersKYC = findKYC(customer);
+             return "Status: Approved." + EOL + customerDisplayKYC(customersKYC);
+-        } else if (pendingKYC(customer)){
++        } else if (pendingKYC(customer)) {
+             KYC customersKYC = findKYC(customer);
+             return "Status: Under review. " + EOL + customerDisplayKYC(customersKYC);
+-        } return "";
++        }
++        return "";
+     }
+ 
+-    public boolean emptyReviewList(){
++    public boolean emptyReviewList() {
+         return reviewKYCList.isEmpty();
+     }
+ 
+-    public String KYCToBeReviewed(){
+-        if (reviewKYCList.isEmpty()){
++    public String KYCToBeReviewed() {
++        if (reviewKYCList.isEmpty()) {
+             return "There are currently no KYC's to review.";
+         }
+         KYC unapprovedKYC = findUnapprovedKYC();
+-        if (unapprovedKYC == null){
++        if (unapprovedKYC == null) {
+             return "No KYCs to review";
+         }
+         return employeeDisplayKYC(unapprovedKYC);
+     }
+ 
+-    public String employeeDisplayKYC(KYC kyc){
++    public String employeeDisplayKYC(KYC kyc) {
+         String pepStatus = "";
+         String fatcaStatus = "";
+-        if (kyc.isPep()){
++        if (kyc.isPep()) {
+             pepStatus = "Yes";
+         } else {
+             pepStatus = "No";
+         }
+-        if (kyc.isFatca()){
++        if (kyc.isFatca()) {
+             fatcaStatus = "Yes";
+         } else {
+             fatcaStatus = "No";
+@@ -185,10 +189,10 @@
+         return result;
+     }
+ 
+-    public String registerKYC (Customer customer, String occupation, double salary, String pepQuestion, String fatcaQuestion) {
++    public String registerKYC(Customer customer, String occupation, double salary, String pepQuestion, String fatcaQuestion) {
+         boolean pep = false;
+         boolean fatca = false;
+-        if (pendingKYC(customer)){
++        if (pendingKYC(customer)) {
+             return "KYC has already been filled in.";
+         }
+ 
+@@ -205,9 +209,9 @@
+         } else {
+             return "Please write either Yes or No";
+         }
+-        if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")){
++        if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")) {
+             fatca = true;
+-        } else if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("no")){
++        } else if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("no")) {
+             fatca = false;
+         } else {
+             return "Please write either Yes or No";
+@@ -234,6 +238,7 @@
+         }
+         return true;
+     }
++
+     public boolean onlyDigitsName(String firstName) {
+         for (int i = 0; i < firstName.length(); i++) {
+             if (!Character.isDigit(firstName.charAt(i))) {
+@@ -242,6 +247,7 @@
+         }
+         return true;
+     }
++
+     public boolean onlyDigitsLastName(String lastName) {
+         for (int i = 0; i < lastName.length(); i++) {
+             if (!Character.isDigit(lastName.charAt(i))) {
+@@ -250,6 +256,7 @@
+         }
+         return true;
+     }
++
+     public boolean onlyDigitsT(String telephoneNumber) {
+         for (int i = 0; i < telephoneNumber.length(); i++) {
+             if (!Character.isDigit(telephoneNumber.charAt(i))) {
+@@ -258,6 +265,7 @@
+         }
+         return true;
+     }
++
+     public boolean onlyDigitsP(String pinCode) {
+         for (int i = 0; i < pinCode.length(); i++) {
+             if (!Character.isDigit(pinCode.charAt(i))) {
+@@ -284,7 +292,7 @@
+         return result + System.lineSeparator();
+     }
+ 
+-    public void OpenAccounts(String customerPersonalNumber){
++    public void OpenAccounts(String customerPersonalNumber) {
+         Customer currentUser = findCustomer(customerPersonalNumber);
+         CheckingAccount cH = new CheckingAccount(customerPersonalNumber);
+         SavingsAccount sA = new SavingsAccount(customerPersonalNumber);
+@@ -331,10 +339,11 @@
+         return allApprovedKYCs;
+     }
+ 
+-    public KYC findUnapprovedKYC (){
+-        for (KYC kyc : reviewKYCList){
++    public KYC findUnapprovedKYC() {
++        for (KYC kyc : reviewKYCList) {
+             return kyc;
+-        } return null;
++        }
++        return null;
+     }
+ 
+     public boolean isCustomerExist(String personalNumber) {
+@@ -372,14 +381,14 @@
+     }
+   */
+ 
+-        public String printAllCustomers() {
+-            String allCustomers = "All registered customers:";
++    public String printAllCustomers() {
++        String allCustomers = "All registered customers:";
+ 
+-            for (Customer customer : customerList) {
+-                allCustomers = allCustomers + System.lineSeparator() + customer.toString();
+-            }
+-            return allCustomers + System.lineSeparator();
+-        }
++        for (Customer customer : customerList) {
++            allCustomers = allCustomers + System.lineSeparator() + customer.toString();
++        }
++        return allCustomers + System.lineSeparator();
++    }
+ 
+     public String editCustomerFirstName(String personalNumber, String newFirstName) {
+ 
+@@ -732,6 +741,23 @@
+         return operationResult;
+     }
+ 
++    public String getCheckingAccountNumber(Customer currentUser) {
++        List<BankAccount> accounts = currentUser.getBankAccounts();
++        for (BankAccount account : accounts) {
++            if (account instanceof CheckingAccount)
++                return account.getAccountNumber();
++        }
++        return "";
++    }
++
++    public String getSavingsAccountNumber(Customer currentUser) {
++        List<BankAccount> accounts = currentUser.getBankAccounts();
++        for (BankAccount account : accounts) {
++            if (account instanceof SavingsAccount)
++                return account.getAccountNumber();
++        }
++        return "";
++    }
+     public double checkBalance(String accountNumber) {
+         return getAccountByAccountNumber(accountNumber).getBalance();
+     }
+Index: src/Utility/UserInput.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Utility;\nimport java.util.InputMismatchException;\nimport java.util.Scanner;\n\npublic class UserInput {\n\n    public static Scanner input = new Scanner(System.in);\n\n    public static int readInt(String message) {\n        System.out.print(message);\n        int value = input.nextInt();\n        input.nextLine();\n        return value;\n    }\n\n    public static String readLine(String message) {\n        System.out.print(message);\n        String sentence = input.nextLine();\n        return sentence;\n    }\n\n    public static double readDouble(String message) {\n        System.out.print(message);\n        double value = 0;\n        while (value == 0) {\n            try {\n                value = Double.parseDouble(input.next());\n            } catch (Exception e) {\n                System.out.print(\"Invalid input. Please type digits only: \");\n            }\n        }\n        return value;\n    }\n\n    public static void exitScanner() {\n        input.close();\n    }\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Utility/UserInput.java b/src/Utility/UserInput.java
+--- a/src/Utility/UserInput.java	(revision 92a47178964f5c8a2763e9e29df80ffb43425b59)
++++ b/src/Utility/UserInput.java	(date 1639725019075)
+@@ -21,18 +21,12 @@
+ 
+     public static double readDouble(String message) {
+         System.out.print(message);
+-        double value = 0;
+-        while (value == 0) {
+-            try {
+-                value = Double.parseDouble(input.next());
+-            } catch (Exception e) {
+-                System.out.print("Invalid input. Please type digits only: ");
+-            }
+-        }
++        double value = input.nextDouble();
++        input.nextLine();
+         return value;
+     }
+ 
+-    public static void exitScanner() {
++        public static void exitScanner() {
+         input.close();
+     }
+ }
+Index: src/View/Menu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package View;\n\nimport Utility.*;\n\nimport java.io.*;\nimport java.util.List;\nimport java.util.Locale;\nimport java.util.Scanner;\nimport businessLogic.Transactions.Deposit;\nimport businessLogic.Transactions.Withdrawal;\nimport businessLogic.User.Customer;\nimport businessLogic.User.Employee;\nimport businessLogic.bankAccounts.BankAccount;\nimport businessLogic.bankAccounts.CheckingAccount;\nimport businessLogic.bankAccounts.SavingsAccount;\nimport com.google.gson.Gson;\nimport controller.Service;\n\n\npublic class Menu {\n    public static final String EOL = System.lineSeparator();\n    Service service = new Service();\n    Scanner input = new Scanner(System.in);\n\n    public void startPage() throws Exception {\n\n        String option;\n        \n        Gson gson = new Gson();\n        Customer[] customerList = gson.fromJson(new FileReader(\".\\\\src\\\\controller\\\\Customer.json\"), Customer[].class);\n        for(Customer customer : customerList){\n            service.getCustomerList().add(customer);\n        }\n        // Läs in all info från Customer.Json och lägger till i listorna\n        do {\n            Printing.startPage();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n                case \"0\":\n                    System.out.println(\"Closing\");\n                    try {\n                        BufferedWriter writer = new BufferedWriter(new FileWriter(\".\\\\src\\\\controller\\\\Customer.json\"));\n                        writer.write(gson.toJson(service.getCustomerList()));\n                        writer.close();\n                    } catch (IOException e) {\n                        e.printStackTrace();\n                    }\n                    System.exit(0);\n                    break;\n                case \"1\":\n                        registerCustomer();\n                    break;\n                case \"2\":\n                    String personalNumber = UserInput.readLine(\"Please enter your personalnumber: \");\n                    if (service.onlyDigits(personalNumber)) {\n                        if (!service.containsCustomer(personalNumber)) {\n                            System.out.println(\"No customer with that personal number.\");\n                            startPage();\n                        }\n                        String password = UserInput.readLine(\"Please enter your password: \");\n                        Customer foundCustomer = service.findCustomer(personalNumber);\n                        if (foundCustomer.verifyPassword(password)) {\n                            customerMenu(foundCustomer);\n                        } else {\n                            System.out.println(\"Wrong password.\");\n                        }\n                    }\n                    System.out.println(\"Personal number needs to only contain digits.\");\n                    break;\n                case \"3\": {\n                    String username = UserInput.readLine(\"Input your username:\");\n                    String pinCode = UserInput.readLine(\"Input your PIN-code:\");\n                    if (service.verifyEmployee(username, pinCode)){\n                        employeeMenu();\n                    } else {\n                        startPage();\n                    }\n                }\n                break;\n                case\"4\":\n                    System.out.println(\"no feature yet\");\n                    break;\n\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (true);\n    }\n\n    /* ACCOUNTS MENU */\n    public void customerMenu(Customer currentUser) throws Exception {\n        String option;\n        do {\n            if (service.numberOfMessages(currentUser) > 0){\n                System.out.println(System.lineSeparator() + \"\\u001B[32m\" + \"You have a new message!\" + \"\\u001B[0m\" + System.lineSeparator());\n            }\n            Printing.customerMenu();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n                case \"0\":\n                    startPage();\n                    break;\n                case \"1\":\n                    payTransferMenu(currentUser);\n                    break;\n                case \"2\":\n                    myAccounts(currentUser);\n                    break;\n                case \"3\":\n                    loanMenu(currentUser);\n                    break;\n                case \"4\":\n                    System.out.println(\"no feature yet.\");\n                    break;\n                case \"5\":\n                    kycMenu(currentUser);\n                    break;\n                case \"6\":\n                    customerProfileMenu(currentUser);\n                    break;\n                case \"7\":\n                    customerSupportMenu(currentUser);\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    /* ACCOUNTS MENU */\n    public void myAccounts(Customer currentUser) throws Exception {\n        String option;\n\n        do {\n            System.out.println(service.printAccountsAndBalance(currentUser));\n            Printing.accountsMenu();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n                case \"0\":\n                    customerMenu(currentUser);\n                    break;\n                /*case \"1\":\n                    System.out.println(\"Open Account - coming soon\");\n                    break;\n                case \"2\":\n                    System.out.println(\"Close Account - coming soon\");\n                    break;\n\n                 */\n                case \"1\":\n                    payTransferMenu(currentUser);\n                    break;\n                case \"2\":\n                    printTransactionHistory();\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    /* PAY AND TRANSFER MENU */\n    public void payTransferMenu(Customer currentUser) throws Exception {\n        String option;\n\n        do {\n            Printing.payTransferMenu();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n\n                case \"0\":\n                    customerMenu(currentUser);\n                    break;\n                case \"1\":\n                    System.out.println( EOL + \"Please choose an account to deposit to or return to the menu: \");\n                    String toAccount = chooseAccount(currentUser);\n                    deposit(toAccount);\n                    break;\n                case \"2\":\n                    System.out.println(EOL + \"Please choose an account to transfer from or return to the menu: \");\n                    String fromAccountNumber = chooseAccount(currentUser);\n                    String toAccountNumber = service.chooseSecondAccount(currentUser, fromAccountNumber);\n                    transfer(fromAccountNumber, toAccountNumber);\n                    break;\n                case \"3\":\n                    System.out.println(EOL + \"Please choose your account or return to the menu: \");\n                    fromAccountNumber = chooseAccount(currentUser);\n                    toAccountNumber = UserInput.readLine(\"Please enter account number for payment / transfer (6 digits): \");\n                    double amount = UserInput.readDouble(\"Enter amount: \");\n                    String note = UserInput.readLine(\"Enter note (optional): \");\n                    String result = service.payTransfer(fromAccountNumber, toAccountNumber, amount, note);\n                    System.out.println(result);\n                    if (result.contains(\"successful\")) {\n                        askToSaveRecipientMenu(currentUser, fromAccountNumber, toAccountNumber, note);\n                    }\n                    break;\n                case \"4\":\n                    System.out.println(service.printAllRecipients(currentUser.getSavedRecipients()));\n                    break;\n                case \"5\":\n                    transactionHistoryMenu(currentUser);\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    public void askToSaveRecipientMenu(Customer currentUser,String fromAccountNumber, String toAccountNumber, String note) throws Exception {\n        String option;\n\n        do {\n            //todo Margaret add handle user input\n            option = UserInput.readLine(\"Would you like to save the recipient for future payments/transfers? \" + EOL +\n                    \"Type 1 for Yes, 2 for No.\" + EOL);\n            switch (option) {\n\n                case \"1\":\n                    //todo Margaret add handle user input\n                    String name = UserInput.readLine(\"Enter transaction/recipient name: \");\n                    System.out.println(service.saveRecipient(currentUser, fromAccountNumber, toAccountNumber, note, name));\n                    customerMenu(currentUser);\n                    break;\n                case \"2\":\n                    customerMenu(currentUser);\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"2\")));\n        UserInput.exitScanner();\n    }\n\n    public String chooseAccount(Customer currentUser) throws Exception {\n        String option;\n        List<BankAccount> accounts = currentUser.getBankAccounts();\n        String operationResult = \"\";\n\n        do {\n            System.out.println(service.printAccounts(currentUser));\n            option = UserInput.readLine(\"\");\n            switch (option) {\n\n                //todo for Case 0 ->  if previous menu was payTransfer - return to that menu,\n                // if Accounts, return to Accounts.\n                case \"0\":\n                    payTransferMenu(currentUser);\n                    break;\n                case \"1\":\n                    for (BankAccount account : accounts) {\n                        if (account instanceof CheckingAccount)\n                            return account.getAccountNumber();\n                    }\n                    break;\n                case \"2\":\n                    for (BankAccount account : accounts) {\n                        if (account instanceof SavingsAccount)\n                            return account.getAccountNumber();\n                    }\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n        return operationResult;\n    }\n\n    /* TRANSACTION HISTORY */\n    public void transactionHistoryMenu(Customer currentUser) throws Exception {\n        String option;\n\n        do {\n            Printing.transactionHistoryMenu();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n\n                case \"0\":\n                    payTransferMenu(currentUser);\n                    break;\n                case \"1\":\n                    String accountNumber = chooseAccount(currentUser);\n                    BankAccount account = service.getAccountByAccountNumber(accountNumber);\n                    System.out.println(service.printAllTransactions(account.getTransactionList()));\n                    break;\n                case \"2\":\n                    accountNumber = chooseAccount(currentUser);\n                    account = service.getAccountByAccountNumber(accountNumber);\n                    System.out.println(service.printAllDeposits(account.getTransactionList()));\n                    break;\n                case \"3\":\n                    accountNumber = chooseAccount(currentUser);\n                    account = service.getAccountByAccountNumber(accountNumber);\n                    System.out.println(service.printAllWithdrawals(account.getTransactionList()));\n                    break;\n                case \"4\":\n                    System.out.println(\"View total deposits for a period - coming in v2\");\n                    break;\n                case \"5\":\n                    System.out.println(\"View total withdrawals for a period - coming in v2\");\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    /* LOAN MENU */\n    public void loanMenu(Customer currentUser) throws Exception {\n        String option;\n\n        do {\n            Printing.loanMenu();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n\n                case \"0\":\n                    startPage();\n                    break;\n                case \"1\":\n                    viewLoan(currentUser);\n                    break;\n                case \"2\":\n                    registerLoanApplication(currentUser);\n                    break;\n                case \"3\":\n                    //registerIncreaseApplication(currentUser);\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    /* KYC MENU */\n    public void kycMenu(Customer currentUser) throws Exception {\n        String option;\n        do {\n            Printing.KYCMenu();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n                case \"0\":\n                    customerMenu(currentUser);\n                    break;\n                case \"1\":\n                    if (service.pendingKYC(currentUser)){\n                        System.out.println(\"KYC is pending review.\");\n                    } else if (service.approvedKYC(currentUser)) {\n                        System.out.println(\"KYC has already been approved.\");\n                    } else {\n                        String occupation = UserInput.readLine(\"What is your occupation?\");\n                        System.out.println(\"Please input your yearly salary before taxes:\");\n                        while (!input.hasNextDouble()) {\n                            input.nextLine();\n                            System.out.println(\"Please only use digits.\");\n                        }\n                        double salary = input.nextDouble();\n                        String pepQuestion = UserInput.readLine(\"Are you a politically exposed customer? Type 1 for yes and 2 for no.\");\n                        String fatcaQuestion = UserInput.readLine(\"Do you pay taxes in the US? Type 1 for yes and 2 for no.\");\n                        System.out.println(service.registerKYC(currentUser, occupation, salary, pepQuestion, fatcaQuestion));\n                    }\n                    break;\n                case \"2\":\n                    System.out.println(service.viewKYC(currentUser));\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    /* EMPLOYEE MENU */\n    public void employeeMenu() throws Exception {\n        String option;\n        do {\n            Printing.employeeMenu();\n            option = UserInput.readLine(\"Please type an option number: \");\n            switch (option) {\n\n                case \"0\":\n                    startPage();\n                    break;\n                case \"1\":\n                    System.out.println(\"no feature yet\");\n                    break;\n                case \"2\":\n                    System.out.println(\"no feature yet:\");\n                    break;\n                case \"3\":\n                    employeeKYCMenu();\n                    break;\n                case\"4\":\n                    employeeCustomerSupportMenu();\n                    break;\n                case \"5\": {\n                    String message = service.printAllCustomers();\n                    System.out.println(message);\n                    break;\n                }\n                case\"6\": {\n                    String delete = UserInput.readLine(\"Enter personal number of customer you wish to remove: \");\n                    String message = service.deleteCustomer(delete);\n                    System.out.println(message);\n                    break;\n                }\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    // Todo @Christoph / Adrian, add exceptions so that email must contain @ and so on.\n    public void customerProfileMenu(Customer currentUser) throws Exception {\n        String option;\n        do {\n            Printing.customerProfileMenu();\n            option = UserInput.readLine(\"\");\n            switch (option) {\n                case \"0\":\n                    customerMenu(currentUser);\n                    break;\n                case \"1\":\n                    System.out.println(currentUser.toString());\n                    break;\n                case \"2\":\n                    String telephoneNumber = UserInput.readLine(\"Please enter your new telephone number:\");\n                    service.editCustomerTelephone(currentUser.getPersonalNumber(), telephoneNumber);\n                    System.out.println(\"Telephone number successfully updated!\");\n                    break;\n                case \"3\":\n                    String email = UserInput.readLine(\"Please enter your new email:\");\n                    service.editCustomerEmail(currentUser.getPersonalNumber(), email);\n                    System.out.println(\"E-mail successfully updated!\");\n                    break;\n                case \"4\":\n                    String password = UserInput.readLine(\"Please enter your new password:\");\n                    service.editCustomerPassword(currentUser.getPassword(), password);\n                    System.out.println(\"Password successfully changed.\");\n                    break;\n                case \"5\":\n                    String pinCode = UserInput.readLine(\"Please enter your new PIN-code:\");\n                    service.editCustomerPincode(currentUser.getPinCode(), pinCode);\n                    System.out.println(\"PIN-code successfully changed.\");\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    public void employeeKYCMenu() throws Exception {\n        String option;\n        do {\n            System.out.println(service.numberOfUnapprovedKYCs());\n            Printing.employeeKYCMenu();\n            option = UserInput.readLine(\"\");\n            switch (option) {\n                case \"0\":\n                    employeeMenu();\n                    break;\n                case \"1\":\n                    if(!service.emptyReviewList()) {\n                        System.out.println(service.KYCToBeReviewed());\n                        String review = UserInput.readLine(\"Do you want to approve this KYC? 1 for yes 2 for no.\");\n                        System.out.println(service.reviewUnapprovedKYC(review));\n                    } else {\n                        System.out.println(\"There are currently no KYC's to review.\");\n                    }\n                    break;\n                case \"2\":\n                    System.out.println(service.numberOfApprovedKYCs());\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    public void customerSupportMenu(Customer currentUser) throws Exception {\n        String option;\n\n        do {\n            Printing.customerSupportMenu();\n            option = UserInput.readLine(\"\");\n            switch (option) {\n                case \"0\":\n                    customerMenu(currentUser);  //Return to Customer Menu\n                    break;\n                case \"1\":\n                    String message = UserInput.readLine(\"Message to customer support:\");\n                    service.messageToEmployee(currentUser, message);\n                    break;\n                case \"2\":\n                    System.out.println(service.viewMessage(currentUser));\n                    String reply = UserInput.readLine(\"Would you like to reply? Yes or No.\");\n                    if (reply.equals(\"yes\")){\n                        String replyMessage = UserInput.readLine(\"What would you like to reply?\");\n                        service.messageToEmployee(currentUser, replyMessage);\n                        service.removeMessage(currentUser);\n                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals(\"no\")){\n                        System.out.println(\"No reply has been sent.\");\n                        service.removeMessage(currentUser);\n                    } else {\n                        System.out.println(\"Input yes or no.\");\n                    }\n                    break;\n                case \"3\":\n                    System.out.println(service.numberOfMessages(currentUser));\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n\n    public void employeeCustomerSupportMenu() throws Exception {\n        String option;\n        do {\n            Printing.employeeSupportMenu();\n            option = UserInput.readLine(\"\");\n            switch (option) {\n                case \"0\":\n                    employeeMenu();\n                    break;\n                case \"1\":\n                    String personalNumber = UserInput.readLine(\"What customer would you like to write to? Input personal number:\");\n                    String message = UserInput.readLine(\"What message would you like to send?\");\n                    System.out.println(service.messageToCustomer(personalNumber, message));\n                    break;\n                case \"2\":\n                    System.out.println(service.viewMessage());\n                    String reply = UserInput.readLine(\"Would you like to reply? Yes or No.\");\n                    if (reply.equals(\"yes\")){\n                        String replyMessage = UserInput.readLine(\"What would you like to reply?\");\n                        service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);\n                        service.removeMessage();\n                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals(\"no\")){\n                        System.out.println(\"No reply has been sent.\");\n                        service.removeMessage();\n                    } else {\n                        System.out.println(\"Input yes or no.\");\n                    }\n                    break;\n                case \"3\":\n                    System.out.println(service.numberOfMessages());\n                    break;\n                case\"4\":\n                    break;\n                default:\n                    Printing.invalidEntry();\n                    break;\n            }\n        } while (!(option.equals(\"0\")));\n        UserInput.exitScanner();\n    }\n    //TODO Adrian lägga till så att + funkar i telefonumret och PIN-code 4siffror\n    public void registerCustomer() throws Exception {\n        try {\n            String personalNumber = UserInput.readLine(\"Customer personal number: \");\n            if (!service.onlyDigits(personalNumber) || (!personalNumber.matches(\"[1-9][0-9]{9}\"))) {\n                throw new Exception(\"10 digits only.\");\n            }\n            String firstName = UserInput.readLine(\"Customer firstname: \");\n            if(firstName.isEmpty() || firstName.isBlank() || service.onlyDigitsName(firstName)) {\n                throw new Exception(\"Name cannot be blank or contain digits.\");\n            }\n            String lastName = UserInput.readLine(\"Customer lastname: \");\n            if(lastName.isEmpty() || lastName.isBlank() || service.onlyDigitsLastName(lastName)) {\n                throw new Exception(\"Name cannot be blank or contain digits.\");\n            }\n            String email = UserInput.readLine(\"Customer email: \");\n            if(email.isBlank() || !email.contains(\"@\")){\n                throw new Exception(\"Email must contain @.\");\n            }\n            String telephone = UserInput.readLine(\"Customer telephone number: \");\n            if(telephone.isBlank() || !service.onlyDigitsT(telephone)){\n                throw new Exception(\"Telephone must contain digits only.\");\n            }\n            String password = UserInput.readLine(\"Customer password: \");\n            if(password.isBlank() || password.isEmpty()){\n                throw new Exception(\"You must have a password.\");\n            }\n            String pinCode = UserInput.readLine(\"Customer pin code: \");\n            if(pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode)){\n                throw new Exception(\"PIN-code must be digits and contain four numbers.\");\n            }\n            String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);\n            System.out.println(message);\n        }catch (Exception exception){\n            System.out.println(exception.getMessage());\n        }\n    }\n    public void viewLoan(Customer currentUser){\n        String loan = service.viewLoan(currentUser.getPersonalNumber());\n        System.out.println(\" Current loan debt: \" + loan);\n    }\n\n    public void registerLoanApplication(Customer currentUser){\n        double monthlyIncome = UserInput.readDouble(\"What is your monthly salary?\");\n        double currentLoanDebt = UserInput.readDouble(\"What is the sum of your current loan debt?\");\n        double currentCreditDebt = UserInput.readDouble(\"What is the sum of your current credit debt?\");\n        int appliedLoanAmount = UserInput.readInt(\"How much would you want to borrow? From 0 - 500 000 SEK\" + EOL);\n        int appliedLoanDuration = UserInput.readInt(\"What duration would you like on the loan? From 1-5 years\" + EOL);\n        String message = service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);\n        System.out.println(message);\n    }\n//Todo Anna - \"works\" but missing loanDebt -> from Loan Class, need to be approved by Employee (this is not done yet)\n    /*\n    public void registerIncreaseApplication (Customer currentUser){\n        String debt = service.viewLoan(currentUser.getPersonalNumber());\n        System.out.println (\"Current loan debt: \"+ debt + \"SEK\");\n        double monthlyIncome = UserInput.readDouble(\"What is your monthly salary?\" );\n        double currentLoanDebt = UserInput.readDouble(\"What is the sum of your current loan debt?\" );\n        double currentCreditDebt = UserInput.readDouble(\"What is the sum of your current credit debt?\" );\n        int appliedLoanAmount = UserInput.readInt(\"How much would you want to borrow? From 0 - 500 000 SEK\" );\n        int appliedLoanDuration = UserInput.readInt(\"What duration would you like on the loan? From 1-5 years\" );\n        String message = service.increaseLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration,loanDebt);\n        System.out.println(message);\n    }\n\n */\n    /*\n    public void loginCustomer(){\n        String verify = \"\";\n        String personalNumber = UserInput.readLine(\"Customer personal number:\");\n        String password = UserInput.readLine(\"Customer password:\");\n        if (!service.isCustomerExist(personalNumber)){\n            verify = \" PersonalNumber number does not exist.\";\n        }\n        if (!service.verifyCustomer(personalNumber, password)){\n            verify = \"Password does not match.\";\n        }else {\n            customerMenu();\n        }\n        System.out.println(verify);\n    }\n*/\n    public String getAccountNumber() {\n\n\n        return \"\";\n    }\n\n    public void deposit(String toAccount) {\n        double amount = UserInput.readDouble(\"Enter amount to deposit: \");\n        String message = service.deposit(toAccount, amount);\n        System.out.println(message);\n    }\n\n    public void withdraw(String fromAccountNumber) {\n        double amount = UserInput.readDouble(\"Enter amount: \");\n        String message = service.withdraw(fromAccountNumber, amount);\n        System.out.println(message);\n    }\n\n    public void transfer(String fromAccount, String toAccount) {\n        double amount = UserInput.readDouble(\"Enter amount to transfer: \");\n        String message = service.transferFundsBetweenAccounts(amount, fromAccount, toAccount);\n        System.out.println(message);\n    }\n\n    public void makePayment() {\n    }\n\n    public void printTransactionHistory() {\n\n    }\n\n    public void checkBalance() {\n        Double balance = service.checkBalance(\"123456\");\n        System.out.println(\" Account balance = \" + balance);\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/View/Menu.java b/src/View/Menu.java
+--- a/src/View/Menu.java	(revision 92a47178964f5c8a2763e9e29df80ffb43425b59)
++++ b/src/View/Menu.java	(date 1639909306384)
+@@ -6,13 +6,7 @@
+ import java.util.List;
+ import java.util.Locale;
+ import java.util.Scanner;
+-import businessLogic.Transactions.Deposit;
+-import businessLogic.Transactions.Withdrawal;
+ import businessLogic.User.Customer;
+-import businessLogic.User.Employee;
+-import businessLogic.bankAccounts.BankAccount;
+-import businessLogic.bankAccounts.CheckingAccount;
+-import businessLogic.bankAccounts.SavingsAccount;
+ import com.google.gson.Gson;
+ import controller.Service;
+ 
+@@ -25,12 +19,15 @@
+     public void startPage() throws Exception {
+ 
+         String option;
+-        
+         Gson gson = new Gson();
+-        Customer[] customerList = gson.fromJson(new FileReader(".\\src\\controller\\Customer.json"), Customer[].class);
++        // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
++        // This is "/" on UNIX and "\" on Windows.
++        Customer[] customerList = gson.fromJson(new FileReader("src"+System.getProperty("file.separator")+
++                "controller"+System.getProperty("file.separator")+"Customer.json"), Customer[].class);
+         for(Customer customer : customerList){
+             service.getCustomerList().add(customer);
+         }
++
+         // Läs in all info från Customer.Json och lägger till i listorna
+         do {
+             Printing.startPage();
+@@ -51,7 +48,7 @@
+                         registerCustomer();
+                     break;
+                 case "2":
+-                    String personalNumber = UserInput.readLine("Please enter your personalnumber: ");
++                    String personalNumber = UserInput.readLine("Please enter your personal number: ");
+                     if (service.onlyDigits(personalNumber)) {
+                         if (!service.containsCustomer(personalNumber)) {
+                             System.out.println("No customer with that personal number.");
+@@ -217,13 +214,13 @@
+         String option;
+ 
+         do {
+-            //todo Margaret add handle user input
++            //todo Margaret - handle user input
+             option = UserInput.readLine("Would you like to save the recipient for future payments/transfers? " + EOL +
+                     "Type 1 for Yes, 2 for No." + EOL);
+             switch (option) {
+ 
+                 case "1":
+-                    //todo Margaret add handle user input
++                    //todo Margaret - handle user input
+                     String name = UserInput.readLine("Enter transaction/recipient name: ");
+                     System.out.println(service.saveRecipient(currentUser, fromAccountNumber, toAccountNumber, note, name));
+                     customerMenu(currentUser);
+@@ -241,7 +238,6 @@
+ 
+     public String chooseAccount(Customer currentUser) throws Exception {
+         String option;
+-        List<BankAccount> accounts = currentUser.getBankAccounts();
+         String operationResult = "";
+ 
+         do {
+@@ -255,16 +251,10 @@
+                     payTransferMenu(currentUser);
+                     break;
+                 case "1":
+-                    for (BankAccount account : accounts) {
+-                        if (account instanceof CheckingAccount)
+-                            return account.getAccountNumber();
+-                    }
++                    operationResult = service.getCheckingAccountNumber(currentUser);
+                     break;
+                 case "2":
+-                    for (BankAccount account : accounts) {
+-                        if (account instanceof SavingsAccount)
+-                            return account.getAccountNumber();
+-                    }
++                    operationResult = service.getSavingsAccountNumber(currentUser);
+                     break;
+                 default:
+                     Printing.invalidEntry();
+@@ -289,18 +279,18 @@
+                     break;
+                 case "1":
+                     String accountNumber = chooseAccount(currentUser);
+-                    BankAccount account = service.getAccountByAccountNumber(accountNumber);
+-                    System.out.println(service.printAllTransactions(account.getTransactionList()));
++                    System.out.println(service.printAllTransactions(
++                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
+                     break;
+                 case "2":
+                     accountNumber = chooseAccount(currentUser);
+-                    account = service.getAccountByAccountNumber(accountNumber);
+-                    System.out.println(service.printAllDeposits(account.getTransactionList()));
++                    System.out.println(service.printAllDeposits(
++                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
+                     break;
+                 case "3":
+                     accountNumber = chooseAccount(currentUser);
+-                    account = service.getAccountByAccountNumber(accountNumber);
+-                    System.out.println(service.printAllWithdrawals(account.getTransactionList()));
++                    System.out.println(service.printAllWithdrawals(
++                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
+                     break;
+                 case "4":
+                     System.out.println("View total deposits for a period - coming in v2");
+Index: dit094_miniproject_group_3.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module type=\"JAVA_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\" inherit-compiler-output=\"true\">\n    <exclude-output />\n    <content url=\"file://$MODULE_DIR$\">\n      <sourceFolder url=\"file://$MODULE_DIR$/src\" isTestSource=\"false\" />\n    </content>\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n    <orderEntry type=\"module-library\" exported=\"\">\n      <library>\n        <CLASSES>\n          <root url=\"jar://$USER_HOME$/Desktop/gson-2.8.2.jar!/\" />\n        </CLASSES>\n        <JAVADOC />\n        <SOURCES />\n      </library>\n    </orderEntry>\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/dit094_miniproject_group_3.iml b/dit094_miniproject_group_3.iml
+--- a/dit094_miniproject_group_3.iml	(revision 92a47178964f5c8a2763e9e29df80ffb43425b59)
++++ b/dit094_miniproject_group_3.iml	(date 1639647327751)
+@@ -10,7 +10,7 @@
+     <orderEntry type="module-library" exported="">
+       <library>
+         <CLASSES>
+-          <root url="jar://$USER_HOME$/Desktop/gson-2.8.2.jar!/" />
++          <root url="jar://$MODULE_DIR$/../../../gson-2.8.2.jar!/" />
+         </CLASSES>
+         <JAVADOC />
+         <SOURCES />
