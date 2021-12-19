@@ -46,15 +46,13 @@ public class Printing {
                 "6. Remove customer." + EOL);
     }
     public static void accountsMenu(){
-        System.out.println( EOL + "Please choose one of the following options:" + EOL +
-                "0. Return to menu." + EOL +
+        System.out.println( EOL + "0. Return to menu." + EOL +
                 "1. Pay, Deposit or Transfer." + EOL+
                 "2. View Accounts History." + EOL);
     }
 
     public static void KYCMenu() {
-        System.out.println( EOL + "Please choose one of the following options:" + EOL +
-                "0. Return to menu." + EOL +
+        System.out.println( EOL + "0. Return to menu." + EOL +
                 "1. Fill in KYC." + EOL +
                 "2. View KYC." + EOL);
     }
@@ -67,8 +65,7 @@ public class Printing {
     }
 
     public static void payTransferMenu(){
-        System.out.println( EOL + "Please choose one of the following options:" + EOL +
-                "0. Return to the previous menu." + EOL +
+        System.out.println( EOL + "0. Return to the previous menu." + EOL +
                 "1. Deposit funds." + EOL +
                 "2. Transfers between accounts." + EOL +
                 "3. Transfer funds or make payment." + EOL +
@@ -76,8 +73,7 @@ public class Printing {
                 "5. View Transactions History." + EOL);
     }
     public static void  transactionHistoryMenu(){
-        System.out.println(EOL + "Please choose one of the following options:" + EOL +
-                "0. Return to the previous menu." + EOL +
+        System.out.println(EOL + "0. Return to the previous menu." + EOL +
                 "1. View all transactions." + EOL +
                 "2. View deposits." + EOL +
                 "3. View withdrawals." + EOL +
