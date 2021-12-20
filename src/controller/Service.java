@@ -554,6 +554,7 @@ public class Service {
             account.addTransaction(deposit);
             return "\u001B[32m" + account.getType() + " balance was updated successfully!" + EOL +
                     "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
+            //todo Margaret - Could we add this line also to withdraw?
         }
     }
 
@@ -828,7 +829,13 @@ public class Service {
         // "transforms" to a loan
         loanList.add(loan);
         }
-        return "\u001B[32m" + "Your loan has been approved." + "\u001B[0m";
+        return "\u001B[32m" + "Your loan has been approved." + "\u001B[0m" + EOL
+                + payOutLoan(currentUser) + EOL ;
+    }
+
+    public String payOutLoan(Customer currentUser) {
+        String message = deposit(getSavingsAccountNumber(currentUser),getLoanAmount(currentUser));
+        return message;
     }
 
 
@@ -837,52 +844,20 @@ public class Service {
         loanApplicationList.add(increaseLoan);
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
-    /*
-    public double getMonthlyPayment(Customer currentUser) {
-        Loan approvedLoan = findLoan(currentUser);
-        double monthlyInterestRate = approvedLoan.getYearlyInterestRate() / 1200;
-        return approvedLoan.getLoanAmount() * monthlyInterestRate / (1 -
-                (Math.pow(1 / (1 + monthlyInterestRate), 5 * 12)));
-    }
-
-     */
 
     public double getMonthlyPayment(Customer currentUser) {
         Loan approvedLoan = findLoan(currentUser);
-        double monthlyInterestRate = 0.023 / 1200;
+        double monthlyInterestRate = 2.3 / 1200;
         double monthlyPayment = approvedLoan.getLoanAmount() * monthlyInterestRate
                 / (1 - (1 / Math.pow(1 + monthlyInterestRate, approvedLoan.getNumOfYears() * 12)));
         return monthlyPayment;
     }
 
-
-    public double getTotalPayment(Customer currentUser) {
-        double totalPayment = getMonthlyPayment(currentUser) * 5 * 12;
-        return totalPayment;
+    public double getLoanAmount(Customer currentUser) {
+        Loan approvedLoan = findLoan(currentUser);
+        return approvedLoan.getLoanAmount();
     }
 
-    public String depositLoan (String toAccount, double amount) {
-        BankAccount account = getAccountByAccountNumber(toAccount);account.addToUpdateBalance(amount);
-        Deposit deposit = new Deposit(amount, toAccount);
-        transactions.add(deposit);
-        account.addTransaction(deposit);
-        return account.getType() + " balance was updated successfully!" + EOL +
-                    "Current balance is: " + account.getBalance() + " SEK.";
-        }
-
-    /*
-    public String viewLoanApplications(String personalNumber){
-        if(loanApplicationList.isEmpty()){
-            return "Currently no loan applications waiting for review.";
-        }
-        String message = "All loan applications:";
-        for (LoanApplication loanApplication : loanApplicationList) {
-            message += (loanApplication.getPersonalNumber());
-        }
-        return message;
-    }
-
-     */
     public LoanApplication findLoanApplication(Customer currentUser) {
         for (LoanApplication loanApplication: loanApplicationList) {
             if(loanApplication.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
