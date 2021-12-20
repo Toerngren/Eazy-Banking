@@ -311,10 +311,15 @@ public class Menu {
     }
 
     /* LOAN MENU */
-    public void loanMenu(Customer currentUser) throws Exception {
-        String option;
+    public String loanMenu(Customer currentUser) throws Exception {
+        String option = "";
+        String operationResult = "";
 
         do {
+            if (!service.approvedKYC(currentUser)) {
+                System.out.println("Please register KYC first to use all bank services!");
+                kycMenu(currentUser);
+            } else {
             Printing.loanMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
@@ -332,9 +337,12 @@ public class Menu {
                     Printing.invalidEntry();
                     break;
             }
+            }
         } while (!(option.equals("0")));
         UserInput.exitScanner();
+        return operationResult;
     }
+
 
     public void myLoanMenu(Customer currentUser) throws Exception {
         String option;
@@ -638,22 +646,6 @@ public class Menu {
         String loan = service.viewLoan(currentUser.getPersonalNumber());
         System.out.println(loan);
     }
-/*
-    After viewing loan, you return to the loan menu, Do we need this question? Feels unnecessary.
-
-    public void loanQuestion (Customer currentUser) throws Exception {
-        String reply = UserInput.readLine("Would you like to apply for a loan? Yes or No:");
-        if (reply.equals("yes")){
-            registerLoanApplication(currentUser);
-        } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
-            System.out.println("No reply has been sent.");
-            loanMenu(currentUser);
-        } else {
-            System.out.println("Input yes or no.");
-        }
-    }
-
- */
 
 
     public void registerLoanApplication(Customer currentUser) throws Exception {
@@ -688,11 +680,11 @@ public class Menu {
     }
 
     public String payLoan (Customer currentUser) throws Exception {
+        viewLoan(currentUser);
         String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
      if (reply.equals("yes")){
-         String message = service.deposit(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
+         String message = service.withdraw(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
          System.out.println(message);
-
          return reply;
     } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
         System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
@@ -702,6 +694,9 @@ public class Menu {
     }
         return reply;
     }
+
+
+
 
 
     /*
