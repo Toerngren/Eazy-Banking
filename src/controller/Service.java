@@ -50,7 +50,8 @@ public class Service {
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
-                                 String telephone, String password, String pinCode) {
+                                 String telephone, String password, String pinCode){
+
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
         customerList.add(customer);
 
@@ -272,6 +273,14 @@ public class Service {
         }
         return true;
     }
+    public boolean onlyDigitsPass(String password) {
+        for (int i = 0; i < password.length(); i++) {
+            if (!Character.isDigit(password.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
@@ -444,22 +453,23 @@ public class Service {
     }
 
     public String editCustomerTelephone(String personalNumber, String newTelephone) {
-
+        String changedTelephone = "";
         Customer telephoneToChange = null;
         for (Customer currentPhone : customerList) {
             if (currentPhone.getPersonalNumber().equals(personalNumber)) {
-                if (newTelephone.isEmpty() || newTelephone.isBlank()) {
+                if (newTelephone.isEmpty() || newTelephone.isBlank() || !onlyDigitsT(newTelephone)) {
                     return "Invalid entry.";
                 }
                 telephoneToChange = currentPhone;
                 currentPhone.setTelephone(newTelephone);
+                changedTelephone = personalNumber + "'s" + " telephone number was edited successfully.";
             }
             if (telephoneToChange == null) {
 
                 return personalNumber + " was not registered yet.";
             }
         }
-        return personalNumber + "'s" + " telephone number was edited successfully.";
+        return changedTelephone;
     }
 
     public boolean employeeLoginCheck(String username, String password) {
@@ -469,27 +479,30 @@ public class Service {
 
     public String editCustomerPassword(String personalNumber, String newPassword) {
         Customer passwordToChange = null;
-        for (Customer currentPW : customerList) {
-            if (currentPW.getPersonalNumber().equals(personalNumber)) {
-                if (newPassword.isEmpty() || newPassword.isBlank()) {
+        String dosomething = "";
+        for (Customer customer : customerList) {
+            if (customer.getPersonalNumber().equals(personalNumber)) {
+                if (newPassword.isEmpty() || newPassword.isBlank() || !onlyDigitsPass(newPassword)) {
                     return "Invalid entry.";
                 }
-                passwordToChange = currentPW;
-                currentPW.setPassword(newPassword);
+                passwordToChange = customer;
+                customer.setPassword(newPassword);
+                dosomething = personalNumber + "'s" + " password was edited successfully.";
+
             }
             if (passwordToChange == null) {
 
                 return personalNumber + " was not registered yet.";
             }
         }
-        return personalNumber + "'s" + " password was edited successfully.";
+        return dosomething;
     }
 
     public String editCustomerPincode(String personalNumber, String newPincode) {
         Customer pinCodeToChange = null;
         for (Customer currentPinCode : customerList) {
             if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
-                if (newPincode.isEmpty() || newPincode.isBlank()) {
+                if (newPincode.isEmpty() || newPincode.isBlank() || !onlyDigitsP(newPincode)) {
                     return "Invalid entry.";
                 }
                 pinCodeToChange = currentPinCode;

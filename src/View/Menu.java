@@ -22,7 +22,7 @@ public class Menu {
         Gson gson = new Gson();
         // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
         // This is "/" on UNIX and "\" on Windows.
-        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") +
+        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
                 "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.getCustomerList().add(customer);
@@ -36,7 +36,7 @@ public class Menu {
                 case "0":
                     System.out.println("Closing");
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") +
+                        BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
                                 "controller" + System.getProperty("file.separator") + "Customer.json"));
                         writer.write(gson.toJson(service.getCustomerList()));
                         writer.close();
@@ -459,24 +459,28 @@ public class Menu {
                     System.out.println(currentUser.toString());
                     break;
                 case "2":
+                    String personalNumber1 = UserInput.readLine("Please enter your personalNumber");
                     String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
-                    service.editCustomerTelephone(currentUser.getPersonalNumber(), telephoneNumber);
-                    System.out.println("Telephone number successfully updated!");
+                    String message1 = service.editCustomerTelephone(personalNumber1, telephoneNumber);
+                    System.out.println(message1);
                     break;
                 case "3":
+                    String personalNumber2 = UserInput.readLine("Please enter your personalNumber");
                     String email = UserInput.readLine("Please enter your new email: ");
-                    service.editCustomerEmail(currentUser.getPersonalNumber(), email);
-                    System.out.println("E-mail successfully updated!");
+                    String message2 = service.editCustomerEmail(personalNumber2, email);
+                    System.out.println(message2);
                     break;
                 case "4":
+                    String personalNumber3 = UserInput.readLine("Please enter your personalNumber");
                     String password = UserInput.readLine("Please enter your new password: ");
-                    service.editCustomerPassword(currentUser.getPassword(), password);
-                    System.out.println("Password successfully changed.");
+                    String message3 = service.editCustomerPassword(personalNumber3, password);
+                    System.out.println(message3);
                     break;
                 case "5":
+                    String personalNumber4 = UserInput.readLine("Please enter your personalNumber");
                     String pinCode = UserInput.readLine("Please enter your new PIN-code: ");
-                    service.editCustomerPincode(currentUser.getPinCode(), pinCode);
-                    System.out.println("PIN-code successfully changed.");
+                    String message4 = service.editCustomerPincode(personalNumber4, pinCode);
+                    System.out.println(message4);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -600,8 +604,8 @@ public class Menu {
     public void registerCustomer() throws Exception {
         try {
             String personalNumber = UserInput.readLine("Customer personal number: ");
-            if (!service.onlyDigits(personalNumber) || (!personalNumber.matches("[1-9][0-9]{9}"))) {
-                throw new Exception("10 digits only.");
+            if (!service.onlyDigits(personalNumber) || (!personalNumber.matches("[1-9][0-9]{9}")) || service.containsCustomer(personalNumber)) {
+                throw new Exception("10 digits only or customer already exists in the system");
             }
             String firstName = UserInput.readLine("Customer firstname: ");
             if (firstName.isEmpty() || firstName.isBlank() || service.onlyDigitsName(firstName)) {
