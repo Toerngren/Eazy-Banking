@@ -838,7 +838,12 @@ public class Service {
     }
 
     public String payOutLoan(Customer currentUser) {
-        String message = deposit(getSavingsAccountNumber(currentUser),getLoanAmount(currentUser));
+        String message = "";
+        try {
+            message = deposit(getSavingsAccountNumber(currentUser),getLoanAmount(currentUser));
+        } catch(Exception e) {
+            System.out.println(e);
+        }
         return message;
     }
 

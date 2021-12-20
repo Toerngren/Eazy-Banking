@@ -227,7 +227,7 @@ public class Menu {
         do {
             System.out.println("Would you like to save the recipient for future payments/transfers?");
             do {
-                option = UserInput.readLineYesNo();
+                option = UserInput.readLineYesNo("Type Yes or No: ");
                 switch (option) {
                     case "yes":
                         String name = UserInput.readLine("Enter transaction/recipient name: ");
