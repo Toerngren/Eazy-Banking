@@ -3,7 +3,6 @@ package View;
 import Utility.*;
 
 import java.io.*;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import businessLogic.User.Customer;
@@ -318,13 +317,10 @@ public class Menu {
                     startPage();
                     break;
                 case "1":
-                    viewLoan(currentUser);
+                    myLoanMenu(currentUser);
                     break;
                 case "2":
                     registerLoanApplication(currentUser);
-                    break;
-                case "3":
-                    //registerIncreaseApplication(currentUser);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -333,6 +329,34 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
+
+    public void myLoanMenu(Customer currentUser) throws Exception {
+        String option;
+
+        do {
+            Printing.myLoanMenu();
+            option = UserInput.readLine("Please type an option number: ");
+            switch (option) {
+
+                case "0":
+                    loanMenu(currentUser);
+                    break;
+                case "1":
+                    viewLoan(currentUser);
+                    break;
+                case "2":
+                    //System.out.println(Math.round(service.getMonthlyPayment(currentUser)*100.0)/100.0);
+                    System.out.println(Utilities.truncate(service.getMonthlyPayment(currentUser)));
+                    payLoan(currentUser);
+                    break;
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+    }
+
 
     /* KYC MENU */
     public void kycMenu(Customer currentUser) throws Exception {
@@ -604,19 +628,73 @@ public class Menu {
     }
     public void viewLoan(Customer currentUser){
         String loan = service.viewLoan(currentUser.getPersonalNumber());
-        System.out.println(" Current loan debt: " + loan);
+        System.out.println(loan);
+    }
+/*
+    After viewing loan, you return to the loan menu, Do we need this question? Feels unnecessary.
+
+    public void loanQuestion (Customer currentUser) throws Exception {
+        String reply = UserInput.readLine("Would you like to apply for a loan? Yes or No:");
+        if (reply.equals("yes")){
+            registerLoanApplication(currentUser);
+        } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+            System.out.println("No reply has been sent.");
+            loanMenu(currentUser);
+        } else {
+            System.out.println("Input yes or no.");
+        }
     }
 
-    public void registerLoanApplication(Customer currentUser){
-        double monthlyIncome = UserInput.readDouble("What is your monthly salary?");
-        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?");
-        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?");
-        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" + EOL);
-        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" + EOL);
+ */
+
+
+    public void registerLoanApplication(Customer currentUser) throws Exception {
+        try {
+        double monthlyIncome = UserInput.readDouble("What is your monthly salary? ");
+            if(monthlyIncome < 0 ){
+                throw new Exception("Minimum income is 0,00 SEK. ");
+            }
+        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt? ");
+            if(currentLoanDebt < 0 ){
+                throw new Exception("Minimum value is 0,00 SEK. ");
+            }
+        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt? ");
+            if(currentCreditDebt < 0 ){
+                throw new Exception("Minimum value is 0,00 SEK. ");
+            }
+        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK " + EOL);
+            if(appliedLoanAmount < 0 ){
+                throw new Exception("Minimum value is 0,00 SEK. ");
+            }
+        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years " + EOL);
+            if(appliedLoanDuration < 0 || appliedLoanDuration > 5 ){
+                throw new Exception("Choose between 1 - 5 years.");
+            }
         service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
         String message = service.autoApproval(currentUser);
         System.out.println(message);
+
+        }catch (Exception exception){
+        System.out.println(exception.getMessage());
+        }
     }
+
+    public String payLoan (Customer currentUser) throws Exception {
+        String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
+     if (reply.equals("yes")){
+         String message = service.deposit(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
+         System.out.println(message);
+
+         return reply;
+    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+        System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
+        myLoanMenu(currentUser);
+    } else {
+        System.out.println("Input yes or no.");
+    }
+        return reply;
+    }
+
 
     /*
     public void registerIncreaseApplication (Customer currentUser){

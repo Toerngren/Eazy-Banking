@@ -61,9 +61,14 @@ public class Printing {
     public static void loanMenu() {
         System.out.println( EOL + "Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
-                "1. View loan." + EOL +
-                "2. Apply for a new loan." + EOL +
-                "3. Increase current loan." + EOL);
+                "1. My loan." + EOL +
+                "2. Apply for a new loan." + EOL);
+    }
+    public static void myLoanMenu() {
+        System.out.println( EOL + "Please choose one of the following options:" + EOL +
+                "0. Return to menu. " + EOL +
+                "1. View loan. " + EOL +
+                "2. Pay loan. " + EOL);
     }
 
     public static void payTransferMenu(){

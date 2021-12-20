@@ -26,12 +26,10 @@ public class Loan {
     public String toString() {
         return "Loan:" + EOL +
                 "--------------------------" + EOL +
-                "Loan amount: " + loanAmount + " SEK" + EOL +
-                "Yearly interest rate: " + yearlyInterestRate + "%" + EOL +
-                "Duration:" + numOfYears + " years" + EOL +
-                "Start date:" + date + EOL;
-        //Turns out this, want it to be trimmed to yyyy-MM-dd
-        // Start date:Thu Dec 16 19:00:15 CET 2021
+                "Loan amount: " + Utilities.truncate(loanAmount) + " SEK" + EOL +
+                "Yearly interest rate: " + yearlyInterestRate + " %" + EOL +
+                "Duration: " + numOfYears + " years" + EOL +
+                "Start date: " + Utilities.simpleDateFormat(date);
     }
 
     public double getMonthlyPayment() {
@@ -40,10 +38,6 @@ public class Loan {
                 (Math.pow(1 / (1 + monthlyInterestRate), numOfYears * 12)));
     }
 
-    public double getTotalPayment() {
-        double totalPayment = getMonthlyPayment() * numOfYears * 12;
-        return totalPayment;
-    }
 
 
 
