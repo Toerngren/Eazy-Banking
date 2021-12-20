@@ -788,7 +788,7 @@ public class Service {
         return -1;
     }
 
-    public boolean containsLoanID(String personalNumber) {
+    public boolean checkLoan(String personalNumber) {
         for (Loan loan : loanList) {
             if (loan.getPersonalNumber().equals(personalNumber)) {
                 return true;

@@ -684,26 +684,23 @@ public class Menu {
         System.out.println(exception.getMessage());
         }
     }
-
     public String payLoan (Customer currentUser) throws Exception {
-        viewLoan(currentUser);
-        String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
-     if (reply.equals("yes")){
-         String message = service.withdraw(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
-         System.out.println(message);
-         return reply;
-    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
-        System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
-        myLoanMenu(currentUser);
-    } else {
-        System.out.println("Input yes or no.");
+        if (!service.checkLoan(currentUser.getPersonalNumber())) {
+            return "No loans yet.";
+        } else {
+            String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
+            if (reply.equals("yes")){
+                String message = service.withdraw(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
+                System.out.println(message);
+            } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+                System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
+                myLoanMenu(currentUser);
+            } else {
+                System.out.println("Input yes or no.");
+            }
+            return reply;
+        }
     }
-        return reply;
-    }
-
-
-
-
 
     /*
     public void registerIncreaseApplication (Customer currentUser){
