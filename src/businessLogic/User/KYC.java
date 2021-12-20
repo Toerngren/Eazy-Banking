@@ -1,13 +1,13 @@
 package businessLogic.User;
 
 public class KYC {
-   private String personalNumber;
-   private String occupation;
-   private double salary;
-   private boolean pep;
-   private boolean fatca;
+   private final String personalNumber;
+   private final String occupation;
+   private final double salary;
+   private final boolean pep;
+   private final boolean fatca;
 
-   public KYC (String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
+   public KYC (String personalNumber, String occupation, double salary, boolean pep, boolean fatca) {
       this.personalNumber = personalNumber;
       this.occupation = occupation;
       this.salary = salary;
@@ -17,12 +17,9 @@ public class KYC {
 
    public String toString(){
       return "Personalnumber: " + personalNumber + System.lineSeparator() + "Occupation: " + occupation + System.lineSeparator() + "Salary: " + salary + System.lineSeparator() + "PEP: " +  pep + System.lineSeparator() +
-              "FATCA: "+fatca + System.lineSeparator() + "Approved: ";
+              "FATCA: "+fatca + System.lineSeparator();
    }
 
-   public void setSalary(double salary) {
-      this.salary = salary;
-   }
 
    public boolean isFatca() {
       return fatca;
@@ -30,14 +27,6 @@ public class KYC {
 
    public boolean isPep() {
       return pep;
-   }
-
-   public void setPep(boolean pep) {
-      this.pep = pep;
-   }
-
-   public void setFatca(boolean fatca) {
-      this.fatca = fatca;
    }
 
    public String getOccupation() {
@@ -48,9 +37,6 @@ public class KYC {
       return salary;
    }
 
-   public void setOccupation(String occupation) {
-      this.occupation = occupation;
-   }
 
    public String getPersonalNumber() {
       return personalNumber;

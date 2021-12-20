@@ -5,6 +5,7 @@ import Utility.*;
 import java.io.*;
 import java.util.Locale;
 import java.util.Scanner;
+
 import businessLogic.User.Customer;
 import com.google.gson.Gson;
 import controller.Service;
@@ -21,9 +22,9 @@ public class Menu {
         Gson gson = new Gson();
         // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
         // This is "/" on UNIX and "\" on Windows.
-        Customer[] customerList = gson.fromJson(new FileReader("src"+System.getProperty("file.separator")+
-                "controller"+System.getProperty("file.separator")+"Customer.json"), Customer[].class);
-        for(Customer customer : customerList){
+        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        for (Customer customer : customerList) {
             service.getCustomerList().add(customer);
         }
 
@@ -35,8 +36,8 @@ public class Menu {
                 case "0":
                     System.out.println("Closing");
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("src"+System.getProperty("file.separator")+
-                                "controller"+System.getProperty("file.separator")+"Customer.json"));
+                        BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") +
+                                "controller" + System.getProperty("file.separator") + "Customer.json"));
                         writer.write(gson.toJson(service.getCustomerList()));
                         writer.close();
                     } catch (IOException e) {
@@ -45,7 +46,7 @@ public class Menu {
                     System.exit(0);
                     break;
                 case "1":
-                        registerCustomer();
+                    registerCustomer();
                     break;
                 case "2":
                     String personalNumber = UserInput.readLine("Please enter your personal number: ");
@@ -65,16 +66,16 @@ public class Menu {
                     System.out.println("Personal number needs to only contain digits.");
                     break;
                 case "3": {
-                    String username = UserInput.readLine("Input your username:");
-                    String pinCode = UserInput.readLine("Input your PIN-code:");
-                    if (service.verifyEmployee(username, pinCode)){
+                    String username = UserInput.readLine("Input your username: ");
+                    String pinCode = UserInput.readLine("Input your PIN-code: ");
+                    if (service.verifyEmployee(username, pinCode)) {
                         employeeMenu();
                     } else {
                         startPage();
                     }
                 }
                 break;
-                case"4":
+                case "4":
                     System.out.println("no feature yet");
                     break;
 
@@ -89,7 +90,7 @@ public class Menu {
     public void customerMenu(Customer currentUser) throws Exception {
         String option;
         do {
-            if (service.numberOfMessages(currentUser) > 0){
+            if (service.numberOfMessages(currentUser) > 0) {
                 System.out.println(System.lineSeparator() + "\u001B[32m" + "You have a new message!" + "\u001B[0m" + System.lineSeparator());
             }
             Printing.customerMenu();
@@ -129,16 +130,19 @@ public class Menu {
 
     /* ACCOUNTS MENU */
     public void myAccounts(Customer currentUser) throws Exception {
-        String option;
+        String option = "";
 
         do {
-            System.out.println(service.printAccountsAndBalance(currentUser));
-            Printing.accountsMenu();
-            option = UserInput.readLine("Please type an option number: ");
-            switch (option) {
-                case "0":
-                    customerMenu(currentUser);
-                    break;
+            if (!service.approvedKYC(currentUser)) {
+                System.out.println("Please register KYC first to use all bank services!");
+                kycMenu(currentUser);
+                System.out.println(service.printAccountsAndBalance(currentUser));
+                Printing.accountsMenu();
+                option = UserInput.readLine("Please type an option number: ");
+                switch (option) {
+                    case "0":
+                        customerMenu(currentUser);
+                        break;
                 /*case "1":
                     System.out.println("Open Account - coming soon");
                     break;
@@ -147,119 +151,121 @@ public class Menu {
                     break;
 
                  */
-                case "1":
-                    payTransferMenu(currentUser);
-                    break;
-                case "2":
-                    printTransactionHistory();
-                    break;
-                default:
-                    Printing.invalidEntry();
-                    break;
+                    case "1":
+                        payTransferMenu(currentUser);
+                        break;
+                    case "2":
+                        transactionHistoryMenu(currentUser);
+                        break;
+                    default:
+                        Printing.invalidEntry();
+                        break;
+                }
             }
-        } while (!(option.equals("0")));
+        }while (!(option.equals("0")));
         UserInput.exitScanner();
     }
 
     /* PAY AND TRANSFER MENU */
     public void payTransferMenu(Customer currentUser) throws Exception {
-        String option;
-
+        String option = "";
         do {
-            Printing.payTransferMenu();
-            option = UserInput.readLine("Please type an option number: ");
-            switch (option) {
+            if (!service.approvedKYC(currentUser)) {
+                System.out.println("Please register KYC first to use all bank services!");
+                kycMenu(currentUser);
+            } else {
+                Printing.payTransferMenu();
+                option = UserInput.readLine("Please type an option number: ");
+                switch (option) {
 
-                case "0":
-                    customerMenu(currentUser);
-                    break;
-                case "1":
-                    System.out.println( EOL + "Please choose an account to deposit to or return to the menu: ");
-                    String toAccount = chooseAccount(currentUser);
-                    deposit(toAccount);
-                    break;
-                case "2":
-                    System.out.println(EOL + "Please choose an account to transfer from or return to the menu: ");
-                    String fromAccountNumber = chooseAccount(currentUser);
-                    String toAccountNumber = service.chooseSecondAccount(currentUser, fromAccountNumber);
-                    transfer(fromAccountNumber, toAccountNumber);
-                    break;
-                case "3":
-                    System.out.println(EOL + "Please choose your account or return to the menu: ");
-                    fromAccountNumber = chooseAccount(currentUser);
-                    toAccountNumber = UserInput.readLine("Please enter account number for payment / transfer (6 digits): ");
-                    double amount = UserInput.readDouble("Enter amount: ");
-                    String note = UserInput.readLine("Enter note (optional): ");
-                    String result = service.payTransfer(fromAccountNumber, toAccountNumber, amount, note);
-                    System.out.println(result);
-                    if (result.contains("successful")) {
-                        askToSaveRecipientMenu(currentUser, fromAccountNumber, toAccountNumber, note);
-                    }
-                    break;
-                case "4":
-                    System.out.println(service.printAllRecipients(currentUser.getSavedRecipients()));
-                    break;
-                case "5":
-                    transactionHistoryMenu(currentUser);
-                    break;
-                default:
-                    Printing.invalidEntry();
-                    break;
+                    case "0":
+                        customerMenu(currentUser);
+                        break;
+                    case "1":
+                        System.out.println(EOL + "Please choose an account to deposit to or return to the menu: ");
+                        String toAccount = chooseAccount(currentUser);
+                        deposit(toAccount, currentUser);
+                        break;
+                    case "2":
+                        System.out.println(EOL + "Please choose an account to transfer from or return to the menu: ");
+                        String fromAccountNumber = chooseAccount(currentUser);
+                        String toAccountNumber = service.chooseSecondAccount(currentUser, fromAccountNumber);
+                        transferToOwnAccount(fromAccountNumber, toAccountNumber, currentUser);
+                        break;
+                    case "3":
+                        System.out.println(EOL + "Please choose your account or return to the menu: ");
+                        fromAccountNumber = chooseAccount(currentUser);
+                        toAccountNumber = UserInput.readLine("Please enter account number for payment / transfer (6 digits): ");
+                        transferToAnyAccount(fromAccountNumber, toAccountNumber, currentUser);
+                        break;
+                    case "4":
+                        System.out.println(service.printAllRecipients(currentUser.getSavedRecipients()));
+                        break;
+                    case "5":
+                        transactionHistoryMenu(currentUser);
+                        break;
+                    default:
+                        Printing.invalidEntry();
+                        break;
+                }
             }
-        } while (!(option.equals("0")));
+        } while (!(option.equals("0"))) ;
         UserInput.exitScanner();
     }
 
-    public void askToSaveRecipientMenu(Customer currentUser,String fromAccountNumber, String toAccountNumber, String note) throws Exception {
+
+    public void askToSaveRecipientMenu(Customer currentUser, String fromAccountNumber, String toAccountNumber, String note) throws Exception {
         String option;
 
         do {
-            //todo Margaret - handle user input
-            option = UserInput.readLine("Would you like to save the recipient for future payments/transfers? " + EOL +
-                    "Type 1 for Yes, 2 for No." + EOL);
-            switch (option) {
-
-                case "1":
-                    //todo Margaret - handle user input
-                    String name = UserInput.readLine("Enter transaction/recipient name: ");
-                    System.out.println(service.saveRecipient(currentUser, fromAccountNumber, toAccountNumber, note, name));
-                    customerMenu(currentUser);
-                    break;
-                case "2":
-                    customerMenu(currentUser);
-                    break;
-                default:
-                    Printing.invalidEntry();
-                    break;
-            }
-        } while (!(option.equals("2")));
+            System.out.println("Would you like to save the recipient for future payments/transfers?");
+            do {
+                option = UserInput.readLineYesNo();
+                switch (option) {
+                    case "yes":
+                        String name = UserInput.readLine("Enter transaction/recipient name: ");
+                        System.out.println(service.saveRecipient(currentUser, fromAccountNumber, toAccountNumber, note, name));
+                        payTransferMenu(currentUser);
+                        break;
+                    case "no":
+                        System.out.println("Recipient saving declined.");
+                        payTransferMenu(currentUser);
+                        break;
+                    default:
+                        break;
+                }
+            } while (!option.equals("yes") || !option.equals("no"));
+        } while (!(option.equals("no")));
         UserInput.exitScanner();
     }
 
     public String chooseAccount(Customer currentUser) throws Exception {
-        String option;
+        String option = "";
         String operationResult = "";
 
         do {
-            System.out.println(service.printAccounts(currentUser));
-            option = UserInput.readLine("");
-            switch (option) {
+            if (!service.approvedKYC(currentUser)) {
+                System.out.println("Please register KYC first to use all bank services!");
+                kycMenu(currentUser);
+            } else {
+                System.out.println(service.printAccounts(currentUser));
+                option = UserInput.readLine("");
+                switch (option) {
 
-                case "0":
-                    payTransferMenu(currentUser);
-                    break;
-                case "1":
-                    operationResult = service.getCheckingAccountNumber(currentUser);
-                    break;
-                case "2":
-                    operationResult = service.getSavingsAccountNumber(currentUser);
-                    break;
-                default:
-                    Printing.invalidEntry();
-                    break;
+                    case "0":
+                        payTransferMenu(currentUser);
+                        break;
+                    case "1":
+                        return service.getCheckingAccountNumber(currentUser);
+                    case "2":
+                        return service.getSavingsAccountNumber(currentUser);
+                    default:
+                        Printing.invalidEntry();
+                        break;
+                }
             }
-        } while (!(option.equals("0")));
-        UserInput.exitScanner();
+        } while (!(option.equals("0"))) ;
+            UserInput.exitScanner();
         return operationResult;
     }
 
@@ -369,20 +375,20 @@ public class Menu {
                     customerMenu(currentUser);
                     break;
                 case "1":
-                    if (service.pendingKYC(currentUser)){
+                    if (service.pendingKYC(currentUser)) {
                         System.out.println("KYC is pending review.");
                     } else if (service.approvedKYC(currentUser)) {
                         System.out.println("KYC has already been approved.");
                     } else {
-                        String occupation = UserInput.readLine("What is your occupation?");
-                        System.out.println("Please input your yearly salary before taxes:");
+                        String occupation = UserInput.readLine("What is your occupation? ");
+                        System.out.print("Please input your yearly salary before taxes: ");
                         while (!input.hasNextDouble()) {
                             input.nextLine();
                             System.out.println("Please only use digits.");
                         }
                         double salary = input.nextDouble();
-                        String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Type 1 for yes and 2 for no.");
-                        String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Type 1 for yes and 2 for no.");
+                        String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Input Yes or No: ");
+                        String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Input Yes or No: ");
                         System.out.println(service.registerKYC(currentUser, occupation, salary, pepQuestion, fatcaQuestion));
                     }
                     break;
@@ -417,7 +423,7 @@ public class Menu {
                 case "3":
                     employeeKYCMenu();
                     break;
-                case"4":
+                case "4":
                     employeeCustomerSupportMenu();
                     break;
                 case "5": {
@@ -425,7 +431,7 @@ public class Menu {
                     System.out.println(message);
                     break;
                 }
-                case"6": {
+                case "6": {
                     String delete = UserInput.readLine("Enter personal number of customer you wish to remove: ");
                     String message = service.deleteCustomer(delete);
                     System.out.println(message);
@@ -453,22 +459,22 @@ public class Menu {
                     System.out.println(currentUser.toString());
                     break;
                 case "2":
-                    String telephoneNumber = UserInput.readLine("Please enter your new telephone number:");
+                    String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
                     service.editCustomerTelephone(currentUser.getPersonalNumber(), telephoneNumber);
                     System.out.println("Telephone number successfully updated!");
                     break;
                 case "3":
-                    String email = UserInput.readLine("Please enter your new email:");
+                    String email = UserInput.readLine("Please enter your new email: ");
                     service.editCustomerEmail(currentUser.getPersonalNumber(), email);
                     System.out.println("E-mail successfully updated!");
                     break;
                 case "4":
-                    String password = UserInput.readLine("Please enter your new password:");
+                    String password = UserInput.readLine("Please enter your new password: ");
                     service.editCustomerPassword(currentUser.getPassword(), password);
                     System.out.println("Password successfully changed.");
                     break;
                 case "5":
-                    String pinCode = UserInput.readLine("Please enter your new PIN-code:");
+                    String pinCode = UserInput.readLine("Please enter your new PIN-code: ");
                     service.editCustomerPincode(currentUser.getPinCode(), pinCode);
                     System.out.println("PIN-code successfully changed.");
                     break;
@@ -491,9 +497,9 @@ public class Menu {
                     employeeMenu();
                     break;
                 case "1":
-                    if(!service.emptyReviewList()) {
+                    if (!service.emptyReviewList()) {
                         System.out.println(service.KYCToBeReviewed());
-                        String review = UserInput.readLine("Do you want to approve this KYC? 1 for yes 2 for no.");
+                        String review = UserInput.readLine("Do you want to approve this KYC? Input Yes or No: ");
                         System.out.println(service.reviewUnapprovedKYC(review));
                     } else {
                         System.out.println("There are currently no KYC's to review.");
@@ -521,17 +527,17 @@ public class Menu {
                     customerMenu(currentUser);  //Return to Customer Menu
                     break;
                 case "1":
-                    String message = UserInput.readLine("Message to customer support:");
+                    String message = UserInput.readLine("Message to customer support: ");
                     service.messageToEmployee(currentUser, message);
                     break;
                 case "2":
                     System.out.println(service.viewMessage(currentUser));
                     String reply = UserInput.readLine("Would you like to reply? Yes or No.");
-                    if (reply.equals("yes")){
+                    if (reply.equals("yes")) {
                         String replyMessage = UserInput.readLine("What would you like to reply?");
                         service.messageToEmployee(currentUser, replyMessage);
                         service.removeMessage(currentUser);
-                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
                         System.out.println("No reply has been sent.");
                         service.removeMessage(currentUser);
                     } else {
@@ -566,11 +572,11 @@ public class Menu {
                 case "2":
                     System.out.println(service.viewMessage());
                     String reply = UserInput.readLine("Would you like to reply? Yes or No.");
-                    if (reply.equals("yes")){
+                    if (reply.equals("yes")) {
                         String replyMessage = UserInput.readLine("What would you like to reply?");
                         service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);
                         service.removeMessage();
-                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+                    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
                         System.out.println("No reply has been sent.");
                         service.removeMessage();
                     } else {
@@ -580,7 +586,7 @@ public class Menu {
                 case "3":
                     System.out.println(service.numberOfMessages());
                     break;
-                case"4":
+                case "4":
                     break;
                 default:
                     Printing.invalidEntry();
@@ -589,6 +595,7 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
+
     //TODO Adrian lägga till så att + funkar i telefonumret och PIN-code 4siffror
     public void registerCustomer() throws Exception {
         try {
@@ -597,36 +604,37 @@ public class Menu {
                 throw new Exception("10 digits only.");
             }
             String firstName = UserInput.readLine("Customer firstname: ");
-            if(firstName.isEmpty() || firstName.isBlank() || service.onlyDigitsName(firstName)) {
+            if (firstName.isEmpty() || firstName.isBlank() || service.onlyDigitsName(firstName)) {
                 throw new Exception("Name cannot be blank or contain digits.");
             }
             String lastName = UserInput.readLine("Customer lastname: ");
-            if(lastName.isEmpty() || lastName.isBlank() || service.onlyDigitsLastName(lastName)) {
+            if (lastName.isEmpty() || lastName.isBlank() || service.onlyDigitsLastName(lastName)) {
                 throw new Exception("Name cannot be blank or contain digits.");
             }
             String email = UserInput.readLine("Customer email: ");
-            if(email.isBlank() || !email.contains("@")){
+            if (email.isBlank() || !email.contains("@")) {
                 throw new Exception("Email must contain @.");
             }
             String telephone = UserInput.readLine("Customer telephone number: ");
-            if(telephone.isBlank() || !service.onlyDigitsT(telephone)){
+            if (telephone.isBlank() || !service.onlyDigitsT(telephone)) {
                 throw new Exception("Telephone must contain digits only.");
             }
             String password = UserInput.readLine("Customer password: ");
-            if(password.isBlank() || password.isEmpty()){
+            if (password.isBlank() || password.isEmpty()) {
                 throw new Exception("You must have a password.");
             }
             String pinCode = UserInput.readLine("Customer pin code: ");
-            if(pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode)){
+            if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode)) {
                 throw new Exception("PIN-code must be digits and contain four numbers.");
             }
             String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
             System.out.println(message);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
     }
-    public void viewLoan(Customer currentUser){
+
+    public void viewLoan(Customer currentUser) {
         String loan = service.viewLoan(currentUser.getPersonalNumber());
         System.out.println(loan);
     }
@@ -732,10 +740,20 @@ public class Menu {
         return "";
     }
 
-    public void deposit(String toAccount) {
+    public void deposit(String toAccount, Customer currentUser) {
         double amount = UserInput.readDouble("Enter amount to deposit: ");
-        String message = service.deposit(toAccount, amount);
-        System.out.println(message);
+        String typedPinCode = "";
+        try {
+            typedPinCode = askForPinCode();
+            if (service.checkPinCode(typedPinCode, currentUser)) {
+                String message = service.deposit(toAccount, amount);
+                System.out.println(message);
+            } else {
+                System.out.println("\u001B[31m" + "Incorrect PIN-code => Deposit rejected." + "\u001B[0m");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public void withdraw(String fromAccountNumber) {
@@ -744,21 +762,49 @@ public class Menu {
         System.out.println(message);
     }
 
-    public void transfer(String fromAccount, String toAccount) {
+    public void transferToOwnAccount(String fromAccount, String toAccount, Customer currentUser) {
         double amount = UserInput.readDouble("Enter amount to transfer: ");
-        String message = service.transferFundsBetweenAccounts(amount, fromAccount, toAccount);
-        System.out.println(message);
+        try {
+            String typedPinCode = askForPinCode();
+            if (service.checkPinCode(typedPinCode, currentUser)) {
+                String message = service.transferFundsBetweenAccounts(amount, fromAccount, toAccount);
+                System.out.println(message);
+            } else {
+                System.out.println("\u001B[31m" + "Incorrect PIN-code => Transfer rejected." + "\u001B[0m");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    public void makePayment() {
+    public void transferToAnyAccount(String fromAccount, String toAccount, Customer currentUser) {
+        if (toAccount.length() != 6) {
+
+        }
+        double amount = UserInput.readDouble("Enter amount: ");
+        String note = UserInput.readLine("Enter note (optional): ");
+        try {
+            String typedPinCode = askForPinCode();
+            if (service.checkPinCode(typedPinCode, currentUser)) {
+                String result = service.payTransfer(fromAccount, toAccount, amount, note);
+                System.out.println(result);
+                if (result.contains("successful")) {
+                    askToSaveRecipientMenu(currentUser, fromAccount, toAccount, note);
+                }
+            } else {
+                System.out.println("\u001B[31m" + "Incorrect PIN-code => Transfer rejected." + "\u001B[0m");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    public void printTransactionHistory() {
-
-    }
-
-    public void checkBalance() {
-        Double balance = service.checkBalance("123456");
-        System.out.println(" Account balance = " + balance);
+    public String askForPinCode() throws Exception {
+        String typedPinCode = UserInput.readLine("Enter PIN-code to confirm: ");
+        if (typedPinCode.isEmpty() || typedPinCode.isBlank() || typedPinCode.length() != 4) {
+            throw new Exception("PIN-code must be 4 characters. Action is declined.");
+        } else {
+            return typedPinCode;
+        }
     }
 }

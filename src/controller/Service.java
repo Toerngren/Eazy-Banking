@@ -18,10 +18,7 @@ import businessLogic.bankAccounts.SavingsAccount;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import com.google.gson.Gson;
 
@@ -73,7 +70,7 @@ public class Service {
     }
 
     public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
-        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca, approved);
+        KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca);
         reviewKYCList.add(kyc);
     }
 
@@ -208,7 +205,7 @@ public class Service {
         } else if (pepQuestion.trim().toLowerCase(Locale.ROOT).equals("no")) {
             pep = false;
         } else {
-            return "Please write either Yes or No";
+            return "Please input either Yes or No.";
         }
         if (fatcaQuestion.trim().toLowerCase(Locale.ROOT).equals("yes")) {
             fatca = true;
@@ -217,7 +214,7 @@ public class Service {
         } else {
             return "Please write either Yes or No";
         }
-        KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca, false);
+        KYC kyc = new KYC(customer.getPersonalNumber(), occupation, salary, pep, fatca);
         reviewKYCList.add(kyc);
         return System.lineSeparator() + "KYC awaiting review." + System.lineSeparator();
     }
@@ -279,16 +276,16 @@ public class Service {
     public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
         String result = "";
-        if (review.equals("1")) {
+        if (review.trim().toLowerCase(Locale.ROOT).equals("yes")) {
             approvedKYCList.add(unapprovedKYC);
             OpenAccounts(unapprovedKYC.getPersonalNumber());
             reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been approved.";
-        } else if (review.equals("2")) {
+        } else if (review.trim().toLowerCase(Locale.ROOT).equals("no")) {
             reviewKYCList.remove(unapprovedKYC);
             result = "Customers KYC has been declined.";
         } else {
-            result = "Please input either 1 or 2";
+            result = "Please input either Yes or No.";
         }
         return result + System.lineSeparator();
     }
@@ -317,7 +314,7 @@ public class Service {
         if (approvedKYCList.isEmpty()) {
             result = "There are currently no approved KYCs." + System.lineSeparator();
         } else {
-            result = "There are " + approvedKYCList.size() + " approved reviews." + System.lineSeparator();
+            result = "The number of approved KYC's is: " + approvedKYCList.size();
         }
         return result + System.lineSeparator();
     }
@@ -529,21 +526,7 @@ public class Service {
         return null;
     }
 
-    // ? discuss if this is needed. returns Account index in the list
-    public int getAccountNumberIndex(String accountNumber) {
-        for (int i = 0; i < this.accountsList.size(); i++) {
-            if (this.accountsList.get(i).verifyAccountNumber(accountNumber)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
-    public boolean isAccountNumberExist(String accountNumber) {
-        return getAccountNumberIndex(accountNumber) != -1;
-    }
-
-    // new method for deposit using getAccountByAccountNumber
     public String deposit(String toAccount, double amount) {
         BankAccount account = getAccountByAccountNumber(toAccount);
         if (account == null) {
@@ -556,8 +539,8 @@ public class Service {
             Deposit deposit = new Deposit(amount, toAccount);
             transactions.add(deposit);
             account.addTransaction(deposit);
-            return account.getType() + " balance was updated successfully!" + EOL +
-                    "Current balance is: " + account.getBalance() + " SEK.";
+            return "\u001B[32m" + account.getType() + " balance was updated successfully!" + EOL +
+                    "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
         }
     }
 
@@ -579,7 +562,7 @@ public class Service {
             Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
             transactions.add(withdrawal);
             account.addTransaction(withdrawal);
-            return "Transaction successful!" + EOL +
+            return   "\u001B[32m" + "Transfer successful!" + " \u001B[0m" + EOL +
                     account.getType() + " #" + fromAccountNumber + " Current Balance: " + account.getBalance() + " SEK." + EOL;
         }
     }
@@ -588,7 +571,7 @@ public class Service {
 
         Withdrawal withdrawal = new Withdrawal(0.0, fromAccount, toAccountNumber, note, name);
         currentUser.addRecipient(withdrawal);
-        return "Saved!";
+        return "\u001B[32m" + "Saved!" + " \u001B[0m";
     }
 
     // todo add exceptions
@@ -607,7 +590,7 @@ public class Service {
             transactions.add(withdrawal);
             account.addTransaction(withdrawal);
             account.subtractToUpdateBalance(amount);
-            return account.getType() + " balance was updated successfully.";
+            return "\u001B[32m" + account.getType() + " balance was updated successfully." + " \u001B[0m";
         }
     }
 
@@ -622,7 +605,7 @@ public class Service {
         } else {
             withdraw(fromAccountNumber, amount);
             deposit(toAccountNumber, amount);
-            return "Transfer successful!" + EOL +
+            return "\u001B[32m" + "Transfer successful!" + " \u001B[0m" + EOL +
                     fromAccount.getType() + " #" + fromAccount.getAccountNumber() + " Current Balance: " + fromAccount.getBalance() + " SEK." + EOL +
                     toAccount.getType() + " #" + toAccount.getAccountNumber() + " Current Balance: " + toAccount.getBalance() + " SEK." + EOL;
         }
@@ -757,6 +740,11 @@ public class Service {
     public double checkBalance(String accountNumber) {
         return getAccountByAccountNumber(accountNumber).getBalance();
     }
+
+    public boolean checkPinCode(String typedPinCode, Customer currentUser) {
+        return currentUser.getPinCode().equals(typedPinCode);
+    }
+
 
     //todo Anna LOAN
 
