@@ -760,7 +760,6 @@ public class Service {
     }
 
 
-    //todo Anna LOAN
 
     /**
      * WHERE LOAN BEGIN:
@@ -784,7 +783,7 @@ public class Service {
         return -1;
     }
 
-    public boolean containsLoanID(String personalNumber) {
+    public boolean checkLoan (String personalNumber) {
         for (Loan loan : loanList) {
             if (loan.getPersonalNumber().equals(personalNumber)) {
                 return true;
@@ -808,7 +807,6 @@ public class Service {
         return null;
     }
 
-    //Todo Anna - review
     public String autoApproval (Customer currentUser) {
         LoanApplication unapprovedLoan = findLoanApplication(currentUser);
         String personalNumber = unapprovedLoan.getPersonalNumber();
@@ -820,7 +818,8 @@ public class Service {
             return ("Loan application was declined, contact 24|7 Service for more information.");
         } else {
         double yearlyInterestRate = 2.3;
-        int numOfYears = 5;
+        //int numOfYears = 5;
+        int numOfYears = (int) unapprovedLoan.getAppliedLoanDuration();
         double loanAmount = unapprovedLoan.getAppliedLoanAmount();
         Date date = new Date();
         Loan loan = new Loan(personalNumber,yearlyInterestRate,numOfYears,loanAmount,date);
@@ -834,8 +833,7 @@ public class Service {
     }
 
     public String payOutLoan(Customer currentUser) {
-        String message = deposit(getSavingsAccountNumber(currentUser),getLoanAmount(currentUser));
-        return message;
+        return deposit(getSavingsAccountNumber(currentUser),getLoanAmount(currentUser));
     }
 
 
