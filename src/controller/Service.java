@@ -50,7 +50,8 @@ public class Service {
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
-                                 String telephone, String password, String pinCode) {
+                                 String telephone, String password, String pinCode){
+
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
         customerList.add(customer);
 
@@ -272,6 +273,14 @@ public class Service {
         }
         return true;
     }
+    public boolean onlyDigitsPass(String password) {
+        for (int i = 0; i < password.length(); i++) {
+            if (!Character.isDigit(password.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
@@ -444,22 +453,23 @@ public class Service {
     }
 
     public String editCustomerTelephone(String personalNumber, String newTelephone) {
-
+        String changedTelephone = "";
         Customer telephoneToChange = null;
         for (Customer currentPhone : customerList) {
             if (currentPhone.getPersonalNumber().equals(personalNumber)) {
-                if (newTelephone.isEmpty() || newTelephone.isBlank()) {
+                if (newTelephone.isEmpty() || newTelephone.isBlank() || !onlyDigitsT(newTelephone)) {
                     return "Invalid entry.";
                 }
                 telephoneToChange = currentPhone;
                 currentPhone.setTelephone(newTelephone);
+                changedTelephone = personalNumber + "'s" + " telephone number was edited successfully.";
             }
             if (telephoneToChange == null) {
 
                 return personalNumber + " was not registered yet.";
             }
         }
-        return personalNumber + "'s" + " telephone number was edited successfully.";
+        return changedTelephone;
     }
 
     public boolean employeeLoginCheck(String username, String password) {
@@ -469,27 +479,30 @@ public class Service {
 
     public String editCustomerPassword(String personalNumber, String newPassword) {
         Customer passwordToChange = null;
-        for (Customer currentPW : customerList) {
-            if (currentPW.getPersonalNumber().equals(personalNumber)) {
-                if (newPassword.isEmpty() || newPassword.isBlank()) {
+        String dosomething = "";
+        for (Customer customer : customerList) {
+            if (customer.getPersonalNumber().equals(personalNumber)) {
+                if (newPassword.isEmpty() || newPassword.isBlank() || !onlyDigitsPass(newPassword)) {
                     return "Invalid entry.";
                 }
-                passwordToChange = currentPW;
-                currentPW.setPassword(newPassword);
+                passwordToChange = customer;
+                customer.setPassword(newPassword);
+                dosomething = personalNumber + "'s" + " password was edited successfully.";
+
             }
             if (passwordToChange == null) {
 
                 return personalNumber + " was not registered yet.";
             }
         }
-        return personalNumber + "'s" + " password was edited successfully.";
+        return dosomething;
     }
 
     public String editCustomerPincode(String personalNumber, String newPincode) {
         Customer pinCodeToChange = null;
         for (Customer currentPinCode : customerList) {
             if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
-                if (newPincode.isEmpty() || newPincode.isBlank()) {
+                if (newPincode.isEmpty() || newPincode.isBlank() || !onlyDigitsP(newPincode)) {
                     return "Invalid entry.";
                 }
                 pinCodeToChange = currentPinCode;
@@ -541,6 +554,7 @@ public class Service {
             account.addTransaction(deposit);
             return "\u001B[32m" + account.getType() + " balance was updated successfully!" + EOL +
                     "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
+            //todo Margaret - Could we add this line also to withdraw?
         }
     }
 
@@ -754,7 +768,7 @@ public class Service {
 
     /**
      * WHERE LOAN BEGIN:
-     * <p>
+     *
      * ╭━┳━╭━╭━╮╮
      * ┃┈┈┈┣▅╋▅┫┃
      * ┃┈┃┈╰━╰━━━━━━╮
@@ -786,8 +800,7 @@ public class Service {
     public String viewLoan(String personalNumber) {
         int index = searchForLoanIndex(personalNumber);
         if (index == -1) {
-            return (" No loan. Would you like to apply for a loan?");
-            // Todo Connect to loan application?
+            return ("Currently no loan.");
         } else {
             return loanList.get(index).toString();
         }
@@ -799,6 +812,7 @@ public class Service {
         return null;
     }
 
+    //Todo Anna - review
     public String autoApproval (Customer currentUser) {
         LoanApplication unapprovedLoan = findLoanApplication(currentUser);
         String personalNumber = unapprovedLoan.getPersonalNumber();
@@ -806,7 +820,7 @@ public class Service {
         double currentLoanDebt = unapprovedLoan.getCurrentLoanDebt();
         double currentCreditDebt = unapprovedLoan.getCurrentCreditDebt();
         double appliedLoanDuration = unapprovedLoan.getAppliedLoanDuration();
-        if ( monthlyIncome <= 10000  || currentLoanDebt >= 500000 || currentCreditDebt >= 500000 || appliedLoanDuration >= 5 ){
+        if ( monthlyIncome <= 10000  || currentLoanDebt >= 500000 || currentCreditDebt >= 500000 || appliedLoanDuration > 5 ){
             return ("Loan application was declined, contact 24|7 Service for more information.");
         } else {
         double yearlyInterestRate = 2.3;
@@ -814,12 +828,19 @@ public class Service {
         double loanAmount = unapprovedLoan.getAppliedLoanAmount();
         Date date = new Date();
         Loan loan = new Loan(personalNumber,yearlyInterestRate,numOfYears,loanAmount,date);
+        //Remove loan application from application list.
+        loanApplicationList.remove(unapprovedLoan);
+        // "transforms" to a loan
         loanList.add(loan);
         }
-        return "Your loan has been approved.";
+        return "\u001B[32m" + "Your loan has been approved." + "\u001B[0m" + EOL
+                + payOutLoan(currentUser) + EOL ;
     }
 
-
+    public String payOutLoan(Customer currentUser) {
+        String message = deposit(getSavingsAccountNumber(currentUser),getLoanAmount(currentUser));
+        return message;
+    }
 
 
     public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
@@ -828,19 +849,19 @@ public class Service {
         return "Your loan application has been received; we will get back to you within 24 hours.";
     }
 
-    /*
-    public String viewLoanApplications(String personalNumber){
-        if(loanApplicationList.isEmpty()){
-            return "Currently no loan applications waiting for review.";
-        }
-        String message = "All loan applications:";
-        for (LoanApplication loanApplication : loanApplicationList) {
-            message += (loanApplication.getPersonalNumber());
-        }
-        return message;
+    public double getMonthlyPayment(Customer currentUser) {
+        Loan approvedLoan = findLoan(currentUser);
+        double monthlyInterestRate = 2.3 / 1200;
+        double monthlyPayment = approvedLoan.getLoanAmount() * monthlyInterestRate
+                / (1 - (1 / Math.pow(1 + monthlyInterestRate, approvedLoan.getNumOfYears() * 12)));
+        return monthlyPayment;
     }
 
-     */
+    public double getLoanAmount(Customer currentUser) {
+        Loan approvedLoan = findLoan(currentUser);
+        return approvedLoan.getLoanAmount();
+    }
+
     public LoanApplication findLoanApplication(Customer currentUser) {
         for (LoanApplication loanApplication: loanApplicationList) {
             if(loanApplication.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
@@ -850,6 +871,14 @@ public class Service {
         return null;
     }
 
+    public Loan findLoan (Customer currentUser) {
+        for (Loan loan: loanList) {
+            if(loan.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
+                return loan;
+            }
+        }
+        return null;
+    }
 
     public String viewMessage(Customer currentUser){
         return currentUser.viewMessage();

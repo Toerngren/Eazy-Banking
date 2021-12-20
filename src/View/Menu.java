@@ -317,10 +317,15 @@ public class Menu {
     }
 
     /* LOAN MENU */
-    public void loanMenu(Customer currentUser) throws Exception {
-        String option;
+    public String loanMenu(Customer currentUser) throws Exception {
+        String option = "";
+        String operationResult = "";
 
         do {
+            if (!service.approvedKYC(currentUser)) {
+                System.out.println("Please register KYC first to use all bank services!");
+                kycMenu(currentUser);
+            } else {
             Printing.loanMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
@@ -329,13 +334,40 @@ public class Menu {
                     startPage();
                     break;
                 case "1":
-                    viewLoan(currentUser);
+                    myLoanMenu(currentUser);
                     break;
                 case "2":
                     registerLoanApplication(currentUser);
                     break;
-                case "3":
-                    //registerIncreaseApplication(currentUser);
+                default:
+                    Printing.invalidEntry();
+                    break;
+            }
+            }
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
+        return operationResult;
+    }
+
+
+    public void myLoanMenu(Customer currentUser) throws Exception {
+        String option;
+
+        do {
+            Printing.myLoanMenu();
+            option = UserInput.readLine("Please type an option number: ");
+            switch (option) {
+
+                case "0":
+                    loanMenu(currentUser);
+                    break;
+                case "1":
+                    viewLoan(currentUser);
+                    break;
+                case "2":
+                    //System.out.println(Math.round(service.getMonthlyPayment(currentUser)*100.0)/100.0);
+                    System.out.println(Utilities.truncate(service.getMonthlyPayment(currentUser)));
+                    payLoan(currentUser);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -344,6 +376,7 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
+
 
     /* KYC MENU */
     public void kycMenu(Customer currentUser) throws Exception {
@@ -436,24 +469,28 @@ public class Menu {
                     System.out.println(currentUser.toString());
                     break;
                 case "2":
+                    String personalNumber1 = UserInput.readLine("Please enter your personalNumber");
                     String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
-                    service.editCustomerTelephone(currentUser.getPersonalNumber(), telephoneNumber);
-                    System.out.println("Telephone number successfully updated!");
+                    String message1 = service.editCustomerTelephone(personalNumber1, telephoneNumber);
+                    System.out.println(message1);
                     break;
                 case "3":
+                    String personalNumber2 = UserInput.readLine("Please enter your personalNumber");
                     String email = UserInput.readLine("Please enter your new email: ");
-                    service.editCustomerEmail(currentUser.getPersonalNumber(), email);
-                    System.out.println("E-mail successfully updated!");
+                    String message2 = service.editCustomerEmail(personalNumber2, email);
+                    System.out.println(message2);
                     break;
                 case "4":
+                    String personalNumber3 = UserInput.readLine("Please enter your personalNumber");
                     String password = UserInput.readLine("Please enter your new password: ");
-                    service.editCustomerPassword(currentUser.getPassword(), password);
-                    System.out.println("Password successfully changed.");
+                    String message3 = service.editCustomerPassword(personalNumber3, password);
+                    System.out.println(message3);
                     break;
                 case "5":
+                    String personalNumber4 = UserInput.readLine("Please enter your personalNumber");
                     String pinCode = UserInput.readLine("Please enter your new PIN-code: ");
-                    service.editCustomerPincode(currentUser.getPinCode(), pinCode);
-                    System.out.println("PIN-code successfully changed.");
+                    String message4 = service.editCustomerPincode(personalNumber4, pinCode);
+                    System.out.println(message4);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -577,8 +614,8 @@ public class Menu {
     public void registerCustomer() throws Exception {
         try {
             String personalNumber = UserInput.readLine("Customer personal number: ");
-            if (!service.onlyDigits(personalNumber) || (!personalNumber.matches("[1-9][0-9]{9}"))) {
-                throw new Exception("10 digits only.");
+            if (!service.onlyDigits(personalNumber) || (!personalNumber.matches("[1-9][0-9]{9}")) || service.containsCustomer(personalNumber)) {
+                throw new Exception("10 digits only or customer already exists in the system");
             }
             String firstName = UserInput.readLine("Customer firstname: ");
             if (firstName.isEmpty() || firstName.isBlank() || service.onlyDigitsName(firstName)) {
@@ -613,19 +650,60 @@ public class Menu {
 
     public void viewLoan(Customer currentUser) {
         String loan = service.viewLoan(currentUser.getPersonalNumber());
-        System.out.println(" Current loan debt: " + loan);
+        System.out.println(loan);
     }
 
-    public void registerLoanApplication(Customer currentUser) {
-        double monthlyIncome = UserInput.readDouble("What is your monthly salary?");
-        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?");
-        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?");
-        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" + EOL);
-        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" + EOL);
-        service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration);
+
+    public void registerLoanApplication(Customer currentUser) throws Exception {
+        try {
+        double monthlyIncome = UserInput.readDouble("What is your monthly salary? ");
+            if(monthlyIncome < 0 ){
+                throw new Exception("Minimum income is 0,00 SEK. ");
+            }
+        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt? ");
+            if(currentLoanDebt < 0 ){
+                throw new Exception("Minimum value is 0,00 SEK. ");
+            }
+        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt? ");
+            if(currentCreditDebt < 0 ){
+                throw new Exception("Minimum value is 0,00 SEK. ");
+            }
+        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK " + EOL);
+            if(appliedLoanAmount < 0 ){
+                throw new Exception("Minimum value is 0,00 SEK. ");
+            }
+        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years " + EOL);
+            if(appliedLoanDuration < 0 || appliedLoanDuration > 5 ){
+                throw new Exception("Choose between 1 - 5 years.");
+            }
+        service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
         String message = service.autoApproval(currentUser);
         System.out.println(message);
+
+        }catch (Exception exception){
+        System.out.println(exception.getMessage());
+        }
     }
+
+    public String payLoan (Customer currentUser) throws Exception {
+        viewLoan(currentUser);
+        String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
+     if (reply.equals("yes")){
+         String message = service.withdraw(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
+         System.out.println(message);
+         return reply;
+    } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
+        System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
+        myLoanMenu(currentUser);
+    } else {
+        System.out.println("Input yes or no.");
+    }
+        return reply;
+    }
+
+
+
+
 
     /*
     public void registerIncreaseApplication (Customer currentUser){
