@@ -22,7 +22,7 @@ public class Menu {
         Gson gson = new Gson();
         // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
         // This is "/" on UNIX and "\" on Windows.
-        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") +
                 "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.getCustomerList().add(customer);
@@ -36,7 +36,7 @@ public class Menu {
                 case "0":
                     System.out.println("Closing");
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                        BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") +
                                 "controller" + System.getProperty("file.separator") + "Customer.json"));
                         writer.write(gson.toJson(service.getCustomerList()));
                         writer.close();
