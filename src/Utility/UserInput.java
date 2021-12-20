@@ -39,8 +39,8 @@ public class UserInput {
         } return readDouble(message);
     }
 
-        public static String readLineYesNo () {
-            System.out.print("Type Yes or No: ");
+        public static String readLineYesNo (String message) {
+            System.out.print(message);
             String sentence = input.nextLine().trim().toLowerCase(Locale.ROOT);
             if (sentence.equals("yes")) {
                 return sentence;
