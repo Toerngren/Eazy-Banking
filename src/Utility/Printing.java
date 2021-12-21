@@ -12,7 +12,7 @@ public class Printing {
                 "3. Employee login." + EOL);
     }
     public static void customerMenu(){
-        System.out.println("You are now logged in!" +EOL +"Please choose among the options below." + EOL +
+        System.out.println(EOL +"Please choose among the options below." + EOL +
                 "0. Log out" + EOL +
                 "1. Payments & Transfers" + EOL +
                 "2. Bank accounts" + EOL +
