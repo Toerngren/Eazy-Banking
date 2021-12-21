@@ -44,7 +44,7 @@ public class Loan {
     public String getPersonalNumber() {
         return personalNumber;
     }
-
+    // Should not be allowed to set
     public void setPersonalNumber(String customerID) {
         this.personalNumber = customerID;
     }
