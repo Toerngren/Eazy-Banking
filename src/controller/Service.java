@@ -285,8 +285,8 @@ public class Service {
         Customer currentUser = findCustomer(customerPersonalNumber);
         CheckingAccount cH = new CheckingAccount(customerPersonalNumber);
         SavingsAccount sA = new SavingsAccount(customerPersonalNumber);
-        currentUser.addBankAccount(cH);
-        currentUser.addBankAccount(sA);
+        currentUser.addCheckingList(cH);
+        currentUser.addSavingsList(sA);
         accountsList.add(cH);
         accountsList.add(sA);
     }
@@ -634,22 +634,10 @@ public class Service {
 
     public String printAccounts(Customer currentUser) {
         String operationResult = "0. Return to the previous menu" + EOL;
-        List<BankAccount> accounts = currentUser.getBankAccounts();
-        String checkingAccountOutput = "";
-        String savingsAccountOutput = "";
-        if (accounts.isEmpty()) {
-            operationResult += "No accounts open yet.";
-        } else {
-            for (BankAccount account : accounts) {
-                if (account instanceof CheckingAccount) {
-                    checkingAccountOutput = "1. Checking Account: #" + account.getAccountNumber() + EOL;
-                }
-                if (account instanceof SavingsAccount) {
-                    savingsAccountOutput = "2. Savings Account: #" + account.getAccountNumber() + EOL;
-                }
-            }
+        if (currentUser.getCheckingList().isEmpty() && currentUser.getSavingsList().isEmpty()) {
+            return operationResult + "No accounts open yet.";
         }
-        operationResult += checkingAccountOutput + savingsAccountOutput;
+        operationResult += "1. " + currentUser.getSavingsList().get(0).getAccountNumber() + EOL + "2. " + currentUser.getCheckingList().get(0).getAccountNumber() + EOL;
         return operationResult;
     }
 

@@ -22,28 +22,33 @@ public class Menu {
     Service service = new Service();
     Scanner input = new Scanner(System.in);
 
+    public void init() throws Exception {
+        //jsonFromAccounts();
+        jsonFromCustomer();
+        jsonFromKYC();
+        //jsonFromTransaction();
+        jsonFromLoan();
+        startPage();
+    }
+    public void exit() throws Exception {
+        jsonToCustomer();
+        jsonToLoan();
+        //jsonToTransaction();
+        jsonToKYC();
+        //jsonToAccounts();
+        System.exit(0);
+    }
+
+
+
     public void startPage() throws Exception {
-
         String option;
-       jsonFromCustomer();
-       jsonFromLoan();
-       jsonFromTransaction();
-       jsonFromKYC();
-       jsonFromAccounts();
-
-
         do {
             Printing.startPage();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
-                    System.out.println("Closing");
-                    jsonToCustomer();
-                    jsonToLoan();
-                    jsonToTransaction();
-                    jsonToKYC();
-                    jsonToAccounts();
-                    System.exit(0);
+                    exit();
                     break;
                 case "1":
                     registerCustomer();
@@ -213,8 +218,6 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
-
-
     public void askToSaveRecipientMenu(Customer currentUser, String fromAccountNumber, String toAccountNumber, String note) throws Exception {
         String option;
 
@@ -243,7 +246,6 @@ public class Menu {
     public String chooseAccount(Customer currentUser) throws Exception {
         String option = "";
         String operationResult = "";
-
         do {
             if (!service.approvedKYC(currentUser)) {
                 System.out.println(" \"\\u001B[32m\" + Please register KYC first to use all bank services!" + " \u001B[0m");
@@ -252,7 +254,6 @@ public class Menu {
                 System.out.println(service.printAccounts(currentUser));
                 option = UserInput.readLine("");
                 switch (option) {
-
                     case "0":
                         payTransferMenu(currentUser);
                         break;
@@ -514,6 +515,7 @@ public class Menu {
                     break;
                 case "2":
                     System.out.println(service.numberOfApprovedKYCs());
+                    System.out.println(service.printAllApprovedKYCs());
                     break;
                 default:
                     Printing.invalidEntry();
@@ -843,6 +845,7 @@ public class Menu {
             e.printStackTrace();
         }
     }
+    /*
     public void jsonFromTransaction() throws FileNotFoundException {
         Gson gson = new Gson();
         Transaction[] transactions = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
@@ -862,6 +865,9 @@ public class Menu {
             e.printStackTrace();
         }
     }
+
+    */
+
     public void jsonFromKYC() throws FileNotFoundException {
         Gson gson = new Gson();
 
@@ -882,6 +888,7 @@ public class Menu {
             e.printStackTrace();
         }
     }
+    /*
     public void jsonFromAccounts() throws FileNotFoundException {
         Gson gson = new Gson();
 
@@ -902,4 +909,6 @@ public class Menu {
             e.printStackTrace();
         }
     }
+    */
+
 }

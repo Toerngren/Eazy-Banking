@@ -21,6 +21,8 @@ public class Customer{
     private List<BankAccount> bankAccounts;
     private List<Transaction> savedRecipients;
     private ArrayList<String> customerMessageList;
+    private List<CheckingAccount> checkingList = new ArrayList<>();
+    private List<SavingsAccount> savingsList = new ArrayList<>();
 
     /*
         private List<CheckingAccount> accountList;
@@ -145,6 +147,21 @@ public class Customer{
         this.savedRecipients.add(transaction);
     }
 
+    public List<CheckingAccount> getCheckingList() {
+        return checkingList;
+    }
+
+    public void addCheckingList(CheckingAccount checkingAccount) {
+        this.checkingList.add(checkingAccount);
+    }
+
+    public List<SavingsAccount> getSavingsList() {
+        return savingsList;
+    }
+
+    public void addSavingsList(SavingsAccount savingsAccount) {
+        this.savingsList.add(savingsAccount);
+    }
 }
 
 
