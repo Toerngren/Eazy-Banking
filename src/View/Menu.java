@@ -436,25 +436,25 @@ public class Menu {
                     String personalNumber1 = UserInput.readLine("Please enter your personalNumber");
                     String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
                     String message1 = service.editCustomerTelephone(personalNumber1, telephoneNumber);
-                    System.out.println(message1);
+                    System.out.println(EOL + message1 + EOL);
                     break;
                 case "3":
                     String personalNumber2 = UserInput.readLine("Please enter your personalNumber");
                     String email = UserInput.readLine("Please enter your new email: ");
                     String message2 = service.editCustomerEmail(personalNumber2, email);
-                    System.out.println(message2);
+                    System.out.println(EOL + message2 + EOL);
                     break;
                 case "4":
                     String personalNumber3 = UserInput.readLine("Please enter your personalNumber");
                     String password = UserInput.readLine("Please enter your new password: ");
                     String message3 = service.editCustomerPassword(personalNumber3, password);
-                    System.out.println(message3);
+                    System.out.println(EOL + message3 + EOL);
                     break;
                 case "5":
                     String personalNumber4 = UserInput.readLine("Please enter your personalNumber");
                     String pinCode = UserInput.readLine("Please enter your new PIN-code: ");
                     String message4 = service.editCustomerPincode(personalNumber4, pinCode);
-                    System.out.println(message4);
+                    System.out.println(EOL + message4 + EOL);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -615,12 +615,12 @@ public class Menu {
                 throw new Exception("Name cannot be blank or contain digits.");
             }
             String email = UserInput.readLine("Customer email: ");
-            if (email.isBlank() || !email.contains("@")) {
-                throw new Exception("Email must contain @.");
+            if (email.isBlank() || !email.contains("@") || !email.contains(".")) {
+                throw new Exception("Invalid Email address.");
             }
             String telephone = UserInput.readLine("Customer telephone number: ");
-            if (telephone.isBlank() || !service.onlyDigitsT(telephone)) {
-                throw new Exception("Telephone must contain digits only.");
+            if (telephone.isBlank() || !service.onlyDigitsT(telephone) || telephone.length() < 9 || telephone.length() > 13) {
+                throw new Exception("Telephone number must contain between 9 to 13 digits.");
             }
             String password = UserInput.readLine("Customer password: ");
             if (password.isBlank() || password.isEmpty()) {
