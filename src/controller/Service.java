@@ -52,18 +52,6 @@ public class Service {
         return System.lineSeparator() + "You have now been registered!" + System.lineSeparator();
     }
 
-    public void serializeCustomer(Customer customer) {
-        Gson gson = new Gson();
-        String json = gson.toJson(customer);
-        System.out.println(json);
-    }
-
-    public void serializeCustomerList(List<Customer> customerList) {
-        Gson gson = new Gson();
-        String json = gson.toJson(customerList);
-        System.out.println("jsonList: " + json);
-    }
-
     public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
         KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca);
         reviewKYCList.add(kyc);
@@ -534,13 +522,13 @@ public class Service {
     }
 
 
-    public String deposit(String toAccount, double amount) {
+    public String deposit(String toAccount, double amount) throws Exception {
         BankAccount account = getAccountByAccountNumber(toAccount);
         if (account == null) {
-            return "Account doesn't exist.";
+            throw new Exception ("Account doesn't exist.");
         }
         if (amount < 0) {
-            return "Amount should be greater than 0.";
+            throw new Exception("Amount should be greater than 0.");
         } else {
             account.addToUpdateBalance(amount);
             Deposit deposit = new Deposit(amount, toAccount);
@@ -548,29 +536,35 @@ public class Service {
             account.addTransaction(deposit);
             return "\u001B[32m" + account.getType() + " balance was updated successfully!" + EOL +
                     "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
+            //todo Margaret - Could we add this line also to withdraw?
         }
     }
 
-    public String payTransfer(String fromAccountNumber, String toAccountNumber, double amount, String note) {
+    public String payTransfer(String fromAccountNumber, String toAccountNumber, double amount, String note) throws Exception {
         BankAccount account = getAccountByAccountNumber(fromAccountNumber);
         if (account == null) {
-            return "Account doesn't exist.";
-        }
-        if (amount <= 0) {
-            return "Amount should be greater than 0.";
-        }
-        if (amount > account.getBalance()) {
-            return "Not enough funds on account #" + account.getAccountNumber();
+            throw new Exception("Account doesn't exist.");
         }
         if (toAccountNumber.length() != 6) {
-            return "Account number should be 6 digits.";
+            throw new Exception("Account number should be 6 characters.");
+        }
+        if (amount <= 0) {
+            throw new Exception ("Amount should be greater than 0.");
+        }
+        if (amount > account.getBalance()) {
+            throw new Exception ("Not enough funds on account #" + account.getAccountNumber());
         } else {
             account.subtractToUpdateBalance(amount);
             Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
             transactions.add(withdrawal);
             account.addTransaction(withdrawal);
-            return   "\u001B[32m" + "Transfer successful!" + " \u001B[0m" + EOL +
-                    account.getType() + " #" + fromAccountNumber + " Current Balance: " + account.getBalance() + " SEK." + EOL;
+            if (getAccountByAccountNumber(toAccountNumber) != null) {
+                deposit(toAccountNumber, amount);
+            }
+
+            return "\u001B[32m" + "Transfer successful!" + EOL +
+                    account.getType() + " #" + fromAccountNumber + " Current Balance: " + account.getBalance() + " SEK." + " \u001B[0m" + EOL;
+
         }
     }
 
@@ -581,28 +575,27 @@ public class Service {
         return "\u001B[32m" + "Saved!" + " \u001B[0m";
     }
 
-    // todo add exceptions
-    public String withdraw(String fromAccount, double amount) {
+    public String withdraw(String fromAccount, double amount) throws Exception {
         BankAccount account = getAccountByAccountNumber(fromAccount);
         if (account == null) {
-            return "Account doesn't exist.";
+            throw new Exception("Account doesn't exist.");
         }
         if (amount <= 0) {
-            return "Amount should be greater than 0.";
+            throw new Exception("Amount should be greater than 0.");
         }
         if (amount > account.getBalance()) {
-            return "Not enough funds to withdraw from account " + account.getAccountNumber();
+            throw new Exception("Not enough funds to withdraw from account " + account.getAccountNumber());
         } else {
             Withdrawal withdrawal = new Withdrawal(amount, fromAccount);
             transactions.add(withdrawal);
             account.addTransaction(withdrawal);
             account.subtractToUpdateBalance(amount);
-            return "\u001B[32m" + account.getType() + " balance was updated successfully." + " \u001B[0m";
+            return "\u001B[32m" + account.getType() + " balance was updated successfully." + EOL +
+            "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
         }
     }
 
-    // new method for transferring Funds using getAccountByAccountNumber
-    public String transferFundsBetweenAccounts(double amount, String fromAccountNumber, String toAccountNumber) {
+    public String transferFundsBetweenAccounts(double amount, String fromAccountNumber, String toAccountNumber) throws Exception {
         BankAccount fromAccount = getAccountByAccountNumber(fromAccountNumber);
         BankAccount toAccount = getAccountByAccountNumber(toAccountNumber);
         if (toAccount == null || fromAccount == null) {
@@ -612,9 +605,9 @@ public class Service {
         } else {
             withdraw(fromAccountNumber, amount);
             deposit(toAccountNumber, amount);
-            return "\u001B[32m" + "Transfer successful!" + " \u001B[0m" + EOL +
+            return "\u001B[32m" + "Transfer successful!" + EOL +
                     fromAccount.getType() + " #" + fromAccount.getAccountNumber() + " Current Balance: " + fromAccount.getBalance() + " SEK." + EOL +
-                    toAccount.getType() + " #" + toAccount.getAccountNumber() + " Current Balance: " + toAccount.getBalance() + " SEK." + EOL;
+                    toAccount.getType() + " #" + toAccount.getAccountNumber() + " Current Balance: " + toAccount.getBalance() + " SEK." + " \u001B[0m" + EOL;
         }
     }
 
@@ -645,7 +638,7 @@ public class Service {
         String checkingAccountOutput = "";
         String savingsAccountOutput = "";
         if (accounts.isEmpty()) {
-            operationResult += "No accounts open yet. Please return to the menu and register KYC first.";
+            operationResult += "No accounts open yet.";
         } else {
             for (BankAccount account : accounts) {
                 if (account instanceof CheckingAccount) {
@@ -753,7 +746,6 @@ public class Service {
     }
 
 
-    //todo Anna LOAN
 
     /**
      * WHERE LOAN BEGIN:
@@ -777,7 +769,7 @@ public class Service {
         return -1;
     }
 
-    public boolean containsLoanID(String personalNumber) {
+    public boolean checkLoan (String personalNumber) {
         for (Loan loan : loanList) {
             if (loan.getPersonalNumber().equals(personalNumber)) {
                 return true;
@@ -847,40 +839,17 @@ public class Service {
 // Monthly payment = loan amount x mr(1 + mr)^b / (1 + mr)^b – 1
     public double getMonthlyPayment(Customer currentUser) {
         Loan approvedLoan = findLoan(currentUser);
-        double monthlyInterestRate = 0.023 / 1200;
+        double monthlyInterestRate = 2.3 / 1200;
         double monthlyPayment = approvedLoan.getLoanAmount() * monthlyInterestRate
                 / (1 - (1 / Math.pow(1 + monthlyInterestRate, approvedLoan.getNumOfYears() * 12)));
         return monthlyPayment;
     }
 
-
-    public double getTotalPayment(Customer currentUser) {
-        double totalPayment = getMonthlyPayment(currentUser) * 5 * 12;
-        return totalPayment;
+    public double getLoanAmount(Customer currentUser) {
+        Loan approvedLoan = findLoan(currentUser);
+        return approvedLoan.getLoanAmount();
     }
 
-    public String depositLoan (String toAccount, double amount) {
-        BankAccount account = getAccountByAccountNumber(toAccount);account.addToUpdateBalance(amount);
-        Deposit deposit = new Deposit(amount, toAccount);
-        transactions.add(deposit);
-        account.addTransaction(deposit);
-        return account.getType() + " balance was updated successfully!" + EOL +
-                    "Current balance is: " + account.getBalance() + " SEK.";
-        }
-
-    /*
-    public String viewLoanApplications(String personalNumber){
-        if(loanApplicationList.isEmpty()){
-            return "Currently no loan applications waiting for review.";
-        }
-        String message = "All loan applications:";
-        for (LoanApplication loanApplication : loanApplicationList) {
-            message += (loanApplication.getPersonalNumber());
-        }
-        return message;
-    }
-
-     */
     public LoanApplication findLoanApplication(Customer currentUser) {
         for (LoanApplication loanApplication: loanApplicationList) {
             if(loanApplication.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
@@ -1061,14 +1030,5 @@ public class Service {
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
-    public boolean checkLoan (String personalNumber) {
-        for (Loan loan : loanList) {
-            if (loan.getPersonalNumber().equals(personalNumber)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }
 
