@@ -40,10 +40,9 @@ public class Menu {
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
-                    System.out.println("Closing");
+                    System.out.println(EOL + "Closing" + EOL);
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") +
-                                "controller" + System.getProperty("file.separator") + "Customer.json"));
+                        BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "Customer.json"));
                         writer.write(gson.toJson(service.getCustomerList()));
                         writer.close();
                     } catch (IOException e) {
@@ -56,9 +55,12 @@ public class Menu {
                     break;
                 case "2":
                     String personalNumber = UserInput.readLine("Please enter your personal number: ");
-                    if (service.onlyDigits(personalNumber)) {
+                    if (!service.onlyDigits(personalNumber)){
+                        System.out.println(EOL + "Personal number should contains digits." + EOL);
+                    }else
+                     {
                         if (!service.containsCustomer(personalNumber)) {
-                            System.out.println("No customer with that personal number.");
+                            System.out.println(EOL + "No customer with that personal number." + EOL);
                             startPage();
                         }
                         String password = UserInput.readLine("Please enter your password: ");
@@ -66,14 +68,13 @@ public class Menu {
                         if (foundCustomer.verifyPassword(password)) {
                             customerMenu(foundCustomer);
                         } else {
-                            System.out.println("Wrong password.");
+                            System.out.println(EOL + "Wrong password." + EOL);
                         }
                     }
-                    System.out.println("Personal number needs to only contain digits.");
                     break;
                 case "3": {
-                    String username = UserInput.readLine("Input your username: ");
-                    String pinCode = UserInput.readLine("Input your PIN-code: ");
+                    String username = UserInput.readLine("Enter username: ");
+                    String pinCode = UserInput.readLine("Enter PIN-code: ");
                     if (service.verifyEmployee(username, pinCode)) {
                         employeeMenu();
                     } else {
@@ -81,10 +82,6 @@ public class Menu {
                     }
                 }
                 break;
-                case "4":
-                    System.out.println("no feature yet");
-                    break;
-
                 default:
                     Printing.invalidEntry();
                     break;
