@@ -1,7 +1,5 @@
 package controller;
 
-import Utility.Printing;
-import Utility.UserInput;
 import businessLogic.Loan.IncreaseLoan;
 import businessLogic.Loan.Loan;
 import businessLogic.Loan.LoanApplication;

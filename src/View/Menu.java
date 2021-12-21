@@ -22,7 +22,7 @@ public class Menu {
         Gson gson = new Gson();
         // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
         // This is "/" on UNIX and "\" on Windows.
-        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+        Customer[] customerList = gson.fromJson(new FileReader( "src" + System.getProperty("file.separator") +
                 "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.getCustomerList().add(customer);
@@ -144,7 +144,7 @@ public class Menu {
                         customerMenu(currentUser);
                         break;
                 /*case "1":
-                    System.out.println("Open Account - coming soon");
+                        openNewAccount();
                     break;
                 case "2":
                     System.out.println("Close Account - coming soon");
@@ -674,10 +674,12 @@ public class Menu {
             if(currentCreditDebt < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
+        // ?? Control amount input greater than 500, 000 SEK
         int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK " + EOL);
             if(appliedLoanAmount < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
+        // ?? Duration 0 years is possible here
         int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years " + EOL);
             if(appliedLoanDuration < 0 || appliedLoanDuration > 5 ){
                 throw new Exception("Choose between 1 - 5 years.");
@@ -738,11 +740,10 @@ public class Menu {
         System.out.println(verify);
     }
 */
-    public String getAccountNumber() {
+    public void openNewAccount(){
 
-
-        return "";
     }
+
 
     public void deposit(String toAccount, Customer currentUser) {
         double amount = UserInput.readDouble("Enter amount to deposit: ");
