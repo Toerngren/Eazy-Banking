@@ -3,6 +3,8 @@ package View;
 import Utility.*;
 
 import java.io.*;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -120,8 +122,9 @@ public class Menu {
 
         do {
             if (!service.approvedKYC(currentUser)) {
-                System.out.println("Please register KYC first to use all bank services!");
+                System.out.println("\u001B[32m" + "Please register KYC first to use all bank services!" + " \u001B[0m");
                 kycMenu(currentUser);
+            } else {
                 System.out.println(service.printAccountsAndBalance(currentUser));
                 Printing.accountsMenu();
                 option = UserInput.readLine("Please type an option number: ");
@@ -148,16 +151,16 @@ public class Menu {
                         break;
                 }
             }
-        }while (!(option.equals("0")));
+        } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
 
     /* PAY AND TRANSFER MENU */
     public void payTransferMenu(Customer currentUser) throws Exception {
-        String option = "";
+        String option = null;
         do {
             if (!service.approvedKYC(currentUser)) {
-                System.out.println("Please register KYC first to use all bank services!");
+                System.out.println("\u001B[32m" + "Please register KYC first to use all bank services!" + " \u001B[0m");
                 kycMenu(currentUser);
             } else {
                 Printing.payTransferMenu();
@@ -181,7 +184,7 @@ public class Menu {
                     case "3":
                         System.out.println(EOL + "Please choose your account or return to the menu: ");
                         fromAccountNumber = chooseAccount(currentUser);
-                        toAccountNumber = UserInput.readLine("Please enter account number for payment / transfer (6 digits): ");
+                        toAccountNumber = UserInput.readLine("Please enter account number for payment / transfer (6 characters): ");
                         transferToAnyAccount(fromAccountNumber, toAccountNumber, currentUser);
                         break;
                     case "4":
@@ -195,7 +198,7 @@ public class Menu {
                         break;
                 }
             }
-        } while (!(option.equals("0"))) ;
+        } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
 
@@ -206,7 +209,7 @@ public class Menu {
         do {
             System.out.println("Would you like to save the recipient for future payments/transfers?");
             do {
-                option = UserInput.readLineYesNo();
+                option = UserInput.readLineYesNo("Type Yes or No: ");
                 switch (option) {
                     case "yes":
                         String name = UserInput.readLine("Enter transaction/recipient name: ");
@@ -231,7 +234,7 @@ public class Menu {
 
         do {
             if (!service.approvedKYC(currentUser)) {
-                System.out.println("Please register KYC first to use all bank services!");
+                System.out.println(" \"\\u001B[32m\" + Please register KYC first to use all bank services!" + " \u001B[0m");
                 kycMenu(currentUser);
             } else {
                 System.out.println(service.printAccounts(currentUser));
@@ -250,8 +253,8 @@ public class Menu {
                         break;
                 }
             }
-        } while (!(option.equals("0"))) ;
-            UserInput.exitScanner();
+        } while (!(option.equals("0")));
+        UserInput.exitScanner();
         return operationResult;
     }
 
@@ -297,10 +300,15 @@ public class Menu {
     }
 
     /* LOAN MENU */
-    public void loanMenu(Customer currentUser) throws Exception {
-        String option;
+    public String loanMenu(Customer currentUser) throws Exception {
+        String option = "";
+        String operationResult = "";
 
         do {
+            if (!service.approvedKYC(currentUser)) {
+                System.out.println("Please register KYC first to use all bank services!");
+                kycMenu(currentUser);
+            } else {
             Printing.loanMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
@@ -318,9 +326,12 @@ public class Menu {
                     Printing.invalidEntry();
                     break;
             }
-        } while (!(option.equals("0")));
+            }
+        } while (!(option.equals("0"))) ;
         UserInput.exitScanner();
+        return operationResult;
     }
+
 
     public void myLoanMenu(Customer currentUser) throws Exception {
         String option;
@@ -338,8 +349,8 @@ public class Menu {
                     break;
                 case "2":
                     //System.out.println(Math.round(service.getMonthlyPayment(currentUser)*100.0)/100.0);
-                    System.out.println(Utilities.truncate(service.getMonthlyPayment(currentUser)));
-                    payLoan(currentUser);
+                    //System.out.println(Utilities.truncate(service.getMonthlyPayment(currentUser)));
+                    System.out.println(payLoan(currentUser));
                     break;
                 default:
                     Printing.invalidEntry();
@@ -353,6 +364,7 @@ public class Menu {
     /* KYC MENU */
     public void kycMenu(Customer currentUser) throws Exception {
         String option;
+        double salary = 0.0;
         do {
             Printing.KYCMenu();
             option = UserInput.readLine("Please type an option number: ");
@@ -367,12 +379,7 @@ public class Menu {
                         System.out.println("KYC has already been approved.");
                     } else {
                         String occupation = UserInput.readLine("What is your occupation? ");
-                        System.out.print("Please input your yearly salary before taxes: ");
-                        while (!input.hasNextDouble()) {
-                            input.nextLine();
-                            System.out.println("Please only use digits.");
-                        }
-                        double salary = input.nextDouble();
+                        salary = UserInput.readDouble("Please input your yearly salary before taxes: ");
                         String pepQuestion = UserInput.readLine("Are you a politically exposed customer? Input Yes or No: ");
                         String fatcaQuestion = UserInput.readLine("Do you pay taxes in the US? Input Yes or No: ");
                         System.out.println(service.registerKYC(currentUser, occupation, salary, pepQuestion, fatcaQuestion));
@@ -628,25 +635,13 @@ public class Menu {
         String loan = service.viewLoan(currentUser.getPersonalNumber());
         System.out.println(loan);
     }
-/*
-    After viewing loan, you return to the loan menu, Do we need this question? Feels unnecessary.
-
-    public void loanQuestion (Customer currentUser) throws Exception {
-        String reply = UserInput.readLine("Would you like to apply for a loan? Yes or No:");
-        if (reply.equals("yes")){
-            registerLoanApplication(currentUser);
-        } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
-            System.out.println("No reply has been sent.");
-            loanMenu(currentUser);
-        } else {
-            System.out.println("Input yes or no.");
-        }
-    }
-
- */
 
 
     public void registerLoanApplication(Customer currentUser) throws Exception {
+        //if (service.checkLoan(currentUser.getPersonalNumber())) {
+        //return "You already have a loan with Eazy Banking.";
+        //} else {
+        //askForPinCode();
         try {
         double monthlyIncome = UserInput.readDouble("What is your monthly salary? ");
             if(monthlyIncome < 0 ){
@@ -660,10 +655,12 @@ public class Menu {
             if(currentCreditDebt < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
+        // ?? Control amount input greater than 500, 000 SEK
         int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK " + EOL);
             if(appliedLoanAmount < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
+        // ?? Duration 0 years is possible here
         int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years " + EOL);
             if(appliedLoanDuration < 0 || appliedLoanDuration > 5 ){
                 throw new Exception("Choose between 1 - 5 years.");
@@ -678,12 +675,13 @@ public class Menu {
     }
 
     public String payLoan (Customer currentUser) throws Exception {
+        if (!service.checkLoan(currentUser.getPersonalNumber())) {
+            return "No loans yet.";
+        } else {
         String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
      if (reply.equals("yes")){
-         String message = service.deposit(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
+         String message = service.withdraw(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
          System.out.println(message);
-
-         return reply;
     } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
         System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
         myLoanMenu(currentUser);
@@ -692,22 +690,10 @@ public class Menu {
     }
         return reply;
     }
-
-
-    /*
-    public void registerIncreaseApplication (Customer currentUser){
-        String debt = service.viewLoan(currentUser.getPersonalNumber());
-        System.out.println ("Current loan debt: "+ debt + "SEK");
-        double monthlyIncome = UserInput.readDouble("What is your monthly salary?" );
-        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?" );
-        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?" );
-        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" );
-        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" );
-        String message = service.increaseLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration,loanDebt);
-        System.out.println(message);
     }
 
- */
+
+
     /*
     public void loginCustomer(){
         String verify = "";
@@ -724,16 +710,11 @@ public class Menu {
         System.out.println(verify);
     }
 */
-    public String getAccountNumber() {
-
-
-        return "";
-    }
 
     public void deposit(String toAccount, Customer currentUser) {
-        double amount = UserInput.readDouble("Enter amount to deposit: ");
-        String typedPinCode = "";
         try {
+            double amount = UserInput.readDouble("Enter amount to deposit: ");
+            String typedPinCode = "";
             typedPinCode = askForPinCode();
             if (service.checkPinCode(typedPinCode, currentUser)) {
                 String message = service.deposit(toAccount, amount);
@@ -742,19 +723,30 @@ public class Menu {
                 System.out.println("\u001B[31m" + "Incorrect PIN-code => Deposit rejected." + "\u001B[0m");
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("PIN-code must be 4 digits => Action is declined.");
         }
     }
 
-    public void withdraw(String fromAccountNumber) {
-        double amount = UserInput.readDouble("Enter amount: ");
-        String message = service.withdraw(fromAccountNumber, amount);
-        System.out.println(message);
+    public void withdraw(String fromAccountNumber, Customer currentUser) {
+        try {
+            double amount = UserInput.readDouble("Enter amount: ");
+            String typedPinCode = "";
+            typedPinCode = askForPinCode();
+            if (service.checkPinCode(typedPinCode, currentUser)) {
+                String message = service.withdraw(fromAccountNumber, amount);
+                System.out.println(message);
+            } else {
+                System.out.println("\u001B[31m" + "Incorrect PIN-code => Withdrawal rejected." + "\u001B[0m");
+            }
+        } catch (Exception e) {
+            System.out.println("PIN-code must be 4 digits => Action is declined.");
+        }
+
     }
 
     public void transferToOwnAccount(String fromAccount, String toAccount, Customer currentUser) {
-        double amount = UserInput.readDouble("Enter amount to transfer: ");
         try {
+            double amount = UserInput.readDouble("Enter amount to transfer: ");
             String typedPinCode = askForPinCode();
             if (service.checkPinCode(typedPinCode, currentUser)) {
                 String message = service.transferFundsBetweenAccounts(amount, fromAccount, toAccount);
@@ -763,36 +755,37 @@ public class Menu {
                 System.out.println("\u001B[31m" + "Incorrect PIN-code => Transfer rejected." + "\u001B[0m");
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("PIN-code must be 4 digits => Action is declined.");
         }
     }
 
     public void transferToAnyAccount(String fromAccount, String toAccount, Customer currentUser) {
-        if (toAccount.length() != 6) {
-
-        }
-        double amount = UserInput.readDouble("Enter amount: ");
-        String note = UserInput.readLine("Enter note (optional): ");
         try {
-            String typedPinCode = askForPinCode();
-            if (service.checkPinCode(typedPinCode, currentUser)) {
-                String result = service.payTransfer(fromAccount, toAccount, amount, note);
-                System.out.println(result);
-                if (result.contains("successful")) {
-                    askToSaveRecipientMenu(currentUser, fromAccount, toAccount, note);
+            if (toAccount.length() == 6) {
+                double amount = UserInput.readDouble("Enter amount: ");
+                String note = UserInput.readLine("Enter note (optional): ");
+                String typedPinCode = askForPinCode();
+                if (service.checkPinCode(typedPinCode, currentUser)) {
+                    String result = service.payTransfer(fromAccount, toAccount, amount, note);
+                    System.out.println(result);
+                    if (result.contains("successful")) {
+                        askToSaveRecipientMenu(currentUser, fromAccount, toAccount, note);
+                    }
+                } else {
+                    System.out.println("\u001B[31m" + "Incorrect PIN-code => Transfer rejected." + "\u001B[0m");
                 }
             } else {
-                System.out.println("\u001B[31m" + "Incorrect PIN-code => Transfer rejected." + "\u001B[0m");
+                System.out.println("Account number must ne 6 characters");
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("PIN-code must be 4 digits => Action is declined.");
         }
     }
 
     public String askForPinCode() throws Exception {
         String typedPinCode = UserInput.readLine("Enter PIN-code to confirm: ");
         if (typedPinCode.isEmpty() || typedPinCode.isBlank() || typedPinCode.length() != 4) {
-            throw new Exception("PIN-code must be 4 characters. Action is declined.");
+            throw new Exception("PIN-code must be 4 digits. Action is declined.");
         } else {
             return typedPinCode;
         }
