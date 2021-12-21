@@ -1,6 +1,5 @@
 package controller;
 
-import businessLogic.Loan.IncreaseLoan;
 import businessLogic.Loan.Loan;
 import businessLogic.Loan.LoanApplication;
 import businessLogic.Transactions.Deposit;
@@ -13,9 +12,6 @@ import businessLogic.bankAccounts.BankAccount;
 import businessLogic.bankAccounts.CheckingAccount;
 import businessLogic.bankAccounts.SavingsAccount;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -794,21 +790,26 @@ public class Service {
         return false;
     }
 
+//Customer is not allowed to have more than one current loan at the time.
     public String viewLoan(String personalNumber) {
         int index = searchForLoanIndex(personalNumber);
         if (index == -1) {
-            return ("Currently no loan.");
+            return ("You currently do not have a loan with Eazy Banking." + EOL +
+                    "If you want to apply for a loan:" + EOL +
+                    "Go to: Loan menu - Apply for a new loan.");
         } else {
             return loanList.get(index).toString();
         }
     }
-
+// Collects data from user input in Menu Class, to add to loan list for autoApproval:
     public String applyLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
         LoanApplication loanApplication = new LoanApplication(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration);
         loanApplicationList.add(loanApplication);
         return null;
     }
 
+// Collects from the loanApplication list,
+// Depending on input value from customer, the loan will be auto approved depending on criteria listed below:
     public String autoApproval (Customer currentUser) {
         LoanApplication unapprovedLoan = findLoanApplication(currentUser);
         String personalNumber = unapprovedLoan.getPersonalNumber();
@@ -819,21 +820,24 @@ public class Service {
         if ( monthlyIncome <= 10000  || currentLoanDebt >= 500000 || currentCreditDebt >= 500000 || appliedLoanDuration > 5 ){
             return ("Loan application was declined, contact 24|7 Service for more information.");
         } else {
+// Eazy Bank have a fixed yearly interest rate, set to 2,3%
         double yearlyInterestRate = 2.3;
-        //int numOfYears = 5;
+//Could be set to fixed duration, if Employee wants.
+            // int numOfYears = 5;
         int numOfYears = (int) unapprovedLoan.getAppliedLoanDuration();
         double loanAmount = unapprovedLoan.getAppliedLoanAmount();
         Date date = new Date();
         Loan loan = new Loan(personalNumber,yearlyInterestRate,numOfYears,loanAmount,date);
-        //Remove loan application from application list.
+//Remove loan application from application list.
         loanApplicationList.remove(unapprovedLoan);
-        // "transforms" to a loan
+// "transforms" to a loan
         loanList.add(loan);
         }
         return "\u001B[32m" + "Your loan has been approved." + "\u001B[0m" + EOL
                 + payOutLoan(currentUser) + EOL ;
     }
 
+// Use deposit method for Transaction menu, to deposit approved loan amount to customers Savings account.
     public String payOutLoan(Customer currentUser) {
         String message = "";
         try {
@@ -844,13 +848,7 @@ public class Service {
         return message;
     }
 
-
-    public String increaseLoan (String personalNumber,double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration, double loanDebt) {
-        IncreaseLoan increaseLoan = new IncreaseLoan(personalNumber,monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount,appliedLoanDuration, loanDebt);
-        loanApplicationList.add(increaseLoan);
-        return "Your loan application has been received; we will get back to you within 24 hours.";
-    }
-
+// Monthly payment = loan amount x mr(1 + mr)^b / (1 + mr)^b – 1
     public double getMonthlyPayment(Customer currentUser) {
         Loan approvedLoan = findLoan(currentUser);
         double monthlyInterestRate = 2.3 / 1200;

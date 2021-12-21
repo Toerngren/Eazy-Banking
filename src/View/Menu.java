@@ -366,8 +366,6 @@ public class Menu {
                     viewLoan(currentUser);
                     break;
                 case "2":
-                    //System.out.println(Math.round(service.getMonthlyPayment(currentUser)*100.0)/100.0);
-                    //System.out.println(Utilities.truncate(service.getMonthlyPayment(currentUser)));
                     System.out.println(payLoan(currentUser));
                     break;
                 default:
@@ -654,18 +652,23 @@ public class Menu {
         System.out.println(loan);
     }
 
-
     public void registerLoanApplication(Customer currentUser) throws Exception {
-        //if (service.checkLoan(currentUser.getPersonalNumber())) {
-        //return "You already have a loan with Eazy Banking.";
-        //} else {
-        //askForPinCode();
+        if (service.checkLoan(currentUser.getPersonalNumber())) {
+            System.out.println("You already have a loan with Eazy Banking.");
+            loanMenu(currentUser);
+        }
+
+        String typedPinCode = askForPinCode();
+        if (!service.checkPinCode(typedPinCode,currentUser)) {
+            System.out.println("Incorrect PIN-code");
+            loanMenu(currentUser);
+            }
         try {
         double monthlyIncome = UserInput.readDouble("What is your monthly salary? ");
-            if(monthlyIncome < 0 ){
+            if(monthlyIncome < 0){
                 throw new Exception("Minimum income is 0,00 SEK. ");
             }
-        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt? ");
+        double currentLoanDebt = UserInput.readDouble("Wht is the sum of your current loan debt? ");
             if(currentLoanDebt < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
@@ -673,14 +676,12 @@ public class Menu {
             if(currentCreditDebt < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
-        // ?? Control amount input greater than 500, 000 SEK
         int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK " + EOL);
-            if(appliedLoanAmount < 0 ){
-                throw new Exception("Minimum value is 0,00 SEK. ");
+            if(appliedLoanAmount < 0 || appliedLoanAmount > 500000 ){
+                throw new Exception("Choose loan amount between 0 - 500 000 SEK.");
             }
-        // ?? Duration 0 years is possible here
         int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years " + EOL);
-            if(appliedLoanDuration < 0 || appliedLoanDuration > 5 ){
+            if(appliedLoanDuration < 1 || appliedLoanDuration > 5 ){
                 throw new Exception("Choose between 1 - 5 years.");
             }
         service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
