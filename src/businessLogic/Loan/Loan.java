@@ -31,7 +31,7 @@ public class Loan {
                 "Duration: " + numOfYears + " years" + EOL +
                 "Start date: " + Utilities.simpleDateFormat(date);
     }
-
+    // ?? call this method in Service class
     public double getMonthlyPayment() {
         double monthlyInterestRate = yearlyInterestRate / 1200;
         return loanAmount * monthlyInterestRate / (1 -
