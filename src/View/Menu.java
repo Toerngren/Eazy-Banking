@@ -3,10 +3,7 @@ package View;
 import Utility.*;
 
 import java.io.*;
-import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 
 import businessLogic.Loan.Loan;
 import businessLogic.Transactions.Transaction;
@@ -20,16 +17,15 @@ import controller.Service;
 public class Menu {
     public static final String EOL = System.lineSeparator();
     Service service = new Service();
-    Scanner input = new Scanner(System.in);
 
     public void startPage() throws Exception {
 
         String option;
-       jsonFromCustomer();
-       jsonFromLoan();
-       jsonFromTransaction();
-       jsonFromKYC();
-       jsonFromAccounts();
+        jsonFromCustomer();
+        jsonFromLoan();
+        jsonFromTransaction();
+        jsonFromKYC();
+        jsonFromAccounts();
 
 
         do {
@@ -84,7 +80,7 @@ public class Menu {
         } while (true);
     }
 
-    /* ACCOUNTS MENU */
+    /* Customer MENU */
     public void customerMenu(Customer currentUser) throws Exception {
         String option;
         do {
@@ -142,14 +138,6 @@ public class Menu {
                     case "0":
                         customerMenu(currentUser);
                         break;
-                /*case "1":
-                    System.out.println("Open Account - coming soon");
-                    break;
-                case "2":
-                    System.out.println("Close Account - coming soon");
-                    break;
-
-                 */
                     case "1":
                         payTransferMenu(currentUser);
                         break;
@@ -584,6 +572,7 @@ public class Menu {
                     employeeMenu();
                     break;
                 case "1":
+                    try {
                     String personalNumber = UserInput.readLine("What customer would you like to write to? Input personal number:");
                     String message = UserInput.readLine("What message would you like to send?");
                     System.out.println(service.messageToCustomer(personalNumber, message));
@@ -830,8 +819,7 @@ public class Menu {
     public void jsonFromCustomer() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        Customer[] customerList = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.getCustomerList().add(customer);
         }
@@ -839,8 +827,7 @@ public class Menu {
     public void jsonToCustomer() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "Customer.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "Customer.json"));
             writer.write(gson.toJson(service.getCustomerList()));
             writer.close();
         } catch (IOException e) {
@@ -849,8 +836,7 @@ public class Menu {
     }
     public void jsonFromLoan() throws FileNotFoundException {
         Gson gson = new Gson();
-        Loan[] loanList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
+        Loan[] loanList = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
         for (Loan loan : loanList) {
             service.getLoanList().add(loan);
         }
@@ -858,8 +844,7 @@ public class Menu {
     public void jsonToLoan(){
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "Loan.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "Loan.json"));
             writer.write(gson.toJson(service.getLoanList()));
             writer.close();
         } catch (IOException e) {
@@ -868,8 +853,7 @@ public class Menu {
     }
     public void jsonFromTransaction() throws FileNotFoundException {
         Gson gson = new Gson();
-        Transaction[] transactions = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "Transactions.json"), Transaction[].class);
+        Transaction[] transactions = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "Transactions.json"), Transaction[].class);
         for (Transaction transaction : transactions)
             service.getTransactions().add(transaction);
     }
@@ -877,8 +861,7 @@ public class Menu {
     public void jsonToTransaction(){
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "Transactions.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "Transactions.json"));
             writer.write(gson.toJson(service.getTransactions()));
             writer.close();
         } catch (IOException e) {
@@ -888,8 +871,7 @@ public class Menu {
     public void jsonFromKYC() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        KYC[] approvedKYCList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
+        KYC[] approvedKYCList = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
         for (KYC kyc : approvedKYCList) {
             service.getApprovedKYCList().add(kyc);
         }
@@ -897,8 +879,7 @@ public class Menu {
     public void jsonToKYC(){
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "KYC.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "KYC.json"));
             writer.write(gson.toJson(service.getApprovedKYCList()));
             writer.close();
         } catch (IOException e) {
@@ -908,8 +889,7 @@ public class Menu {
     public void jsonFromAccounts() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        BankAccount[] accountsList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "BankAccounts.json"), BankAccount[].class);
+        BankAccount[] accountsList = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "BankAccounts.json"), BankAccount[].class);
         for (BankAccount account : accountsList) {
             service.getAccountsList().add(account);
         }
@@ -917,8 +897,7 @@ public class Menu {
     public void jsonToAccounts(){
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "BankAccounts.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "BankAccounts.json"));
             writer.write(gson.toJson(service.getAccountsList()));
             writer.close();
         } catch (IOException e) {
