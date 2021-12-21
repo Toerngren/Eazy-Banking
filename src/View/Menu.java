@@ -17,32 +17,18 @@ public class Menu {
     Scanner input = new Scanner(System.in);
 
     public void startPage() throws Exception {
-
-        String option;
         Gson gson = new Gson();
-        // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
-        // This is "/" on UNIX and "\" on Windows.
-        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
-        for (Customer customer : customerList) {
-            service.getCustomerList().add(customer);
-        }
+        String option;
+        jsonFromCustomer();
 
-        // Läs in all info från Customer.Json och lägger till i listorna
+
         do {
             Printing.startPage();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
                     System.out.println("Closing");
-                    try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
-                                "controller" + System.getProperty("file.separator") + "Customer.json"));
-                        writer.write(gson.toJson(service.getCustomerList()));
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    jsonToCustomer();
                     System.exit(0);
                     break;
                 case "1":
@@ -627,8 +613,8 @@ public class Menu {
             if (password.isBlank() || password.isEmpty()) {
                 throw new Exception("You must have a password.");
             }
-            String pinCode = UserInput.readLine("Customer pin code: ");
-            if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode)) {
+            String pinCode = UserInput.readLine("Customer PIN-code: ");
+            if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode) || pinCode.length() != 4) {
                 throw new Exception("PIN-code must be digits and contain four numbers.");
             }
             String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
@@ -809,6 +795,27 @@ public class Menu {
             throw new Exception("PIN-code must be 4 characters. Action is declined.");
         } else {
             return typedPinCode;
+        }
+    }
+
+    public void jsonFromCustomer() throws FileNotFoundException {
+        Gson gson = new Gson();
+
+        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        for (Customer customer : customerList) {
+            service.getCustomerList().add(customer);
+        }
+    }
+    public void jsonToCustomer() {
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "Customer.json"));
+            writer.write(gson.toJson(service.getCustomerList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

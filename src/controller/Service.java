@@ -58,18 +58,6 @@ public class Service {
         return System.lineSeparator() + "You have now been registered!" + System.lineSeparator();
     }
 
-    public void serializeCustomer(Customer customer) {
-        Gson gson = new Gson();
-        String json = gson.toJson(customer);
-        System.out.println(json);
-    }
-
-    public void serializeCustomerList(List<Customer> customerList) {
-        Gson gson = new Gson();
-        String json = gson.toJson(customerList);
-        System.out.println("jsonList: " + json);
-    }
-
     public void createKYC(String personalNumber, String occupation, double salary, boolean pep, boolean fatca, boolean approved) {
         KYC kyc = new KYC(personalNumber, occupation, salary, pep, fatca);
         reviewKYCList.add(kyc);
@@ -502,7 +490,7 @@ public class Service {
         Customer pinCodeToChange = null;
         for (Customer currentPinCode : customerList) {
             if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
-                if (newPincode.isEmpty() || newPincode.isBlank() || !onlyDigitsP(newPincode)) {
+                if (newPincode.isEmpty() || newPincode.isBlank() || !onlyDigitsP(newPincode) || newPincode.length() != 4) {
                     return "Invalid entry.";
                 }
                 pinCodeToChange = currentPinCode;
