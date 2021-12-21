@@ -844,7 +844,7 @@ public class Service {
         return message;
     }
 
-// Monthly payment = loan amount x mr(1 + mr)^b / (1 + mr)^b – 1
+    // Monthly payment = loan amount x mr(1 + mr)^b / (1 + mr)^b – 1
     public double getMonthlyPayment(Customer currentUser) {
         Loan approvedLoan = findLoan(currentUser);
         double monthlyInterestRate = 0.023 / 1200;
