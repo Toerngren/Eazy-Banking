@@ -17,7 +17,7 @@ public class LoanApplication {
         this.appliedLoanAmount = appliedLoanAmount;
         this.appliedLoanDuration = appliedLoanDuration;
     }
-
+    // Attributes should not be allowed to set once created
 
     public String getPersonalNumber() {
         return personalNumber;

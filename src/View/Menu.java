@@ -249,6 +249,7 @@ public class Menu {
     public String chooseAccount(Customer currentUser) throws Exception {
         String option = "";
         String operationResult = "";
+
         do {
             if (!service.approvedKYC(currentUser)) {
                 System.out.println(" \"\\u001B[32m\" + Please register KYC first to use all bank services!" + " \u001B[0m");
@@ -672,10 +673,12 @@ public class Menu {
             if(currentCreditDebt < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
+        // ?? Control amount input greater than 500, 000 SEK
         int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK " + EOL);
             if(appliedLoanAmount < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
+        // ?? Duration 0 years is possible here
         int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years " + EOL);
             if(appliedLoanDuration < 0 || appliedLoanDuration > 5 ){
                 throw new Exception("Choose between 1 - 5 years.");

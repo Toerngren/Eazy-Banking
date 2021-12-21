@@ -31,9 +31,22 @@ public class Loan {
                 "Duration: " + numOfYears + " years" + EOL +
                 "Start date: " + Utilities.simpleDateFormat(date);
     }
+    // ?? call this method in Service class
+    public double getMonthlyPayment() {
+        double monthlyInterestRate = yearlyInterestRate / 1200;
+        return loanAmount * monthlyInterestRate / (1 -
+                (Math.pow(1 / (1 + monthlyInterestRate), numOfYears * 12)));
+    }
+
+
+
 
     public String getPersonalNumber() {
         return personalNumber;
+    }
+    // Should not be allowed to set
+    public void setPersonalNumber(String customerID) {
+        this.personalNumber = customerID;
     }
 
     public double getLoanAmount() {
