@@ -16,7 +16,7 @@ public class KYC {
    }
 
    public String toString(){
-      return "Personalnumber: " + personalNumber + System.lineSeparator() + "Occupation: " + occupation + System.lineSeparator() + "Salary: " + salary + System.lineSeparator() + "PEP: " +  pep + System.lineSeparator() +
+      return "Personal number: " + personalNumber + System.lineSeparator() + "Occupation: " + occupation + System.lineSeparator() + "Salary: " + salary + System.lineSeparator() + "PEP: " +  pep + System.lineSeparator() +
               "FATCA: "+fatca + System.lineSeparator();
    }
 
