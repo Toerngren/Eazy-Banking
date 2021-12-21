@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+import businessLogic.Loan.Loan;
+import businessLogic.Transactions.Transaction;
 import businessLogic.User.Customer;
+import businessLogic.User.KYC;
+import businessLogic.bankAccounts.BankAccount;
 import com.google.gson.Gson;
 import controller.Service;
 
@@ -21,18 +25,11 @@ public class Menu {
     public void startPage() throws Exception {
 
         String option;
-        Gson gson = new Gson();
-        // added System.getProperty("file.separator") to resolve UNIX/Windows specific folder separators.
-        // This is "/" on UNIX and "\" on Windows.
-        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
-        for (Customer customer : customerList) {
-            service.getCustomerList().add(customer);
-        }
-
-        // Läs in all info från Customer.Json och lägger till i listorna
-
-        // todo Adrian System.out.println("You are now logged in!");
+       jsonFromCustomer();
+       jsonFromLoan();
+       jsonFromTransaction();
+       jsonFromKYC();
+       jsonFromAccounts();
 
 
         do {
@@ -40,14 +37,12 @@ public class Menu {
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
-                    System.out.println(EOL + "Closing" + EOL);
-                    try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "Customer.json"));
-                        writer.write(gson.toJson(service.getCustomerList()));
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    System.out.println("Closing");
+                    jsonToCustomer();
+                    jsonToLoan();
+                    jsonToTransaction();
+                    jsonToKYC();
+                    jsonToAccounts();
                     System.exit(0);
                     break;
                 case "1":
@@ -363,9 +358,7 @@ public class Menu {
                     viewLoan(currentUser);
                     break;
                 case "2":
-                    //System.out.println(Math.round(service.getMonthlyPayment(currentUser)*100.0)/100.0);
-                    System.out.println(Utilities.truncate(service.getMonthlyPayment(currentUser)));
-                    payLoan(currentUser);
+                    System.out.println(payLoan(currentUser));
                     break;
                 default:
                     Printing.invalidEntry();
@@ -539,14 +532,25 @@ public class Menu {
                     customerMenu(currentUser);  //Return to Customer Menu
                     break;
                 case "1":
+                    try {
                     String message = UserInput.readLine("Message to customer support: ");
+                    if(message.isEmpty()) {
+                        throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                    }
                     service.messageToEmployee(currentUser, message);
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
+                    }
                     break;
                 case "2":
+                    try {
                     System.out.println(service.viewMessage(currentUser));
                     String reply = UserInput.readLine("Would you like to reply? Yes or No.");
                     if (reply.equals("yes")) {
                         String replyMessage = UserInput.readLine("What would you like to reply?");
+                        if(replyMessage.isEmpty()) {
+                            throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                        }
                         service.messageToEmployee(currentUser, replyMessage);
                         service.removeMessage(currentUser);
                     } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
@@ -554,6 +558,9 @@ public class Menu {
                         service.removeMessage(currentUser);
                     } else {
                         System.out.println("Input yes or no.");
+                    }
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
                     }
                     break;
                 case "3":
@@ -580,12 +587,19 @@ public class Menu {
                     String personalNumber = UserInput.readLine("What customer would you like to write to? Input personal number:");
                     String message = UserInput.readLine("What message would you like to send?");
                     System.out.println(service.messageToCustomer(personalNumber, message));
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
+                    }
                     break;
                 case "2":
-                    System.out.println(service.viewMessage());
+                    try {
+                        System.out.println(service.viewMessage());
                     String reply = UserInput.readLine("Would you like to reply? Yes or No.");
                     if (reply.equals("yes")) {
                         String replyMessage = UserInput.readLine("What would you like to reply?");
+                        if(replyMessage.isEmpty()) {
+                            throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                        }
                         service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);
                         service.removeMessage();
                     } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
@@ -593,6 +607,9 @@ public class Menu {
                         service.removeMessage();
                     } else {
                         System.out.println("Input yes or no.");
+                    }
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
                     }
                     break;
                 case "3":
@@ -635,8 +652,8 @@ public class Menu {
             if (password.isBlank() || password.isEmpty()) {
                 throw new Exception("You must have a password.");
             }
-            String pinCode = UserInput.readLine("Customer pin code: ");
-            if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode)) {
+            String pinCode = UserInput.readLine("Customer PIN-code: ");
+            if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode) || pinCode.length() != 4) {
                 throw new Exception("PIN-code must be digits and contain four numbers.");
             }
             String message = service.createCustomer(personalNumber, firstName, lastName, email, password, telephone, pinCode);
@@ -653,12 +670,22 @@ public class Menu {
 
 
     public void registerLoanApplication(Customer currentUser) throws Exception {
+        if (service.checkLoan(currentUser.getPersonalNumber())) {
+            System.out.println("You already have a loan with Eazy Banking.");
+            loanMenu(currentUser);
+        }
+
+        String typedPinCode = askForPinCode();
+        if (!service.checkPinCode(typedPinCode,currentUser)) {
+            System.out.println("Incorrect PIN-code");
+            loanMenu(currentUser);
+            }
         try {
         double monthlyIncome = UserInput.readDouble("What is your monthly salary? ");
-            if(monthlyIncome < 0 ){
+            if(monthlyIncome < 0){
                 throw new Exception("Minimum income is 0,00 SEK. ");
             }
-        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt? ");
+        double currentLoanDebt = UserInput.readDouble("Wht is the sum of your current loan debt? ");
             if(currentLoanDebt < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
@@ -666,14 +693,12 @@ public class Menu {
             if(currentCreditDebt < 0 ){
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
-        // ?? Control amount input greater than 500, 000 SEK
         int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK " + EOL);
-            if(appliedLoanAmount < 0 ){
-                throw new Exception("Minimum value is 0,00 SEK. ");
+            if(appliedLoanAmount < 0 || appliedLoanAmount > 500000 ){
+                throw new Exception("Choose loan amount between 0 - 500 000 SEK.");
             }
-        // ?? Duration 0 years is possible here
         int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years " + EOL);
-            if(appliedLoanDuration < 0 || appliedLoanDuration > 5 ){
+            if(appliedLoanDuration < 1 || appliedLoanDuration > 5 ){
                 throw new Exception("Choose between 1 - 5 years.");
             }
         service.applyLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration);
@@ -686,12 +711,13 @@ public class Menu {
     }
 
     public String payLoan (Customer currentUser) throws Exception {
-        viewLoan(currentUser);
+        if (!service.checkLoan(currentUser.getPersonalNumber())) {
+            return "No loans yet.";
+        } else {
         String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
      if (reply.equals("yes")){
          String message = service.withdraw(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
          System.out.println(message);
-         return reply;
     } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
         System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
         myLoanMenu(currentUser);
@@ -700,25 +726,10 @@ public class Menu {
     }
         return reply;
     }
-
-
-
-
-
-    /*
-    public void registerIncreaseApplication (Customer currentUser){
-        String debt = service.viewLoan(currentUser.getPersonalNumber());
-        System.out.println ("Current loan debt: "+ debt + "SEK");
-        double monthlyIncome = UserInput.readDouble("What is your monthly salary?" );
-        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?" );
-        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?" );
-        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" );
-        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" );
-        String message = service.increaseLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration,loanDebt);
-        System.out.println(message);
     }
 
- */
+
+
     /*
     public void loginCustomer(){
         String verify = "";
@@ -816,4 +827,102 @@ public class Menu {
         }
     }
 
+    public void jsonFromCustomer() throws FileNotFoundException {
+        Gson gson = new Gson();
+
+        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        for (Customer customer : customerList) {
+            service.getCustomerList().add(customer);
+        }
+    }
+    public void jsonToCustomer() {
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "Customer.json"));
+            writer.write(gson.toJson(service.getCustomerList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void jsonFromLoan() throws FileNotFoundException {
+        Gson gson = new Gson();
+        Loan[] loanList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
+        for (Loan loan : loanList) {
+            service.getLoanList().add(loan);
+        }
+    }
+    public void jsonToLoan(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "Loan.json"));
+            writer.write(gson.toJson(service.getLoanList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void jsonFromTransaction() throws FileNotFoundException {
+        Gson gson = new Gson();
+        Transaction[] transactions = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "Transactions.json"), Transaction[].class);
+        for (Transaction transaction : transactions)
+            service.getTransactions().add(transaction);
+    }
+
+    public void jsonToTransaction(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "Transactions.json"));
+            writer.write(gson.toJson(service.getTransactions()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void jsonFromKYC() throws FileNotFoundException {
+        Gson gson = new Gson();
+
+        KYC[] approvedKYCList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
+        for (KYC kyc : approvedKYCList) {
+            service.getApprovedKYCList().add(kyc);
+        }
+    }
+    public void jsonToKYC(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "KYC.json"));
+            writer.write(gson.toJson(service.getApprovedKYCList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void jsonFromAccounts() throws FileNotFoundException {
+        Gson gson = new Gson();
+
+        BankAccount[] accountsList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "BankAccounts.json"), BankAccount[].class);
+        for (BankAccount account : accountsList) {
+            service.getAccountsList().add(account);
+        }
+    }
+    public void jsonToAccounts(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "BankAccounts.json"));
+            writer.write(gson.toJson(service.getAccountsList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

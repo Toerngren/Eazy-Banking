@@ -31,54 +31,16 @@ public class Loan {
                 "Duration: " + numOfYears + " years" + EOL +
                 "Start date: " + Utilities.simpleDateFormat(date);
     }
-    // ?? call this method in Service class
-    public double getMonthlyPayment() {
-        double monthlyInterestRate = yearlyInterestRate / 1200;
-        return loanAmount * monthlyInterestRate / (1 -
-                (Math.pow(1 / (1 + monthlyInterestRate), numOfYears * 12)));
-    }
-
-
-
 
     public String getPersonalNumber() {
         return personalNumber;
-    }
-    // Should not be allowed to set
-    public void setPersonalNumber(String customerID) {
-        this.personalNumber = customerID;
     }
 
     public double getLoanAmount() {
         return loanAmount;
     }
 
-    public void setLoanAmount(double loanAmount) {
-        this.loanAmount = loanAmount;
-    }
-
-    public double getYearlyInterestRate() {
-        return yearlyInterestRate;
-    }
-
-    public void setYearlyInterestRate(double yearlyInterestRate) {
-        this.yearlyInterestRate = yearlyInterestRate;
-    }
-
     public int getNumOfYears() {
         return numOfYears;
     }
-
-    public void setNumOfYears(int numOfYears) {
-        this.numOfYears = numOfYears;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
 }
