@@ -534,14 +534,25 @@ public class Menu {
                     customerMenu(currentUser);  //Return to Customer Menu
                     break;
                 case "1":
+                    try {
                     String message = UserInput.readLine("Message to customer support: ");
+                    if(message.isEmpty()) {
+                        throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                    }
                     service.messageToEmployee(currentUser, message);
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
+                    }
                     break;
                 case "2":
+                    try {
                     System.out.println(service.viewMessage(currentUser));
                     String reply = UserInput.readLine("Would you like to reply? Yes or No.");
                     if (reply.equals("yes")) {
                         String replyMessage = UserInput.readLine("What would you like to reply?");
+                        if(replyMessage.isEmpty()) {
+                            throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                        }
                         service.messageToEmployee(currentUser, replyMessage);
                         service.removeMessage(currentUser);
                     } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
@@ -549,6 +560,9 @@ public class Menu {
                         service.removeMessage(currentUser);
                     } else {
                         System.out.println("Input yes or no.");
+                    }
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
                     }
                     break;
                 case "3":
@@ -572,15 +586,29 @@ public class Menu {
                     employeeMenu();
                     break;
                 case "1":
+                    try {
                     String personalNumber = UserInput.readLine("What customer would you like to write to? Input personal number:");
+                        if (service.findCustomer(personalNumber) == null) {
+                            throw new Exception("\u001B[31m" + "Personal number not found." + "\u001B[0m");
+                        }
                     String message = UserInput.readLine("What message would you like to send?");
+                        if(message.isEmpty()) {
+                            throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                        }
                     System.out.println(service.messageToCustomer(personalNumber, message));
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
+                    }
                     break;
                 case "2":
-                    System.out.println(service.viewMessage());
+                    try {
+                        System.out.println(service.viewMessage());
                     String reply = UserInput.readLine("Would you like to reply? Yes or No.");
                     if (reply.equals("yes")) {
                         String replyMessage = UserInput.readLine("What would you like to reply?");
+                        if(replyMessage.isEmpty()) {
+                            throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                        }
                         service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);
                         service.removeMessage();
                     } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
@@ -588,6 +616,9 @@ public class Menu {
                         service.removeMessage();
                     } else {
                         System.out.println("Input yes or no.");
+                    }
+                    } catch (Exception exception) {
+                        System.out.println(exception.getMessage());
                     }
                     break;
                 case "3":
