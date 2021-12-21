@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BankAccount{
+public abstract class BankAccount {
 
     private final String customerPersonalNumber;
     private final String accountNumber;
@@ -60,12 +60,7 @@ public class BankAccount{
         return this.transactionList;
     }
 
-    public String toString() {
-        return null;
-    }
-
-    public String getType() {
-        return null;
-    }
+    public abstract String toString();
+    public abstract String getType();
 
 }
