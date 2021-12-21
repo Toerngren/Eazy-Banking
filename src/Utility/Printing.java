@@ -17,10 +17,9 @@ public class Printing {
                 "1. Payments & Transfers" + EOL +
                 "2. Bank accounts" + EOL +
                 "3. Loans" + EOL +
-                "4. Mortgages" + EOL +
-                "5. KYC" + EOL +
-                "6. Customer profile" + EOL +
-                "7. Customer support" + EOL);
+                "4. KYC" + EOL +
+                "5. Customer profile" + EOL +
+                "6. Customer support" + EOL);
 
     }
 
@@ -38,12 +37,9 @@ public class Printing {
         System.out.println("You are now logged in!" + EOL +
                 "Please choose one of the following options:" + EOL +
                 "0. Log out." + EOL +
-                "1. Review loans." + EOL +
-                "2. Review mortgages." + EOL +
-                "3. Review KYCs" + EOL +
-                "4. Customer Support" + EOL +
-                "5. View all customers."+ EOL +
-                "6. Remove customer." + EOL);
+                "1. Review KYCs" + EOL +
+                "2. Customer Support" + EOL +
+                "3. View all customers."+ EOL);
     }
     public static void accountsMenu(){
         System.out.println( EOL + "0. Return to menu." + EOL +

@@ -103,15 +103,12 @@ public class Menu {
                     loanMenu(currentUser);
                     break;
                 case "4":
-                    System.out.println("no feature yet.");
-                    break;
-                case "5":
                     kycMenu(currentUser);
                     break;
-                case "6":
+                case "5":
                     customerProfileMenu(currentUser);
                     break;
-                case "7":
+                case "6":
                     customerSupportMenu(currentUser);
                     break;
                 default:
@@ -404,25 +401,13 @@ public class Menu {
                     startPage();
                     break;
                 case "1":
-                    System.out.println("no feature yet");
-                    break;
-                case "2":
-                    System.out.println("no feature yet:");
-                    break;
-                case "3":
                     employeeKYCMenu();
                     break;
-                case "4":
+                case "2":
                     employeeCustomerSupportMenu();
                     break;
-                case "5": {
+                case "3": {
                     String message = service.printAllCustomers();
-                    System.out.println(message);
-                    break;
-                }
-                case "6": {
-                    String delete = UserInput.readLine("Enter personal number of customer you wish to remove: ");
-                    String message = service.deleteCustomer(delete);
                     System.out.println(message);
                     break;
                 }
