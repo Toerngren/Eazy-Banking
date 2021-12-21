@@ -3,12 +3,15 @@ package View;
 import Utility.*;
 
 import java.io.*;
-import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.jar.JarEntry;
 
+import businessLogic.Loan.Loan;
+import businessLogic.Transactions.Transaction;
 import businessLogic.User.Customer;
+import businessLogic.User.KYC;
+import businessLogic.bankAccounts.BankAccount;
 import com.google.gson.Gson;
 import controller.Service;
 
@@ -19,9 +22,14 @@ public class Menu {
     Scanner input = new Scanner(System.in);
 
     public void startPage() throws Exception {
-        Gson gson = new Gson();
+
         String option;
         jsonFromCustomer();
+        jsonFromLoan();
+        jsonFromTransaction();
+        jsonFromKYC();
+        jsonFromAccounts();
+
 
 
         do {
@@ -31,6 +39,10 @@ public class Menu {
                 case "0":
                     System.out.println("Closing");
                     jsonToCustomer();
+                    jsonToLoan();
+                    jsonToTransaction();
+                    jsonToKYC();
+                    jsonToAccounts();
                     System.exit(0);
                     break;
                 case "1":
@@ -806,6 +818,84 @@ public class Menu {
             BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
                     "controller" + System.getProperty("file.separator") + "Customer.json"));
             writer.write(gson.toJson(service.getCustomerList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+  public void jsonFromLoan() throws FileNotFoundException {
+        Gson gson = new Gson();
+        Loan[] loanList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
+        for (Loan loan : loanList) {
+            service.getLoanList().add(loan);
+        }
+    }
+    public void jsonToLoan(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "Loan.json"));
+            writer.write(gson.toJson(service.getLoanList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void jsonFromTransaction() throws FileNotFoundException {
+        Gson gson = new Gson();
+        Transaction[] transactions = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "Transactions.json"), Transaction[].class);
+        for (Transaction transaction : transactions)
+            service.getTransactions().add(transaction);
+        }
+
+    public void jsonToTransaction(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "Transactions.json"));
+            writer.write(gson.toJson(service.getTransactions()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void jsonFromKYC() throws FileNotFoundException {
+        Gson gson = new Gson();
+
+        KYC[] approvedKYCList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
+        for (KYC kyc : approvedKYCList) {
+            service.getApprovedKYCList().add(kyc);
+        }
+    }
+    public void jsonToKYC(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "KYC.json"));
+            writer.write(gson.toJson(service.getApprovedKYCList()));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void jsonFromAccounts() throws FileNotFoundException {
+        Gson gson = new Gson();
+
+        BankAccount[] accountsList = gson.fromJson(new FileReader("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                "controller" + System.getProperty("file.separator") + "BankAccounts.json"), BankAccount[].class);
+        for (BankAccount account : accountsList) {
+            service.getAccountsList().add(account);
+        }
+    }
+   public void jsonToAccounts(){
+        Gson gson = new Gson();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" + System.getProperty("file.separator") + "src" + System.getProperty("file.separator") +
+                    "controller" + System.getProperty("file.separator") + "BankAccounts.json"));
+            writer.write(gson.toJson(service.getAccountsList()));
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

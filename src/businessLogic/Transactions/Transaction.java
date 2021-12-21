@@ -3,7 +3,7 @@ package businessLogic.Transactions;
 import java.util.Date;
 import java.util.UUID;
 
-public abstract class Transaction {
+public class Transaction {
 
     // withdrawal and deposit can be merged into this class by specifying toStrings with if and
     // adding transactionType with enum. My suggestion is to keep three classes for now.
