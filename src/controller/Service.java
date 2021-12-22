@@ -439,7 +439,7 @@ public class Service {
         Customer telephoneToChange = null;
         for (Customer currentPhone : customerList) {
             if (currentPhone.getPersonalNumber().equals(personalNumber)) {
-                if (newTelephone.isEmpty() || newTelephone.isBlank() || !onlyDigitsT(newTelephone)) {
+                if (newTelephone.isEmpty() || newTelephone.isBlank() || !onlyDigitsT(newTelephone) || newTelephone.length() < 9 || newTelephone.length() > 13) {
                     return "Invalid entry.";
                 }
                 telephoneToChange = currentPhone;
@@ -497,16 +497,7 @@ public class Service {
         }
         return personalNumber + "'s" + " pin code was edited successfully.";
     }
-
-    public String deleteCustomer(String personalNumber) {
-        Customer customerToBeDeleted = findCustomer(personalNumber);
-        if (customerToBeDeleted != null) {
-            customerList.remove(customerToBeDeleted);
-            return "Customer " + personalNumber + " successfully removed." + EOL;
-        }
-        return "Cannot find customer:" + personalNumber + EOL;
-    }
-
+    
     public String updateKYC(String occupation, double salary, String PEP, String FATCA) {
         return "";
     }
