@@ -48,8 +48,13 @@ public class Customer{
     }
 
     public String viewMessage(){
-        return customerMessageList.get(0);
+        if(customerMessageList.isEmpty()){
+            return EOL + "There are currently no new messages.";
+        } else {
+            return "Message: " + customerMessageList.get(0);
+        }
     }
+
     public int numberOfMessages(){
         return customerMessageList.size();
     }

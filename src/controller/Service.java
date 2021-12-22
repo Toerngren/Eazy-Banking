@@ -877,7 +877,7 @@ public class Service {
     public String messageToCustomer(String personalNumber, String newMessage) {
         Customer foundCustomer = findCustomer(personalNumber);
         foundCustomer.addMessage(newMessage);
-        return "Message sent";
+        return "\u001B[32m" + "Message sent." + "\u001B[0m";
     }
 
     public int numberOfMessages() {
@@ -890,7 +890,7 @@ public class Service {
 
     public String messageToEmployee(Customer currentUser, String newMessage) {
         employee.addMessage("Message from: " + currentUser.getPersonalNumber() + System.lineSeparator() + newMessage);
-        return "Message sent.";
+        return "\u001B[32m" + "Message sent." + "\u001B[0m";
     }
 
     public String fetchPersonalNumber() {

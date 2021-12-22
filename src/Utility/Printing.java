@@ -12,8 +12,7 @@ public class Printing {
                 "3. Employee login." + EOL);
     }
     public static void customerMenu(){
-        System.out.println(EOL +"Please choose among the options below." + EOL +
-                "0. Log out" + EOL +
+        System.out.println(EOL + "0. Log out" + EOL +
                 "1. Payments & Transfers" + EOL +
                 "2. Bank accounts" + EOL +
                 "3. Loans" + EOL +
@@ -35,9 +34,7 @@ public class Printing {
 
     }
     public static void employeeMenu(){
-        System.out.println("You are now logged in!" + EOL +
-                "Please choose one of the following options:" + EOL +
-                "0. Log out." + EOL +
+        System.out.println( EOL + "0. Log out." + EOL +
                 "1. Review loans." + EOL +
                 "2. Review mortgages." + EOL +
                 "3. Review KYCs" + EOL +
@@ -94,19 +91,17 @@ public class Printing {
     }
 
     public static void customerSupportMenu() {
-        System.out.println("Please choose one of the following options:" + EOL +
-                "0. Return to menu." + EOL +
+        System.out.println("0. Return to menu." + EOL +
                 "1. Write a message to Customer Support." + EOL +
-                "2. Read latest message." + EOL +
-                "3. Number of messages in inbox." + EOL);
+                "2. Read latest message." + EOL);
+                //"3. Number of messages in inbox." + EOL);
     }
 
     public static void employeeSupportMenu() {
-        System.out.println("Please choose one of the following options:" + EOL +
-                "0. Return to menu." + EOL +
+        System.out.println("0. Return to menu." + EOL +
                 "1. Write message to a customer." + EOL +
-                "2. Read latest message." + EOL +
-                "3. Number of messages in inbox." + EOL);
+                "2. Read latest message." + EOL );
+                //"3. Number of messages in inbox." + EOL);
     }
 
     public static void invalidEntry() {

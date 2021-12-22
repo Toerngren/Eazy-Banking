@@ -3,6 +3,8 @@ package businessLogic.User;
 import java.util.ArrayList;
 
 public class Employee {
+    static final String EOL = System.lineSeparator();
+
     private final String employeeID;
     private final String pinCode;
     private ArrayList<String> employeeMessageList;
@@ -27,8 +29,14 @@ public class Employee {
     public String getEmployeeID() {
         return employeeID;
     }
+
     public String viewMessage(){
-        return employeeMessageList.get(0);
+        if(employeeMessageList.isEmpty()){
+            return EOL + "There are currently no new messages.";
+        } else {
+            return "Message: " + employeeMessageList.get(0);
+        }
+
     }
 
     public int numberOfMessages(){
