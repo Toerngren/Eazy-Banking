@@ -1,1 +1,56 @@
-[{"personalNumber":"9309253830","firstName":"a","lastName":"a","email":"@,","telephone":"04","password":"123","pinCode":"1234","bankAccounts":[{"customerPersonalNumber":"9309253830","accountNumber":"758178","balance":0.0,"transactionList":[]},{"customerPersonalNumber":"9309253830","accountNumber":"369491","balance":0.0,"transactionList":[]}],"savedRecipients":[],"customerMessageList":[]},{"personalNumber":"9309251337","firstName":"a","lastName":"a","email":"@","telephone":"0","password":"123","pinCode":"1234","bankAccounts":[],"savedRecipients":[],"customerMessageList":[],"checkingList":[{"customerPersonalNumber":"9309251337","accountNumber":"844952","balance":0.0,"transactionList":[]}],"savingsList":[{"interestRate":0.0,"customerPersonalNumber":"9309251337","accountNumber":"395612","balance":0.0,"transactionList":[]}]}]
+[
+  {
+    "personalNumber": "9309253830",
+    "firstName": "a",
+    "lastName": "a",
+    "email": "@,",
+    "telephone": "04",
+    "password": "123",
+    "pinCode": "1234",
+    "bankAccounts": [
+      {
+        "customerPersonalNumber": "9309253830",
+        "accountNumber": "758178",
+        "balance": 0.0,
+        "transactionList": []
+      },
+      {
+        "customerPersonalNumber": "9309253830",
+        "accountNumber": "369491",
+        "balance": 0.0,
+        "transactionList": []
+      }
+    ],
+    "savedRecipients": [],
+    "customerMessageList": []
+  },
+  {
+    "personalNumber": "9309251337",
+    "firstName": "a",
+    "lastName": "a",
+    "email": "@",
+    "telephone": "0",
+    "password": "123",
+    "pinCode": "1234",
+    "bankAccounts": [],
+    "savedRecipients": [],
+    "customerMessageList": [],
+    "checkingList": [
+      {
+        "customerPersonalNumber": "9309251337",
+        "accountNumber": "844952",
+        "balance": 0.0,
+        "transactionList": []
+      }
+    ],
+    "savingsList": [
+      {
+        "interestRate": 0.0,
+        "customerPersonalNumber": "9309251337",
+        "accountNumber": "395612",
+        "balance": 0.0,
+        "transactionList": []
+      }
+    ]
+  }
+]

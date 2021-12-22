@@ -44,7 +44,7 @@ public class Service {
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
-                                 String telephone, String password, String pinCode){
+                                 String telephone, String password, String pinCode) {
 
         Customer customer = new Customer(personalNumber, firstName, lastName, email, telephone, password, pinCode);
         customerList.add(customer);
@@ -255,6 +255,7 @@ public class Service {
         }
         return true;
     }
+
     public boolean onlyDigitsPass(String password) {
         for (int i = 0; i < password.length(); i++) {
             if (!Character.isDigit(password.charAt(i))) {
@@ -285,8 +286,16 @@ public class Service {
         Customer currentUser = findCustomer(customerPersonalNumber);
         CheckingAccount cH = new CheckingAccount(customerPersonalNumber);
         SavingsAccount sA = new SavingsAccount(customerPersonalNumber);
-        currentUser.addCheckingList(cH);
-        currentUser.addSavingsList(sA);
+        try {
+            currentUser.addCheckingList(cH);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            currentUser.addSavingsList(sA);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         accountsList.add(cH);
         accountsList.add(sA);
     }
@@ -525,7 +534,7 @@ public class Service {
     public String deposit(String toAccount, double amount) throws Exception {
         BankAccount account = getAccountByAccountNumber(toAccount);
         if (account == null) {
-            throw new Exception ("Account doesn't exist.");
+            throw new Exception("Account doesn't exist.");
         }
         if (amount < 0) {
             throw new Exception("Amount should be greater than 0.");
@@ -549,10 +558,10 @@ public class Service {
             throw new Exception("Account number should be 6 characters.");
         }
         if (amount <= 0) {
-            throw new Exception ("Amount should be greater than 0.");
+            throw new Exception("Amount should be greater than 0.");
         }
         if (amount > account.getBalance()) {
-            throw new Exception ("Not enough funds on account #" + account.getAccountNumber());
+            throw new Exception("Not enough funds on account #" + account.getAccountNumber());
         } else {
             account.subtractToUpdateBalance(amount);
             Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
@@ -591,7 +600,7 @@ public class Service {
             account.addTransaction(withdrawal);
             account.subtractToUpdateBalance(amount);
             return "\u001B[32m" + account.getType() + " balance was updated successfully." + EOL +
-            "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
+                    "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
         }
     }
 
@@ -612,42 +621,64 @@ public class Service {
     }
 
     public String printAccountsAndBalance(Customer currentUser) {
-        List<BankAccount> accounts = currentUser.getBankAccounts();
+        List<CheckingAccount> checkingAccounts = currentUser.getCheckingList();
+        List<SavingsAccount> savingsAccounts = currentUser.getSavingsList();
+
         String checkingAccountOutput = "";
         String savingsAccountOutput = "";
-        if (accounts.isEmpty()) {
-            return "No accounts open yet. Please return to the menu and register KYC first.";
-        } else
-            for (BankAccount account : accounts) {
-                if (account instanceof CheckingAccount) {
-                    checkingAccountOutput = account.toString();
-                }
-                if (account instanceof SavingsAccount) {
-                    savingsAccountOutput = account.toString();
-                }
+        if (savingsAccounts == null && checkingAccounts == null) {
+            return "No accounts open yet.";
+        } else {
+            for (CheckingAccount chAccount : checkingAccounts) {
+                checkingAccountOutput = chAccount.toString();
             }
+            for (SavingsAccount sAccount : savingsAccounts) {
+                savingsAccountOutput = sAccount.toString();
+            }
+        }
         return checkingAccountOutput + EOL +
                 "------------------------------------- " + EOL +
                 savingsAccountOutput + EOL +
                 "------------------------------------- " + EOL;
     }
 
+    //todo Adrian changed
     public String printAccounts(Customer currentUser) {
-        String operationResult = "0. Return to the previous menu" + EOL;
-        if (currentUser.getCheckingList().isEmpty() && currentUser.getSavingsList().isEmpty()) {
-            return operationResult + "No accounts open yet.";
+        List<CheckingAccount> checkingAccounts = currentUser.getCheckingList();
+        List<SavingsAccount> savingsAccounts = currentUser.getSavingsList();
+        String operationResult = "0. Return to the previous menu." + EOL;
+        String checkingAccountOutput = "";
+        String savingsAccountOutput = "";
+
+        if (currentUser.getCheckingList() == null && currentUser.getSavingsList() == null) {
+            return "No accounts open yet.";
+        } else {
+            for (CheckingAccount chAccount : checkingAccounts) {
+                checkingAccountOutput = chAccount.toString();
+            }
+            for (SavingsAccount sAccount : savingsAccounts) {
+                savingsAccountOutput = sAccount.toString();
+            }
         }
-        operationResult += "1. " + currentUser.getSavingsList().get(0).getAccountNumber() + EOL + "2. " + currentUser.getCheckingList().get(0).getAccountNumber() + EOL;
+        operationResult += "1. " + checkingAccountOutput + EOL +
+                "2. " + savingsAccountOutput + EOL;
         return operationResult;
     }
 
     public String chooseSecondAccount(Customer currentUser, String fromAccount) {
-        List<BankAccount> accounts = currentUser.getBankAccounts();
-        for (BankAccount account : accounts) {
-            if (!account.getAccountNumber().equals(fromAccount)) {
-                return account.getAccountNumber();
+        List<CheckingAccount> checkingAccounts = currentUser.getCheckingList();
+        List<SavingsAccount> savingsAccounts = currentUser.getSavingsList();
+        for (CheckingAccount chAccount : checkingAccounts) {
+            if (!chAccount.getAccountNumber().equals(fromAccount)) {
+                return chAccount.getAccountNumber();
             }
         }
+        for (SavingsAccount sAccount : savingsAccounts) {
+            if (!sAccount.getAccountNumber().equals(fromAccount)) {
+                return sAccount.getAccountNumber();
+            }
+        }
+
         return "";
     }
 
@@ -709,22 +740,21 @@ public class Service {
     }
 
     public String getCheckingAccountNumber(Customer currentUser) {
-        List<BankAccount> accounts = currentUser.getBankAccounts();
-        for (BankAccount account : accounts) {
-            if (account instanceof CheckingAccount)
+        List<CheckingAccount> accounts = currentUser.getCheckingList();
+        for (CheckingAccount account : accounts) {
                 return account.getAccountNumber();
         }
         return "";
     }
 
     public String getSavingsAccountNumber(Customer currentUser) {
-        List<BankAccount> accounts = currentUser.getBankAccounts();
-        for (BankAccount account : accounts) {
-            if (account instanceof SavingsAccount)
+        List<SavingsAccount> accounts = currentUser.getSavingsList();
+        for (SavingsAccount account : accounts) {
                 return account.getAccountNumber();
         }
         return "";
     }
+
     public double checkBalance(String accountNumber) {
         return getAccountByAccountNumber(accountNumber).getBalance();
     }
@@ -734,10 +764,9 @@ public class Service {
     }
 
 
-
     /**
      * WHERE LOAN BEGIN:
-     *
+     * <p>
      * ╭━┳━╭━╭━╮╮
      * ┃┈┈┈┣▅╋▅┫┃
      * ┃┈┃┈╰━╰━━━━━━╮
@@ -757,7 +786,7 @@ public class Service {
         return -1;
     }
 
-    public boolean checkLoan (String personalNumber) {
+    public boolean checkLoan(String personalNumber) {
         for (Loan loan : loanList) {
             if (loan.getPersonalNumber().equals(personalNumber)) {
                 return true;
@@ -766,7 +795,7 @@ public class Service {
         return false;
     }
 
-//Customer is not allowed to have more than one current loan at the time.
+    //Customer is not allowed to have more than one current loan at the time.
     public String viewLoan(String personalNumber) {
         int index = searchForLoanIndex(personalNumber);
         if (index == -1) {
@@ -777,48 +806,49 @@ public class Service {
             return loanList.get(index).toString();
         }
     }
-// Collects data from user input in Menu Class, to add to loan list for autoApproval:
+
+    // Collects data from user input in Menu Class, to add to loan list for autoApproval:
     public String applyLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
         LoanApplication loanApplication = new LoanApplication(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration);
         loanApplicationList.add(loanApplication);
         return null;
     }
 
-// Collects from the loanApplication list,
+    // Collects from the loanApplication list,
 // Depending on input value from customer, the loan will be auto approved depending on criteria listed below:
-    public String autoApproval (Customer currentUser) {
+    public String autoApproval(Customer currentUser) {
         LoanApplication unapprovedLoan = findLoanApplication(currentUser);
         String personalNumber = unapprovedLoan.getPersonalNumber();
         double monthlyIncome = unapprovedLoan.getMonthlyIncome();
         double currentLoanDebt = unapprovedLoan.getCurrentLoanDebt();
         double currentCreditDebt = unapprovedLoan.getCurrentCreditDebt();
         double appliedLoanDuration = unapprovedLoan.getAppliedLoanDuration();
-        if ( monthlyIncome <= 10000  || currentLoanDebt >= 500000 || currentCreditDebt >= 500000 || appliedLoanDuration > 5 ){
+        if (monthlyIncome <= 10000 || currentLoanDebt >= 500000 || currentCreditDebt >= 500000 || appliedLoanDuration > 5) {
             return ("Loan application was declined, contact 24|7 Service for more information.");
         } else {
 // Eazy Bank have a fixed yearly interest rate, set to 2,3%
-        double yearlyInterestRate = 2.3;
+            double yearlyInterestRate = 2.3;
 //Could be set to fixed duration, if Employee wants.
             // int numOfYears = 5;
-        int numOfYears = (int) unapprovedLoan.getAppliedLoanDuration();
-        double loanAmount = unapprovedLoan.getAppliedLoanAmount();
-        Date date = new Date();
-        Loan loan = new Loan(personalNumber,yearlyInterestRate,numOfYears,loanAmount,date);
+            int numOfYears = (int) unapprovedLoan.getAppliedLoanDuration();
+            double loanAmount = unapprovedLoan.getAppliedLoanAmount();
+            Date date = new Date();
+            Loan loan = new Loan(personalNumber, yearlyInterestRate, numOfYears, loanAmount, date);
 //Remove loan application from application list.
-        loanApplicationList.remove(unapprovedLoan);
+            loanApplicationList.remove(unapprovedLoan);
 // "transforms" to a loan
-        loanList.add(loan);
+            loanList.add(loan);
         }
         return "\u001B[32m" + "Your loan has been approved." + "\u001B[0m" + EOL
-                + payOutLoan(currentUser) + EOL ;
+                + payOutLoan(currentUser) + EOL;
     }
 
-// Use deposit method for Transaction menu, to deposit approved loan amount to customers Savings account.
+    // Use deposit method for Transaction menu, to deposit approved loan amount to customers Savings account.
     public String payOutLoan(Customer currentUser) {
         String message = "";
         try {
-            message = deposit(getSavingsAccountNumber(currentUser),getLoanAmount(currentUser));
-        } catch(Exception e) {
+            message = deposit(getSavingsAccountNumber(currentUser), getLoanAmount(currentUser));
+        } catch (Exception e) {
             System.out.println(e);
         }
         return message;
@@ -839,24 +869,24 @@ public class Service {
     }
 
     public LoanApplication findLoanApplication(Customer currentUser) {
-        for (LoanApplication loanApplication: loanApplicationList) {
-            if(loanApplication.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
+        for (LoanApplication loanApplication : loanApplicationList) {
+            if (loanApplication.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
                 return loanApplication;
             }
         }
         return null;
     }
 
-    public Loan findLoan (Customer currentUser) {
-        for (Loan loan: loanList) {
-            if(loan.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
+    public Loan findLoan(Customer currentUser) {
+        for (Loan loan : loanList) {
+            if (loan.getPersonalNumber().equals(currentUser.getPersonalNumber())) {
                 return loan;
             }
         }
         return null;
     }
 
-    public String viewMessage(Customer currentUser){
+    public String viewMessage(Customer currentUser) {
         return currentUser.viewMessage();
     }
 

@@ -2,8 +2,8 @@ package businessLogic.bankAccounts;
 
 public class SavingsAccount extends BankAccount {
 
-    public static final String EOL = System.lineSeparator();
     private static final String TYPE = "Savings Account";
+    public static final String EOL = System.lineSeparator();
 
     private final double interestRate = 0.0;
 
@@ -16,12 +16,13 @@ public class SavingsAccount extends BankAccount {
     }
 
     public String toString(){
-        return "Savings Account Number: " + getAccountNumber() + EOL +
+        return "Savings Account Number: #" + getAccountNumber() + EOL +
                 "Balance: " + getBalance() + " SEK.";
     }
 
     public String getType() {
         return this.TYPE;
     }
+
 
 }

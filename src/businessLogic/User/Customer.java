@@ -18,16 +18,10 @@ public class Customer{
     private String pinCode;
 
     // easier to work with 1 list instead of 2.
-    private List<BankAccount> bankAccounts;
     private List<Transaction> savedRecipients;
     private ArrayList<String> customerMessageList;
     private List<CheckingAccount> checkingList = new ArrayList<>();
     private List<SavingsAccount> savingsList = new ArrayList<>();
-
-    /*
-        private List<CheckingAccount> accountList;
-        private List<SavingsAccount> savingsAccount;
-    */
 
     public Customer(String personalNumber, String firstName, String lastName, String email, String password, String telephone, String pinCode) {
         this.personalNumber = personalNumber;
@@ -38,7 +32,8 @@ public class Customer{
         this.password = password;
         this.pinCode = pinCode;
         this.customerMessageList = new ArrayList<>();
-        this.bankAccounts = new ArrayList<>();
+        this.checkingList = new ArrayList<>();
+        this.savingsList = new ArrayList<>();
         this.savedRecipients = new ArrayList<>();
     }
 
@@ -136,14 +131,6 @@ public class Customer{
         }
     }
 
-    public List<BankAccount> getBankAccounts() {
-        return this.bankAccounts;
-    }
-
-    public void addBankAccount(BankAccount account) {
-        bankAccounts.add(account);
-    }
-
     public List<Transaction> getSavedRecipients() {
         return this.savedRecipients;
     }
@@ -156,16 +143,24 @@ public class Customer{
         return checkingList;
     }
 
-    public void addCheckingList(CheckingAccount checkingAccount) {
-        this.checkingList.add(checkingAccount);
+    public void addCheckingList(CheckingAccount checkingAccount) throws Exception {
+        if(checkingAccount.getAccountNumber().length() != 6){
+            throw new Exception("Account number must be 6 characters.");
+        } else {
+            checkingList.add(checkingAccount);
+        }
     }
 
     public List<SavingsAccount> getSavingsList() {
         return savingsList;
     }
 
-    public void addSavingsList(SavingsAccount savingsAccount) {
-        this.savingsList.add(savingsAccount);
+    public void addSavingsList(SavingsAccount savingsAccount) throws Exception {
+        if(savingsAccount.getAccountNumber().length() != 6){
+            throw new Exception("Account number must be 6 characters.");
+        } else {
+            savingsList.add(savingsAccount);
+        }
     }
 }
 

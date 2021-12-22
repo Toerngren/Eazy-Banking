@@ -251,7 +251,7 @@ public class Menu {
         String operationResult = "";
         do {
             if (!service.approvedKYC(currentUser)) {
-                System.out.println(" \"\\u001B[32m\" + Please register KYC first to use all bank services!" + " \u001B[0m");
+                System.out.println(" \u001B[32m\" + Please register KYC first to use all bank services!" + " \u001B[0m");
                 kycMenu(currentUser);
             } else {
                 System.out.println(service.printAccounts(currentUser));
