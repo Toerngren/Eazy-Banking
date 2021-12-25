@@ -704,16 +704,15 @@ public class Menu {
             System.out.println(exception.getMessage());
         }
     }
-
-    public String payLoan(Customer currentUser) throws Exception {
+    public String payLoan (Customer currentUser) throws Exception {
         if (!service.checkLoan(currentUser.getPersonalNumber())) {
             return "No loans yet.";
         } else {
             String reply = UserInput.readLine("Would you like to pay loan? Yes or No: ");
-            if (reply.equals("yes")) {
-                String message = service.withdraw(service.getSavingsAccountNumber(currentUser), service.getMonthlyPayment(currentUser));
+            if (reply.equals("yes")){
+                String message = service.withdraw(service.getSavingsAccountNumber(currentUser),service.getMonthlyPayment(currentUser));
                 System.out.println(message);
-            } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
+            } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")){
                 System.out.println("Loan has not been paid, remember to pay the loan before end of month.");
                 myLoanMenu(currentUser);
             } else {
@@ -723,6 +722,20 @@ public class Menu {
         }
     }
 
+    /*
+    public void registerIncreaseApplication (Customer currentUser){
+        String debt = service.viewLoan(currentUser.getPersonalNumber());
+        System.out.println ("Current loan debt: "+ debt + "SEK");
+        double monthlyIncome = UserInput.readDouble("What is your monthly salary?" );
+        double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt?" );
+        double currentCreditDebt = UserInput.readDouble("What is the sum of your current credit debt?" );
+        int appliedLoanAmount = UserInput.readInt("How much would you want to borrow? From 0 - 500 000 SEK" );
+        int appliedLoanDuration = UserInput.readInt("What duration would you like on the loan? From 1-5 years" );
+        String message = service.increaseLoan(currentUser.getPersonalNumber(), monthlyIncome, currentLoanDebt, currentCreditDebt,appliedLoanAmount, appliedLoanDuration,loanDebt);
+        System.out.println(message);
+    }
+
+ */
     /*
     public void loginCustomer(){
         String verify = "";
