@@ -23,7 +23,7 @@ public class UserInput {
 
     public static String readLine(String message) {
         System.out.print(message);
-        String sentence = input.nextLine();
+        String sentence = input.nextLine().trim();
         return sentence;
     }
 
