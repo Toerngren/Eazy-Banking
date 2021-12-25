@@ -21,7 +21,6 @@ public class Service {
     public static final String EOL = System.lineSeparator();
 
     private List<Customer> customerList;
-    private List<BankAccount> accountsList;
     private List<KYC> reviewKYCList;
     private List<Transaction> transactions;
     private List<Transaction> savedRecipients;
@@ -29,11 +28,12 @@ public class Service {
     private List<Loan> loanList;
     private List<LoanApplication> loanApplicationList;
     private Employee employee;
+    private List<SavingsAccount> savingsAccounts;
+    private List<CheckingAccount> checkingAccounts;
     // private Account loggedInAccount;
 
     public Service() {
         customerList = new ArrayList<>();
-        accountsList = new ArrayList<>();
         reviewKYCList = new ArrayList<>();
         transactions = new ArrayList<>();
         savedRecipients = new ArrayList<>();
@@ -41,6 +41,8 @@ public class Service {
         loanList = new ArrayList<>();
         loanApplicationList = new ArrayList<>();
         this.employee = new Employee("admin", "admin");
+        this.savingsAccounts =  new ArrayList<>();
+        this.checkingAccounts= new ArrayList<>();
     }
 
     public String createCustomer(String personalNumber, String firstName, String lastName, String email,
@@ -61,7 +63,7 @@ public class Service {
     public String verifyCustomerID(String personalNumber, String password) {
         return "";
     }
-
+/*
     public int getCustomerIndex(String personalNumber) {
         for (int i = 0; i < this.accountsList.size(); i++) {
             if (this.accountsList.get(i).verifyAccountNumber(personalNumber)) {
@@ -70,6 +72,8 @@ public class Service {
         }
         return -1;
     }
+
+ */
 
     public KYC findKYC(Customer customer) {
         if (reviewKYCList.size() > 0) {
@@ -296,8 +300,8 @@ public class Service {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        accountsList.add(cH);
-        accountsList.add(sA);
+        checkingAccounts.add(cH);
+        savingsAccounts.add(sA);
     }
 
     public String showUnapprovedKYC() {
@@ -344,10 +348,6 @@ public class Service {
         return null;
     }
 
-    public boolean isCustomerExist(String personalNumber) {
-        return getCustomerIndex(personalNumber) != -1;
-    }
-
     public boolean containsCustomer(String personalNumber) {
         for (Customer customer : customerList) {
             if (customer.getPersonalNumber().equals(personalNumber)) {
@@ -355,11 +355,6 @@ public class Service {
             }
         }
         return false;
-    }
-
-    public boolean verifyCustomer(String personalNumber, String password) {
-        int index = getCustomerIndex(personalNumber);
-        return !this.customerList.get(index).verifyCustomer(password);
     }
 
     /*
@@ -521,8 +516,18 @@ public class Service {
     }
 
     // method for finding account object by Account Number
-    public BankAccount getAccountByAccountNumber(String accountNumber) {
-        for (BankAccount account : accountsList) {
+
+    public SavingsAccount getSavingsAccountByAccountNumber(String accountNumber) {
+        for (SavingsAccount account : savingsAccounts) {
+            if (accountNumber.equals(account.getAccountNumber())) {
+                return account;
+            }
+        }
+        return null;
+    }
+
+    public CheckingAccount getCheckingAccountByAccountNumber(String accountNumber) {
+        for (CheckingAccount account : checkingAccounts) {
             if (accountNumber.equals(account.getAccountNumber())) {
                 return account;
             }
@@ -532,26 +537,35 @@ public class Service {
 
 
     public String deposit(String toAccount, double amount) throws Exception {
-        BankAccount account = getAccountByAccountNumber(toAccount);
-        if (account == null) {
+        SavingsAccount sa = getSavingsAccountByAccountNumber(toAccount);
+        CheckingAccount cha = getCheckingAccountByAccountNumber(toAccount);
+        if (sa == null && cha == null) {
             throw new Exception("Account doesn't exist.");
         }
         if (amount < 0) {
             throw new Exception("Amount should be greater than 0.");
-        } else {
-            account.addToUpdateBalance(amount);
+        } else if(sa != null) {
+            sa.addToUpdateBalance(amount);
             Deposit deposit = new Deposit(amount, toAccount);
             transactions.add(deposit);
-            account.addTransaction(deposit);
-            return "\u001B[32m" + account.getType() + " balance was updated successfully!" + EOL +
-                    "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
-            //todo Margaret - Could we add this line also to withdraw?
+            sa.addTransaction(deposit);
+            return "\u001B[32m" + sa.getType() + " balance was updated successfully!" + EOL +
+                    "Current balance is: " + sa.getBalance() + " SEK." + " \u001B[0m";
+        } else if(cha != null ) {
+            cha.addToUpdateBalance(amount);
+            Deposit deposit = new Deposit(amount, toAccount);
+            transactions.add(deposit);
+            cha.addTransaction(deposit);
+            return "\u001B[32m" + cha.getType() + " balance was updated successfully!" + EOL +
+                    "Current balance is: " + cha.getBalance() + " SEK." + " \u001B[0m";
         }
+        return  "";
     }
 
     public String payTransfer(String fromAccountNumber, String toAccountNumber, double amount, String note) throws Exception {
-        BankAccount account = getAccountByAccountNumber(fromAccountNumber);
-        if (account == null) {
+        SavingsAccount sa = getSavingsAccountByAccountNumber(fromAccountNumber);
+        CheckingAccount cha = getCheckingAccountByAccountNumber(fromAccountNumber);
+        if (sa == null && cha == null) {
             throw new Exception("Account doesn't exist.");
         }
         if (toAccountNumber.length() != 6) {
@@ -560,21 +574,42 @@ public class Service {
         if (amount <= 0) {
             throw new Exception("Amount should be greater than 0.");
         }
-        if (amount > account.getBalance()) {
-            throw new Exception("Not enough funds on account #" + account.getAccountNumber());
-        } else {
-            account.subtractToUpdateBalance(amount);
-            Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
-            transactions.add(withdrawal);
-            account.addTransaction(withdrawal);
-            if (getAccountByAccountNumber(toAccountNumber) != null) {
-                deposit(toAccountNumber, amount);
+        if(sa != null) {
+            if (amount > sa.getBalance()) {
+                throw new Exception("Not enough funds on account #" + sa.getAccountNumber());
+            } else {
+                sa.subtractToUpdateBalance(amount);
+                Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
+                transactions.add(withdrawal);
+                sa.addTransaction(withdrawal);
+                if (getCheckingAccountByAccountNumber(toAccountNumber) != null) {
+                    deposit(toAccountNumber, amount);
+                }
+
+                return "\u001B[32m" + "Transfer successful!" + EOL +
+                        sa.getType() + " #" + fromAccountNumber + " Current Balance: " + sa.getBalance() + " SEK." + " \u001B[0m" + EOL;
             }
-
-            return "\u001B[32m" + "Transfer successful!" + EOL +
-                    account.getType() + " #" + fromAccountNumber + " Current Balance: " + account.getBalance() + " SEK." + " \u001B[0m" + EOL;
-
         }
+
+        if(cha != null) {
+            if (amount > cha.getBalance()) {
+                throw new Exception("Not enough funds on account #" + sa.getAccountNumber());
+            } else {
+                cha.subtractToUpdateBalance(amount);
+                Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
+                transactions.add(withdrawal);
+                cha.addTransaction(withdrawal);
+                if (getSavingsAccountByAccountNumber(toAccountNumber) != null) {
+                    deposit(toAccountNumber, amount);
+                }
+
+                return "\u001B[32m" + "Transfer successful!" + EOL +
+                        cha.getType() + " #" + fromAccountNumber + " Current Balance: " + cha.getBalance() + " SEK." + " \u001B[0m" + EOL;
+
+            }
+        }
+
+        return  "";
     }
 
     public String saveRecipient(Customer currentUser, String fromAccount, String toAccountNumber, String note, String name) {
@@ -585,28 +620,44 @@ public class Service {
     }
 
     public String withdraw(String fromAccount, double amount) throws Exception {
-        BankAccount account = getAccountByAccountNumber(fromAccount);
-        if (account == null) {
+        SavingsAccount sa = getSavingsAccountByAccountNumber(fromAccount);
+        CheckingAccount cha = getCheckingAccountByAccountNumber(fromAccount);
+        if (sa == null && cha == null) {
             throw new Exception("Account doesn't exist.");
         }
         if (amount <= 0) {
             throw new Exception("Amount should be greater than 0.");
         }
-        if (amount > account.getBalance()) {
-            throw new Exception("Not enough funds to withdraw from account " + account.getAccountNumber());
-        } else {
-            Withdrawal withdrawal = new Withdrawal(amount, fromAccount);
-            transactions.add(withdrawal);
-            account.addTransaction(withdrawal);
-            account.subtractToUpdateBalance(amount);
-            return "\u001B[32m" + account.getType() + " balance was updated successfully." + EOL +
-                    "Current balance is: " + account.getBalance() + " SEK." + " \u001B[0m";
+        if(sa != null) {
+            if (amount > sa.getBalance()) {
+                throw new Exception("Not enough funds to withdraw from account " + sa.getAccountNumber());
+            } else {
+                Withdrawal withdrawal = new Withdrawal(amount, fromAccount);
+                transactions.add(withdrawal);
+                sa.addTransaction(withdrawal);
+                sa.subtractToUpdateBalance(amount);
+                return "\u001B[32m" + sa.getType() + " balance was updated successfully." + EOL +
+                        "Current balance is: " + sa.getBalance() + " SEK." + " \u001B[0m";
+            }
         }
+        if(cha != null) {
+            if (amount > cha.getBalance()) {
+                throw new Exception("Not enough funds to withdraw from account " + sa.getAccountNumber());
+            } else {
+                Withdrawal withdrawal = new Withdrawal(amount, fromAccount);
+                transactions.add(withdrawal);
+                cha.addTransaction(withdrawal);
+                cha.subtractToUpdateBalance(amount);
+                return "\u001B[32m" + cha.getType() + " balance was updated successfully." + EOL +
+                        "Current balance is: " + cha.getBalance() + " SEK." + " \u001B[0m";
+            }
+        }
+        return "";
     }
 
     public String transferFundsBetweenAccounts(double amount, String fromAccountNumber, String toAccountNumber) throws Exception {
-        BankAccount fromAccount = getAccountByAccountNumber(fromAccountNumber);
-        BankAccount toAccount = getAccountByAccountNumber(toAccountNumber);
+        SavingsAccount fromAccount = getSavingsAccountByAccountNumber(fromAccountNumber);
+        CheckingAccount toAccount = getCheckingAccountByAccountNumber(toAccountNumber);
         if (toAccount == null || fromAccount == null) {
             return "Can't find account. Please check if the accounts' numbers are correct";
         } else if (checkBalance(fromAccountNumber) < amount) {
@@ -639,7 +690,7 @@ public class Service {
         return checkingAccountOutput + EOL +
                 "------------------------------------- " + EOL +
                 savingsAccountOutput + EOL +
-                "------------------------------------- " + EOL;
+                "------------------------------------- ";
     }
 
     //todo Adrian changed
@@ -756,7 +807,11 @@ public class Service {
     }
 
     public double checkBalance(String accountNumber) {
-        return getAccountByAccountNumber(accountNumber).getBalance();
+        if(getSavingsAccountByAccountNumber(accountNumber) != null) {
+            return getSavingsAccountByAccountNumber(accountNumber).getBalance();
+        } else {
+           return getCheckingAccountByAccountNumber(accountNumber).getBalance();
+        }
     }
 
     public boolean checkPinCode(String typedPinCode, Customer currentUser) {
@@ -973,17 +1028,11 @@ public class Service {
         return null;
     }
 
-    public void addAccount(BankAccount acc) {
-        accountsList.add(acc);
-    }
 
     public List<Customer> getCustomerList() {
         return customerList;
     }
 
-    public List<BankAccount> getAccountsList() {
-        return accountsList;
-    }
 
     public List<KYC> getReviewKYCList() {
         return reviewKYCList;
@@ -1017,10 +1066,6 @@ public class Service {
         this.customerList = customerList;
     }
 
-    public void setAccountsList(List<BankAccount> accountsList) {
-        this.accountsList = accountsList;
-    }
-
     public void setReviewKYCList(List<KYC> reviewKYCList) {
         this.reviewKYCList = reviewKYCList;
     }
@@ -1047,6 +1092,14 @@ public class Service {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    public void addSavingsAccounts(List<SavingsAccount> savingsList) {
+        this.savingsAccounts.addAll(savingsList);
+    }
+
+    public void addCheckingAccounts(List<CheckingAccount> checkingList) {
+        this.checkingAccounts.addAll(checkingList);
     }
 }
 

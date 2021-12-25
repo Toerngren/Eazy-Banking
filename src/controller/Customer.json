@@ -7,17 +7,20 @@
     "telephone": "04",
     "password": "123",
     "pinCode": "1234",
-    "bankAccounts": [
+    "checkingList": [
       {
         "customerPersonalNumber": "9309253830",
-        "accountNumber": "758178",
-        "balance": 0.0,
+        "accountNumber": "555666",
+        "balance": 1000.0,
         "transactionList": []
-      },
+      }
+    ],
+    "savingsList": [
       {
+        "interestRate": 0.0,
         "customerPersonalNumber": "9309253830",
-        "accountNumber": "369491",
-        "balance": 0.0,
+        "accountNumber": "333444",
+        "balance": 1000.0,
         "transactionList": []
       }
     ],
@@ -39,7 +42,7 @@
       {
         "customerPersonalNumber": "9309251337",
         "accountNumber": "844952",
-        "balance": 0.0,
+        "balance": 1000.0,
         "transactionList": []
       }
     ],
@@ -48,7 +51,7 @@
         "interestRate": 0.0,
         "customerPersonalNumber": "9309251337",
         "accountNumber": "395612",
-        "balance": 0.0,
+        "balance": 1000.0,
         "transactionList": []
       }
     ]

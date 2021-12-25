@@ -288,18 +288,36 @@ public class Menu {
                     break;
                 case "1":
                     String accountNumber = chooseAccount(currentUser);
-                    System.out.println(service.printAllTransactions(
-                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
+                    if(service.getCheckingAccountByAccountNumber(accountNumber) != null) {
+                        System.out.println(service.printAllTransactions(
+                                service.getCheckingAccountByAccountNumber(accountNumber).getTransactionList()));
+                    }
+                    if(service.getSavingsAccountByAccountNumber(accountNumber) != null) {
+                        System.out.println(service.printAllTransactions(
+                                service.getSavingsAccountByAccountNumber(accountNumber).getTransactionList()));
+                    }
                     break;
                 case "2":
                     accountNumber = chooseAccount(currentUser);
-                    System.out.println(service.printAllDeposits(
-                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
+                    if(service.getCheckingAccountByAccountNumber(accountNumber) != null) {
+                        System.out.println(service.printAllDeposits(
+                                service.getCheckingAccountByAccountNumber(accountNumber).getTransactionList()));
+                    }
+                    if(service.getSavingsAccountByAccountNumber(accountNumber) != null) {
+                        System.out.println(service.printAllDeposits(
+                                service.getSavingsAccountByAccountNumber(accountNumber).getTransactionList()));
+                    }
                     break;
                 case "3":
                     accountNumber = chooseAccount(currentUser);
-                    System.out.println(service.printAllWithdrawals(
-                            service.getAccountByAccountNumber(accountNumber).getTransactionList()));
+                    if(service.getCheckingAccountByAccountNumber(accountNumber) != null) {
+                        System.out.println(service.printAllWithdrawals(
+                                service.getCheckingAccountByAccountNumber(accountNumber).getTransactionList()));
+                    }
+                    if(service.getSavingsAccountByAccountNumber(accountNumber) != null) {
+                        System.out.println(service.printAllWithdrawals(
+                                service.getCheckingAccountByAccountNumber(accountNumber).getTransactionList()));
+                    }
                     break;
                 case "4":
                     System.out.println("View total deposits for a period - coming in v2");
@@ -765,6 +783,7 @@ public class Menu {
             }
         } catch (Exception e) {
             System.out.println("PIN-code must be 4 digits => Action is declined.");
+            System.out.println(e);
         }
     }
 
@@ -825,7 +844,7 @@ public class Menu {
 
     public String askForPinCode() throws Exception {
         String typedPinCode = UserInput.readLine("Enter PIN-code to confirm: ");
-        if (typedPinCode.isEmpty() || typedPinCode.isBlank() || typedPinCode.length() != 4) {
+        if (typedPinCode.length() != 4) {
             throw new Exception("PIN-code must be 4 digits. Action is declined.");
         } else {
             return typedPinCode;
@@ -839,6 +858,12 @@ public class Menu {
                 "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.getCustomerList().add(customer);
+            if(!customer.getSavingsList().isEmpty()) {
+                service.addSavingsAccounts(customer.getSavingsList());
+            }
+            if(!customer.getCheckingList().isEmpty()) {
+                service.addCheckingAccounts(customer.getCheckingList());
+            }
         }
     }
 
