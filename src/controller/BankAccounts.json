@@ -1,1 +1,15 @@
-[{"customerPersonalNumber":"9602037955","accountNumber":"652990","balance":300.0,"transactionList":[{"transactionID":"bd162a94-1c06-4895-8643-75f9486a6908","date":"Dec 21, 2021, 3:16:09 PM","amount":300.0,"fromAccount":"","toAccount":"652990","note":""}]},{"customerPersonalNumber":"9602037955","accountNumber":"985812","balance":600.0,"transactionList":[{"transactionID":"8e3f7eb4-9894-4d7f-91ea-279d7a2dfb18","date":"Dec 21, 2021, 3:15:53 PM","amount":500.0,"fromAccount":"","toAccount":"985812","note":""},{"transactionID":"0dc6eb75-790e-4365-87fb-fff45b065580","date":"Dec 21, 2021, 3:16:15 PM","amount":100.0,"fromAccount":"","toAccount":"985812","note":""}]}]
+[
+  {
+    "customerPersonalNumber": "9309253830",
+    "accountNumber": "758178",
+    "balance": 0.0,
+    "transactionList": []
+  },
+  {
+    "interestRate": 0.0,
+    "customerPersonalNumber": "9309253830",
+    "accountNumber": "369491",
+    "balance": 0.0,
+    "transactionList": []
+  }
+]
