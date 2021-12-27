@@ -9,10 +9,6 @@ public class CheckingAccount extends BankAccount {
         super(customerPersonalNumber);
     }
 
-    public void payBillS(){
-
-    }
-
     public String toString(){
         return "Checking Account Number: " + getAccountNumber() + EOL +
                 "Balance: " + getBalance() + " SEK.";

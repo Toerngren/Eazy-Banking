@@ -9,7 +9,6 @@ import businessLogic.Loan.Loan;
 import businessLogic.Transactions.Transaction;
 import businessLogic.User.Customer;
 import businessLogic.User.KYC;
-import businessLogic.bankAccounts.BankAccount;
 import com.google.gson.Gson;
 import controller.Service;
 
@@ -172,6 +171,7 @@ public class Menu {
                         deposit(toAccount, currentUser);
                         break;
                     case "2":
+                        service.addProfitToSavings();
                         System.out.println(EOL + "Please choose an account to transfer from or return to the menu: ");
                         String fromAccountNumber = chooseAccount(currentUser);
                         String toAccountNumber = service.chooseSecondAccount(currentUser, fromAccountNumber);
@@ -197,7 +197,6 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
-
 
     public void askToSaveRecipientMenu(Customer currentUser, String fromAccountNumber, String toAccountNumber, String note) throws Exception {
         String option;
@@ -328,7 +327,6 @@ public class Menu {
         return operationResult;
     }
 
-
     public void myLoanMenu(Customer currentUser) throws Exception {
         String option;
 
@@ -353,7 +351,6 @@ public class Menu {
         } while (!(option.equals("0")));
         UserInput.exitScanner();
     }
-
 
     /* KYC MENU */
     public void kycMenu(Customer currentUser) throws Exception {
@@ -643,7 +640,6 @@ public class Menu {
         System.out.println(loan);
     }
 
-
     public void registerLoanApplication(Customer currentUser) throws Exception {
         if (service.checkLoan(currentUser.getPersonalNumber())) {
             System.out.println("You already have a loan with Eazy Banking.");
@@ -702,8 +698,6 @@ public class Menu {
         return reply;
     }
     }
-
-
 
     /*
     public void loginCustomer(){
@@ -810,6 +804,7 @@ public class Menu {
             service.getCustomerList().add(customer);
         }
     }
+
     public void jsonToCustomer() {
         Gson gson = new Gson();
         try {
@@ -820,6 +815,7 @@ public class Menu {
             e.printStackTrace();
         }
     }
+
     public void jsonFromLoan() throws FileNotFoundException {
         Gson gson = new Gson();
         Loan[] loanList = gson.fromJson(new FileReader("dit094_miniproject_group_3"+ System.getProperty("file.separator")+"src" + System.getProperty("file.separator") +"controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
@@ -827,6 +823,7 @@ public class Menu {
             service.getLoanList().add(loan);
         }
     }
+
     public void jsonToLoan(){
         Gson gson = new Gson();
         try {
@@ -837,6 +834,7 @@ public class Menu {
             e.printStackTrace();
         }
     }
+
     public void jsonFromTransaction() throws FileNotFoundException {
         Gson gson = new Gson();
         Transaction[] transactions = gson.fromJson(new FileReader("dit094_miniproject_group_3"+ System.getProperty("file.separator")+"src" + System.getProperty("file.separator") +"controller" + System.getProperty("file.separator") + "Transactions.json"), Transaction[].class);
@@ -854,6 +852,7 @@ public class Menu {
             e.printStackTrace();
         }
     }
+
     public void jsonFromKYC() throws FileNotFoundException {
         Gson gson = new Gson();
 
@@ -862,6 +861,7 @@ public class Menu {
             service.getApprovedKYCList().add(kyc);
         }
     }
+
     public void jsonToKYC(){
         Gson gson = new Gson();
         try {
@@ -872,6 +872,7 @@ public class Menu {
             e.printStackTrace();
         }
     }
+
   /*  public void jsonFromAccounts() throws FileNotFoundException {
         Gson gson = new Gson();
 

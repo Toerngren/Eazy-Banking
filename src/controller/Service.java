@@ -255,6 +255,7 @@ public class Service {
         }
         return true;
     }
+
     public boolean onlyDigitsPass(String password) {
         for (int i = 0; i < password.length(); i++) {
             if (!Character.isDigit(password.charAt(i))) {
@@ -512,7 +513,6 @@ public class Service {
         return null;
     }
 
-
     public String deposit(String toAccount, double amount) throws Exception {
         BankAccount account = getAccountByAccountNumber(toAccount);
         if (account == null) {
@@ -728,6 +728,25 @@ public class Service {
         }
         return "";
     }
+
+    public List<BankAccount> getSavingAccountsList(){
+       List<BankAccount> savingAccountsList = new ArrayList<>();
+       for (BankAccount account : accountsList){
+           if (account.getType() == "Savings Account"){
+               savingAccountsList.add(account);
+           }
+       }
+       return savingAccountsList;
+    }
+
+    public void addProfitToSavings(){
+        for (BankAccount account : getSavingAccountsList()){
+            SavingsAccount savingAccount = (SavingsAccount) account;
+            savingAccount.addMonthlyInterest();
+        }
+    }
+
+
     public double checkBalance(String accountNumber) {
         return getAccountByAccountNumber(accountNumber).getBalance();
     }
@@ -735,8 +754,6 @@ public class Service {
     public boolean checkPinCode(String typedPinCode, Customer currentUser) {
         return currentUser.getPinCode().equals(typedPinCode);
     }
-
-
 
     /**
      * WHERE LOAN BEGIN:
@@ -769,7 +786,7 @@ public class Service {
         return false;
     }
 
-//Customer is not allowed to have more than one current loan at the time.
+    //Customer is not allowed to have more than one current loan at the time.
     public String viewLoan(String personalNumber) {
         int index = searchForLoanIndex(personalNumber);
         if (index == -1) {
@@ -780,15 +797,15 @@ public class Service {
             return loanList.get(index).toString();
         }
     }
-// Collects data from user input in Menu Class, to add to loan list for autoApproval:
+    // Collects data from user input in Menu Class, to add to loan list for autoApproval:
     public String applyLoan(String personalNumber, double monthlyIncome, double currentLoanDebt, double currentCreditDebt, int appliedLoanAmount, int appliedLoanDuration) {
         LoanApplication loanApplication = new LoanApplication(personalNumber, monthlyIncome, currentLoanDebt, currentCreditDebt, appliedLoanAmount, appliedLoanDuration);
         loanApplicationList.add(loanApplication);
         return null;
     }
 
-// Collects from the loanApplication list,
-// Depending on input value from customer, the loan will be auto approved depending on criteria listed below:
+    // Collects from the loanApplication list,
+    // Depending on input value from customer, the loan will be auto approved depending on criteria listed below:
     public String autoApproval (Customer currentUser) {
         LoanApplication unapprovedLoan = findLoanApplication(currentUser);
         String personalNumber = unapprovedLoan.getPersonalNumber();
@@ -799,24 +816,24 @@ public class Service {
         if ( monthlyIncome <= 10000  || currentLoanDebt >= 500000 || currentCreditDebt >= 500000 || appliedLoanDuration > 5 ){
             return ("Loan application was declined, contact 24|7 Service for more information.");
         } else {
-// Eazy Bank have a fixed yearly interest rate, set to 2,3%
+    // Eazy Bank have a fixed yearly interest rate, set to 2,3%
         double yearlyInterestRate = 2.3;
-//Could be set to fixed duration, if Employee wants.
+    //Could be set to fixed duration, if Employee wants.
             // int numOfYears = 5;
         int numOfYears = (int) unapprovedLoan.getAppliedLoanDuration();
         double loanAmount = unapprovedLoan.getAppliedLoanAmount();
         Date date = new Date();
         Loan loan = new Loan(personalNumber,yearlyInterestRate,numOfYears,loanAmount,date);
-//Remove loan application from application list.
+    //Remove loan application from application list.
         loanApplicationList.remove(unapprovedLoan);
-// "transforms" to a loan
+    // "transforms" to a loan
         loanList.add(loan);
         }
         return "\u001B[32m" + "Your loan has been approved." + "\u001B[0m" + EOL
                 + payOutLoan(currentUser) + EOL ;
     }
 
-// Use deposit method for Transaction menu, to deposit approved loan amount to customers Savings account.
+    // Use deposit method for Transaction menu, to deposit approved loan amount to customers Savings account.
     public String payOutLoan(Customer currentUser) {
         String message = "";
         try {

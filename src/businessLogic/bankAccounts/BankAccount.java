@@ -6,6 +6,7 @@ import Utility.Utilities;
 import businessLogic.Transactions.Transaction;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,12 +15,14 @@ public class BankAccount {
     private final String customerPersonalNumber;
     private final String accountNumber;
     private double balance;
+    private Calendar date;
     private List<Transaction> transactionList;
 
     public BankAccount(String customerPersonalNumber){
         this.customerPersonalNumber = customerPersonalNumber;
         this.accountNumber = generateAccountNumber();
         this.balance = 0.0;
+        this.date = Calendar.getInstance();
         this.transactionList = new ArrayList<>();
     }
 
@@ -35,12 +38,20 @@ public class BankAccount {
         return this.accountNumber;
     }
 
+    public Calendar getDate(){
+        return this.date;
+    }
+
     public boolean verifyAccountNumber(String accountNumber){
         return this.accountNumber.equals(accountNumber);
     }
 
     public double getBalance(){
         return Utilities.truncateDouble(this.balance, 2);
+    }
+
+    public void setBalance(double balance){
+        this.balance = balance;
     }
 
     public void addToUpdateBalance(double amount){
