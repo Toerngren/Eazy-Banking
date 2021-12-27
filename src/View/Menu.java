@@ -6,10 +6,8 @@ import java.io.*;
 import java.util.Locale;
 
 import businessLogic.Loan.Loan;
-import businessLogic.Transactions.Transaction;
 import businessLogic.User.Customer;
 import businessLogic.User.KYC;
-import businessLogic.bankAccounts.BankAccount;
 import com.google.gson.Gson;
 import controller.Service;
 

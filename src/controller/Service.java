@@ -797,23 +797,11 @@ public class Service {
         return "";
     }
 
-    public List<BankAccount> getSavingAccountsList(){
-       List<BankAccount> savingAccountsList = new ArrayList<>();
-       for (BankAccount account : accountsList){
-           if (account.getType() == "Savings Account"){
-               savingAccountsList.add(account);
-           }
-       }
-       return savingAccountsList;
-    }
-
     public void addProfitToSavings(){
-        for (BankAccount account : getSavingAccountsList()){
-            SavingsAccount savingAccount = (SavingsAccount) account;
-            savingAccount.addMonthlyInterest();
+        for (SavingsAccount account : savingsAccounts){
+            account.addMonthlyInterest();
         }
     }
-
 
     public double checkBalance(String accountNumber) {
         if(getSavingsAccountByAccountNumber(accountNumber) != null) {
