@@ -29,5 +29,4 @@ public class SavingsAccount extends BankAccount {
     public String getType() {
         return this.TYPE;
     }
-
 }

@@ -27,14 +27,17 @@ public class BankAccount {
     }
 
     private String generateAccountNumber(){
+
         return Calculator.randomNumberGenerator() ;
     }
 
     public String getCustomerPersonalNumber(){
+
         return this.customerPersonalNumber;
     }
 
     public String getAccountNumber(){
+
         return this.accountNumber;
     }
 
@@ -43,10 +46,12 @@ public class BankAccount {
     }
 
     public boolean verifyAccountNumber(String accountNumber){
+
         return this.accountNumber.equals(accountNumber);
     }
 
     public double getBalance(){
+
         return Utilities.truncateDouble(this.balance, 2);
     }
 
@@ -55,15 +60,17 @@ public class BankAccount {
     }
 
     public void addToUpdateBalance(double amount){
+
         this.balance = this.balance + amount;
     }
 
     public void subtractToUpdateBalance(double amount){
+
         this.balance = this.balance - amount;
     }
 
-    // Replacement for two addTransaction methods. We just need to add Transaction objects to a list.
     public void addTransaction(Transaction tx){
+
         this.transactionList.add(tx);
     }
 
@@ -71,6 +78,7 @@ public class BankAccount {
         return this.transactionList;
     }
 
+    // todo Margaret to Update if needed
     public String toString() {
         return null;
     }

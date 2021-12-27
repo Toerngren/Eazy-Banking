@@ -11,21 +11,19 @@ public class Printing {
                 "2. Customer login." + EOL +
                 "3. Employee login." + EOL);
     }
+
     public static void customerMenu(){
-        System.out.println(EOL +"Please choose among the options below." + EOL +
-                "0. Log out" + EOL +
+        System.out.println(EOL + "0. Log out" + EOL +
                 "1. Payments & Transfers" + EOL +
                 "2. Bank accounts" + EOL +
                 "3. Loans" + EOL +
                 "4. KYC" + EOL +
                 "5. Customer profile" + EOL +
                 "6. Customer support" + EOL);
-
     }
 
     public static void customerProfileMenu(){
-        System.out.println("Please choose among the options below." + EOL +
-                "0. Go back to My page." + EOL +
+        System.out.println(EOL + "0. Go back to My page." + EOL +
                 "1. See all of your details." + EOL +
                 "2. Change telephone number." + EOL +
                 "3. Change e-mail." + EOL +
@@ -33,14 +31,15 @@ public class Printing {
                 "5. Change PIN-code." + EOL);
 
     }
+
     public static void employeeMenu(){
-        System.out.println("You are now logged in!" + EOL +
-                "Please choose one of the following options:" + EOL +
-                "0. Log out." + EOL +
+        System.out.println( EOL + "0. Log out." + EOL +
                 "1. Review KYCs" + EOL +
                 "2. Customer Support" + EOL +
                 "3. View all customers."+ EOL);
+
     }
+
     public static void accountsMenu(){
         System.out.println( EOL + "0. Return to menu." + EOL +
                 "1. Pay, Deposit or Transfer." + EOL+
@@ -52,12 +51,14 @@ public class Printing {
                 "1. Fill in KYC." + EOL +
                 "2. View KYC." + EOL);
     }
+
     public static void loanMenu() {
         System.out.println( EOL + "Please choose one of the following options:" + EOL +
                 "0. Return to menu." + EOL +
                 "1. My loan." + EOL +
                 "2. Apply for a new loan." + EOL);
     }
+
     public static void myLoanMenu() {
         System.out.println( EOL + "Please choose one of the following options:" + EOL +
                 "0. Return to menu. " + EOL +
@@ -73,6 +74,7 @@ public class Printing {
                 "4. View saved recipients." + EOL +
                 "5. View Transactions History." + EOL);
     }
+
     public static void  transactionHistoryMenu(){
         System.out.println(EOL + "0. Return to the previous menu." + EOL +
                 "1. View all transactions." + EOL +
@@ -83,26 +85,22 @@ public class Printing {
     }
 
     public static void employeeKYCMenu() {
-        System.out.println("Please choose one of the following options:" + EOL +
+        System.out.println( EOL +
                 "0. Return to Employee Menu." + EOL +
                 "1. Review KYC." + EOL +
                 "2. View number of approved KYC's." + EOL);
     }
 
     public static void customerSupportMenu() {
-        System.out.println("Please choose one of the following options:" + EOL +
-                "0. Return to menu." + EOL +
+        System.out.println("0. Return to menu." + EOL +
                 "1. Write a message to Customer Support." + EOL +
-                "2. Read latest message." + EOL +
-                "3. Number of messages in inbox." + EOL);
+                "2. Read latest message." + EOL);
     }
 
     public static void employeeSupportMenu() {
-        System.out.println("Please choose one of the following options:" + EOL +
-                "0. Return to menu." + EOL +
+        System.out.println("0. Return to menu." + EOL +
                 "1. Write message to a customer." + EOL +
-                "2. Read latest message." + EOL +
-                "3. Number of messages in inbox." + EOL);
+                "2. Read latest message." + EOL );
     }
 
     public static void invalidEntry() {
