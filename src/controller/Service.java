@@ -8,13 +8,11 @@ import businessLogic.Transactions.Withdrawal;
 import businessLogic.User.Employee;
 import businessLogic.User.KYC;
 import businessLogic.User.Customer;
-import businessLogic.bankAccounts.BankAccount;
 import businessLogic.bankAccounts.CheckingAccount;
 import businessLogic.bankAccounts.SavingsAccount;
 
 import java.util.*;
 
-import com.google.gson.Gson;
 
 public class Service {
 

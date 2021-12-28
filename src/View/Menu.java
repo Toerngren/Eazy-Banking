@@ -14,6 +14,7 @@ import controller.Service;
 
 public class Menu {
     public static final String EOL = System.lineSeparator();
+    public static final String divider = "---------------------------------" + EOL;
     Service service = new Service();
 
     public void init() throws Exception {
@@ -48,10 +49,10 @@ public class Menu {
                 case "2":
                     String personalNumber = UserInput.readLine("Please enter your personal number: ");
                     if (!service.onlyDigits(personalNumber)) {
-                        System.out.println(EOL + "Personal number should contains digits." + EOL);
+                        System.out.println(divider + "Personal number should contains digits." + EOL);
                     } else {
                         if (!service.containsCustomer(personalNumber)) {
-                            System.out.println(EOL + "No customer with that personal number." + EOL);
+                            System.out.println(divider + "No customer with that personal number." + EOL);
                             startPage();
                         }
                         String password = UserInput.readLine("Please enter your password: ");
@@ -59,7 +60,7 @@ public class Menu {
                         if (foundCustomer.verifyPassword(password)) {
                             customerMenu(foundCustomer);
                         } else {
-                            System.out.println(EOL + "Wrong password." + EOL);
+                            System.out.println(divider + "Wrong password." + EOL);
                         }
                     }
                     break;
@@ -69,7 +70,7 @@ public class Menu {
                     if (service.verifyEmployee(username, pinCode)) {
                         employeeMenu();
                     } else {
-                        System.out.println("Wrong username or PIN-code.");
+                        System.out.println(divider + "Wrong username or PIN-code.");
                         startPage();
                     }
                 }
@@ -84,7 +85,7 @@ public class Menu {
     /* Customer MENU */
     public void customerMenu(Customer currentUser) throws Exception {
         String option;
-        System.out.println(EOL + "You are now logged in!");
+        System.out.println(divider + "You are now logged in!");
         do {
             if (service.numberOfMessages(currentUser) > 0) {
                 System.out.println(System.lineSeparator() + "\u001B[32m" + "You have a new message!" + EOL +
@@ -457,24 +458,36 @@ public class Menu {
                 case "2":
                     String personalNumber1 = UserInput.readLine("Please enter your personalNumber");
                     String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
+                    if (telephoneNumber.isBlank() || !service.onlyDigitsT(telephoneNumber) || telephoneNumber.length() < 9 || telephoneNumber.length() > 13) {
+                        throw new Exception("Telephone number must contain between 9 to 13 digits.");
+                    }
                     String message1 = service.editCustomerTelephone(personalNumber1, telephoneNumber);
                     System.out.println(EOL + message1 + EOL);
                     break;
                 case "3":
                     String personalNumber2 = UserInput.readLine("Please enter your personalNumber");
                     String email = UserInput.readLine("Please enter your new email: ");
+                    if (email.isBlank() || !email.contains("@") || !email.contains(".")) {
+                        throw new Exception("Invalid Email address.");
+                    }
                     String message2 = service.editCustomerEmail(personalNumber2, email);
                     System.out.println(EOL + message2 + EOL);
                     break;
                 case "4":
                     String personalNumber3 = UserInput.readLine("Please enter your personalNumber");
                     String password = UserInput.readLine("Please enter your new password: ");
+                    if (password.isBlank() || password.isEmpty()) {
+                        throw new Exception("You must have a password.");
+                    }
                     String message3 = service.editCustomerPassword(personalNumber3, password);
                     System.out.println(EOL + message3 + EOL);
                     break;
                 case "5":
                     String personalNumber4 = UserInput.readLine("Please enter your personalNumber");
                     String pinCode = UserInput.readLine("Please enter your new PIN-code: ");
+                    if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode) || pinCode.length() != 4) {
+                        throw new Exception("PIN-code must be digits and contain four numbers.");
+                    }
                     String message4 = service.editCustomerPincode(personalNumber4, pinCode);
                     System.out.println(EOL + message4 + EOL);
                     break;
@@ -818,8 +831,7 @@ public class Menu {
 
     public void jsonFromCustomer() throws FileNotFoundException {
         Gson gson = new Gson();
-        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        Customer[] customerList = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.addCustomerToList(customer);
             if (!customer.getSavingsList().isEmpty()) {
@@ -834,8 +846,7 @@ public class Menu {
     public void jsonToCustomer() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "Customer.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "Customer.json"));
             writer.write(gson.toJson(service.getCustomerList()));
             writer.close();
         } catch (IOException e) {
@@ -845,8 +856,7 @@ public class Menu {
 
     public void jsonFromLoan() throws FileNotFoundException {
         Gson gson = new Gson();
-        Loan[] loanList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
+        Loan[] loanList = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
         for (Loan loan : loanList) {
             service.getLoanList().add(loan);
         }
@@ -855,8 +865,7 @@ public class Menu {
     public void jsonToLoan(){
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "Loan.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "Loan.json"));
             writer.write(gson.toJson(service.getLoanList()));
             writer.close();
         } catch (IOException e) {
@@ -887,8 +896,7 @@ public class Menu {
     public void jsonFromKYC() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        KYC[] approvedKYCList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") +
-                "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
+        KYC[] approvedKYCList = gson.fromJson(new FileReader("controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
         for (KYC kyc : approvedKYCList) {
             service.getApprovedKYCList().add(kyc);
         }
@@ -897,8 +905,7 @@ public class Menu {
     public void jsonToKYC() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") +
-                    "controller" + System.getProperty("file.separator") + "KYC.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("controller" + System.getProperty("file.separator") + "KYC.json"));
             writer.write(gson.toJson(service.getApprovedKYCList()));
             writer.close();
         } catch (IOException e) {
