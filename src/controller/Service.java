@@ -326,7 +326,8 @@ public class Service {
         if (reviewKYCList.isEmpty()) {
             result = ""; // Returns an empty string as option one displays information if there are no KYCs to review
         } else {
-            result = "The number of unapproved KYC's is: " + reviewKYCList.size() + System.lineSeparator();
+            result = "-----------------------------------" + EOL +
+                    "The number of unapproved KYCs is: " + reviewKYCList.size();
         }
         return result;
     }
@@ -645,9 +646,19 @@ public class Service {
     }
 
     public String transferFundsBetweenAccounts(double amount, String fromAccountNumber, String toAccountNumber) throws Exception {
-        SavingsAccount fromAccount = getSavingsAccountByAccountNumber(fromAccountNumber);
-        CheckingAccount toAccount = getCheckingAccountByAccountNumber(toAccountNumber);
-        if (toAccount == null || fromAccount == null) {
+        SavingsAccount sa = null;
+        CheckingAccount cha = null;
+        if (getCheckingAccountByAccountNumber(fromAccountNumber) != null) {
+            cha = getCheckingAccountByAccountNumber(fromAccountNumber);
+            sa = getSavingsAccountByAccountNumber(toAccountNumber);
+        }
+
+        if (getSavingsAccountByAccountNumber(fromAccountNumber) != null) {
+            cha = getCheckingAccountByAccountNumber(toAccountNumber);
+            sa = getSavingsAccountByAccountNumber(fromAccountNumber);
+        }
+
+        if (sa == null || cha == null) {
             return "Can't find account. Please check if the accounts' numbers are correct";
         } else if (checkBalance(fromAccountNumber) < amount) {
             return "Not enough funds.";
@@ -655,8 +666,8 @@ public class Service {
             withdraw(fromAccountNumber, amount);
             deposit(toAccountNumber, amount);
             return "\u001B[32m" + "Transfer successful!" + EOL +
-                    fromAccount.getType() + " #" + fromAccount.getAccountNumber() + " Current Balance: " + fromAccount.getBalance() + " SEK." + EOL +
-                    toAccount.getType() + " #" + toAccount.getAccountNumber() + " Current Balance: " + toAccount.getBalance() + " SEK." + " \u001B[0m" + EOL;
+                    cha.getType() + " #" + cha.getAccountNumber() + " Current Balance: " + cha.getBalance() + " SEK." + EOL +
+                    sa.getType() + " #" + sa.getAccountNumber() + " Current Balance: " + sa.getBalance() + " SEK." + " \u001B[0m";
         }
     }
 
@@ -686,7 +697,8 @@ public class Service {
     public String printAccounts(Customer currentUser) {
         List<CheckingAccount> checkingAccounts = currentUser.getCheckingList();
         List<SavingsAccount> savingsAccounts = currentUser.getSavingsList();
-        String operationResult = "0. Return to the previous menu." + EOL;
+        String operationResult = "---------------------------------------" + EOL +
+                "0. Return to the previous menu." + EOL;
         String checkingAccountOutput = "";
         String savingsAccountOutput = "";
 
@@ -724,15 +736,16 @@ public class Service {
 
     public String printAllTransactions(List<Transaction> transactions) {
         int index = 0;
-        String operationResult = "All transactions:" + EOL;
+        String operationResult = "----------------------------------" + EOL +
+                "All transactions:" + EOL;
         for (Transaction tx : transactions) {
             index++;
-            operationResult += index + ". " + tx.toString();
+            operationResult += index + ". " + tx.toString() ;
         }
         if (index == 0) {
             operationResult = "No transactions so far.";
         }
-        return operationResult;
+        return operationResult + "----------------------------------";
     }
 
     public String printAllRecipients(List<Transaction> transactions) {
@@ -809,7 +822,10 @@ public class Service {
         }
     }
 
-    public boolean checkPinCode(String typedPinCode, Customer currentUser) {
+    public boolean checkPinCode(String typedPinCode, Customer currentUser) throws Exception {
+        if(!currentUser.getPinCode().equals(typedPinCode)) {
+            throw new Exception("\u001B[31m" + "Incorrect PIN-code => Operation rejected." + "\u001B[0m");
+        }
         return currentUser.getPinCode().equals(typedPinCode);
     }
 
@@ -991,10 +1007,6 @@ public class Service {
 
     public String closeAccount(String accountNumber) {
         return "";
-    }
-
-    public void chooseAccount() {
-
     }
 
     public Customer findCustomer(String personalNumber) {

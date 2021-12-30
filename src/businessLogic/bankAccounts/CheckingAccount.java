@@ -10,8 +10,7 @@ public class CheckingAccount extends BankAccount {
     }
 
     public String toString(){
-        return "Checking Account Number: #" + getAccountNumber() + EOL +
-                "Balance: " + getBalance() + " SEK.";
+        return "Checking Account Number: #" + getAccountNumber() + " | Balance: " + getBalance() + " SEK.";
     }
 
     public String getType() {
