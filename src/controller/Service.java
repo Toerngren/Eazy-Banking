@@ -86,7 +86,6 @@ public class Service {
                 if (customer.getPersonalNumber().equals(kyc.getPersonalNumber())) {
                     return kyc;
                 }
-
             }
         }
         return null;

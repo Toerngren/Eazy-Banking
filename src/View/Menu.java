@@ -3,6 +3,7 @@ package View;
 import Utility.*;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.Locale;
 
 import businessLogic.Loan.Loan;
@@ -10,6 +11,8 @@ import businessLogic.User.Customer;
 import businessLogic.User.KYC;
 import com.google.gson.Gson;
 import controller.Service;
+
+import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 
 
 public class Menu {
@@ -38,6 +41,11 @@ public class Menu {
     public void startPage() throws Exception {
         String option;
         do {
+            LocalDate toDayDate = LocalDate.now();
+            if (toDayDate.isEqual(toDayDate.with(firstDayOfMonth()))){
+                service.addProfitToSavings();
+            }
+
             Printing.startPage();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
@@ -175,7 +183,6 @@ public class Menu {
                         deposit(toAccount, currentUser);
                         break;
                     case "2":
-                        service.addProfitToSavings();
                         System.out.println(EOL + "Please choose an account to transfer from or return to the menu.");
                         String fromAccountNumber = chooseAccount(currentUser);
                         String toAccountNumber = service.chooseSecondAccount(currentUser, fromAccountNumber);
