@@ -806,7 +806,7 @@ public class Service {
         }
         return "";
     }
-
+    // Adding monthly profit to all saving account's list
     public void addProfitToSavings(){
         for (SavingsAccount account : savingsAccounts){
             account.addMonthlyInterest();

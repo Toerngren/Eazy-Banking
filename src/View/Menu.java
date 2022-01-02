@@ -41,8 +41,9 @@ public class Menu {
     public void startPage() throws Exception {
         String option;
         do {
-            LocalDate toDayDate = LocalDate.now();
-            if (toDayDate.isEqual(toDayDate.with(firstDayOfMonth()))){
+            // Checking if today is the first day of the month to add up monthly profits
+            LocalDate todayDate = LocalDate.now();
+            if (todayDate.isEqual(todayDate.with(firstDayOfMonth()))){
                 service.addProfitToSavings();
             }
 

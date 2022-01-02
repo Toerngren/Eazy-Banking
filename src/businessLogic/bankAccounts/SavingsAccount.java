@@ -14,10 +14,10 @@ public class SavingsAccount extends BankAccount {
         return annualInterestRate;
     }
 
-    // method should update balance by adding interest every month
+    // Update balance by adding interest every month
     public void addMonthlyInterest(){
         double profit = getBalance() + getBalance() * annualInterestRate/12;
-        setBalance(profit);
+        addToUpdateBalance(profit);
     }
 
     public String toString(){
