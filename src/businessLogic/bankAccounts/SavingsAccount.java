@@ -21,7 +21,7 @@ public class SavingsAccount extends BankAccount {
     }
 
     public String toString(){
-        return "Savings Account Number: " + getAccountNumber() + " | Balance: " + getBalance() + " SEK." + EOL +
+        return "Savings Account Number: #" + getAccountNumber() + " | Balance: " + getBalance() + " SEK." + EOL +
                 "Annual interest rate: "+ getAnnualInterestRate();
     }
 

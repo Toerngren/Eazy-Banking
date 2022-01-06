@@ -17,7 +17,7 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 
 public class Menu {
     public static final String EOL = System.lineSeparator();
-    public static final String divider = "---------------------------------" + EOL;
+    public static final String divider = EOL + "---------------------------------" + EOL;
     Service service = new Service();
 
     public void init() throws Exception {
@@ -323,7 +323,7 @@ public class Menu {
 
         do {
             if (!service.approvedKYC(currentUser)) {
-                System.out.println(" \u001B[32m\" + Please register KYC first to use all bank services!" + " \u001B[0m");
+                System.out.println(" \u001B[32m" + "Please register KYC first to use all bank services!" + " \u001B[0m");
                 kycMenu(currentUser);
             } else {
                 Printing.loanMenu();

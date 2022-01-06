@@ -660,7 +660,7 @@ public class Service {
         if (sa == null || cha == null) {
             return "Can't find account. Please check if the accounts' numbers are correct";
         } else if (checkBalance(fromAccountNumber) < amount) {
-            return "Not enough funds.";
+            return "\u001B[31m" + "Not enough funds." + "\u001B[0m";
         } else {
             withdraw(fromAccountNumber, amount);
             deposit(toAccountNumber, amount);
