@@ -624,6 +624,26 @@ public class Service {
         return "";
     }
 
+    public String printAllUserTransactions(Customer user) {
+        int index = 0;
+        String operationResult = "----------------------------------" + EOL +
+                "All transactions:" + EOL;
+        for (Transaction tx : user.getSavingsList().get(0).getTransactionList()) {
+            index++;
+            operationResult += index + ". " + tx.toString() ;
+        }
+
+        for (Transaction tx : user.getCheckingList().get(0).getTransactionList()) {
+            index++;
+            operationResult += index + ". " + tx.toString() ;
+        }
+
+        if (index == 0) {
+            operationResult = "No transactions so far." + EOL;
+        }
+        return operationResult + "----------------------------------";
+    }
+
     public String printAllTransactions(List<Transaction> transactions) {
         int index = 0;
         String operationResult = "----------------------------------" + EOL +
@@ -633,7 +653,7 @@ public class Service {
             operationResult += index + ". " + tx.toString() ;
         }
         if (index == 0) {
-            operationResult = "No transactions so far.";
+            operationResult = "No transactions so far." + EOL;
         }
         return operationResult + "----------------------------------";
     }
@@ -880,7 +900,7 @@ public class Service {
     }
 
     public String fetchPersonalNumber(String message) {
-        return message.substring(0, 2000);
+        return message.substring(15, 25);
     }
 
     public boolean verifyEmployee(String userName, String pinCode) {
