@@ -571,6 +571,7 @@ public class Menu {
                         } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
                             System.out.println("No reply has been sent.");
                             service.removeMessage(currentUser);
+
                         } else {
                             System.out.println("Input yes or no.");
                         }
@@ -604,7 +605,7 @@ public class Menu {
                         if (service.findCustomer(personalNumber) == null) {
                             throw new Exception("\u001B[31m" + "Personal number not found." + "\u001B[0m");
                         }
-                        String message = UserInput.readLine("What message would you like to send?");
+                        String message = UserInput.readLine("Type a message: ");
                         if(message.isEmpty()) {
                             throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
                         }
@@ -614,7 +615,6 @@ public class Menu {
                     }
                     break;
                 case "2":
-                    System.out.println(service.viewMessage());
                     try {
                         System.out.println(service.viewMessage());
                         String reply = UserInput.readLine("Would you like to reply? Yes or No.");
@@ -623,11 +623,12 @@ public class Menu {
                             if(replyMessage.isEmpty()) {
                                 throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
                             }
-                            service.messageToCustomer(service.fetchPersonalNumber(replyMessage), replyMessage);
+                            service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);
                             service.removeMessage();
                         } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
                             System.out.println("No reply has been sent.");
                             service.removeMessage();
+
                         } else {
                             System.out.println("Input yes or no.");
                         }
