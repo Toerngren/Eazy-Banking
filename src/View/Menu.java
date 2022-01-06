@@ -39,7 +39,7 @@ public class Menu {
         do {
             // Checking if today is the first day of the month to add up monthly profits
             LocalDate todayDate = LocalDate.now();
-            if (todayDate.isEqual(todayDate.with(firstDayOfMonth()))){
+            if (todayDate.isEqual(todayDate.with(firstDayOfMonth()))) {
                 service.addProfitToSavings();
             }
 
@@ -273,7 +273,7 @@ public class Menu {
                     payTransferMenu(currentUser);
                     break;
                 case "1":
-                    System.out.println(service.printAllTransactions(service.getTransactions()));
+                    System.out.println(service.printAllUserTransactions(currentUser));
                     break;
                 case "2":
                     String accountNumber = chooseAccount(currentUser);
@@ -461,11 +461,11 @@ public class Menu {
                     try {
                         String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
                         if (telephoneNumber.isBlank() || !service.onlyDigitsT(telephoneNumber) || telephoneNumber.length() < 9 || telephoneNumber.length() > 13) {
-                            throw new Exception ("Telephone number must contain between 9 to 13 digits.");
+                            throw new Exception("Telephone number must contain between 9 to 13 digits.");
                         }
                         String message1 = service.editCustomerTelephone(currentUser, telephoneNumber);
                         System.out.println(EOL + message1 + EOL);
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         System.out.println(e);
                     }
                     break;
@@ -478,9 +478,9 @@ public class Menu {
                         }
                         String message2 = service.editCustomerEmail(currentUser, email);
                         System.out.println(EOL + message2 + EOL);
-                    }catch (Exception e){
-                    System.out.println(e);
-                }
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
                     break;
                 case "4":
                     try {
@@ -490,9 +490,9 @@ public class Menu {
                         }
                         String message3 = service.editCustomerPassword(currentUser, password);
                         System.out.println(EOL + message3 + EOL);
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         System.out.println(e);
-                        }
+                    }
                     break;
                 case "5":
                     try {
@@ -502,7 +502,7 @@ public class Menu {
                         }
                         String message4 = service.editCustomerPincode(currentUser, pinCode);
                         System.out.println(EOL + message4 + EOL);
-                    }catch(Exception e) {
+                    } catch (Exception e) {
                         System.out.println(e);
                     }
                     break;
@@ -548,7 +548,7 @@ public class Menu {
         String option;
 
         do {
-            System.out.println(divider + "\u001B[32m" + "Number of unread messages: " + service.numberOfMessages(currentUser) + "\u001B[0m" + EOL);
+            System.out.println("---------------------------" + EOL + "\u001B[32m" + "Number of unread messages: " + service.numberOfMessages(currentUser) + "\u001B[0m");
             Printing.customerSupportMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
@@ -558,30 +558,35 @@ public class Menu {
                 case "1":
                     try {
                         String message = UserInput.readLine("Message to customer support: ");
-                        if(message.isEmpty()) {
+                        if (message.isEmpty()) {
                             throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
                         }
-                        service.messageToEmployee(currentUser, message);
+                        System.out.println(service.messageToEmployee(currentUser, message));
                     } catch (Exception exception) {
                         System.out.println(exception.getMessage());
                     }
                     break;
                 case "2":
                     try {
-                        System.out.println(service.viewMessage(currentUser));
-                        String reply = UserInput.readLine("Would you like to reply? Yes or No.");
-                        if (reply.equals("yes")) {
-                            String replyMessage = UserInput.readLine("What would you like to reply?");
-                            if(replyMessage.isEmpty()) {
-                                throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
-                            }
-                            service.messageToEmployee(currentUser, replyMessage);
-                            service.removeMessage(currentUser);
-                        } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
-                            System.out.println("No reply has been sent.");
-                            service.removeMessage(currentUser);
+                        String message = service.viewMessage(currentUser);
+                        System.out.println(message);
+                        if (message.equals(EOL + "There are currently no new messages.")) {
+                            customerSupportMenu(currentUser);
                         } else {
-                            System.out.println("Input yes or no.");
+                            String reply = UserInput.readLine("Would you like to reply? Yes or No: ");
+                            if (reply.equals("yes")) {
+                                String replyMessage = UserInput.readLine("Message to reply: ");
+                                if (replyMessage.isEmpty()) {
+                                    throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                                }
+                                service.messageToEmployee(currentUser, replyMessage);
+                                service.removeMessage(currentUser);
+                            } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
+                                System.out.println("No reply has been sent.");
+                                service.removeMessage(currentUser);
+                            } else {
+                                System.out.println("Input yes or no.");
+                            }
                         }
                     } catch (Exception exception) {
                         System.out.println(exception.getMessage());
@@ -602,7 +607,7 @@ public class Menu {
         String option;
         do {
             Printing.employeeSupportMenu();
-            option = UserInput.readLine("");
+            option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
                     employeeMenu();
@@ -613,9 +618,9 @@ public class Menu {
                         if (service.findCustomer(personalNumber) == null) {
                             throw new Exception("\u001B[31m" + "Personal number not found." + "\u001B[0m");
                         }
-                        String message = UserInput.readLine("What message would you like to send?");
-                        if(message.isEmpty()) {
-                            throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
+                        String message = UserInput.readLine("Message to send: ");
+                        if (message.isEmpty()) {
+                            throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m" + EOL);
                         }
                         System.out.println(service.messageToCustomer(personalNumber, message));
                     } catch (Exception exception) {
@@ -623,22 +628,26 @@ public class Menu {
                     }
                     break;
                 case "2":
-                    System.out.println(service.viewMessage());
                     try {
+                        String message = service.viewMessage();
                         System.out.println(service.viewMessage());
-                        String reply = UserInput.readLine("Would you like to reply? Yes or No.");
-                        if (reply.equals("yes")) {
-                            String replyMessage = UserInput.readLine("What would you like to reply?");
-                            if(replyMessage.isEmpty()) {
-                                throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
-                            }
-                            service.messageToCustomer(service.fetchPersonalNumber(replyMessage), replyMessage);
-                            service.removeMessage();
-                        } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
-                            System.out.println("No reply has been sent.");
-                            service.removeMessage();
+                        if (message.equals( EOL + "There are currently no new messages.")) {
+                            employeeCustomerSupportMenu();
                         } else {
-                            System.out.println("Input yes or no.");
+                            String reply = UserInput.readLine("Would you like to reply? Yes or No: ");
+                            if (reply.equals("yes")) {
+                                String replyMessage = UserInput.readLine("Message to reply: ");
+                                if (replyMessage.isEmpty()) {
+                                    throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m" + EOL);
+                                }
+                                service.messageToCustomer(service.fetchPersonalNumber(replyMessage), replyMessage);
+                                service.removeMessage();
+                            } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
+                                System.out.println("No reply has been sent.");
+                                service.removeMessage();
+                            } else {
+                                System.out.println("Input yes or no.");
+                            }
                         }
                     } catch (Exception exception) {
                         System.out.println(exception.getMessage());
