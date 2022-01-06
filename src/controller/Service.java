@@ -878,7 +878,7 @@ public class Service {
     }
 
     public String fetchPersonalNumber(String message) {
-        return message.substring(14, 24);
+        return message.substring(0, 2000);
     }
 
     public boolean verifyEmployee(String userName, String pinCode) {
