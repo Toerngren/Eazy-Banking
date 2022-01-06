@@ -443,6 +443,7 @@ public class Service {
     public String payTransfer(String fromAccountNumber, String toAccountNumber, double amount, String note) throws Exception {
         SavingsAccount sa = getSavingsAccountByAccountNumber(fromAccountNumber);
         CheckingAccount cha = getCheckingAccountByAccountNumber(fromAccountNumber);
+
         if (sa == null && cha == null) {
             throw new Exception("Account doesn't exist.");
         }
@@ -452,6 +453,7 @@ public class Service {
         if (amount <= 0) {
             throw new Exception("Amount should be greater than 0.");
         }
+
         if(sa != null) {
             if (amount > sa.getBalance()) {
                 throw new Exception("Not enough funds on account #" + sa.getAccountNumber());
@@ -471,7 +473,7 @@ public class Service {
 
         if(cha != null) {
             if (amount > cha.getBalance()) {
-                throw new Exception("Not enough funds on account #" + sa.getAccountNumber());
+                throw new Exception("Not enough funds on account #" + cha.getAccountNumber());
             } else {
                 cha.subtractToUpdateBalance(amount);
                 Withdrawal withdrawal = new Withdrawal(amount, fromAccountNumber, toAccountNumber, note);
