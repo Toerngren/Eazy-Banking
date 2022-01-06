@@ -17,14 +17,12 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 
 public class Menu {
     public static final String EOL = System.lineSeparator();
-    public static final String divider = "---------------------------------" + EOL;
+    public static final String divider = EOL + "---------------------------------" + EOL;
     Service service = new Service();
 
     public void init() throws Exception {
-        //jsonFromAccounts();
         jsonFromCustomer();
         jsonFromKYC();
-        //jsonFromTransaction();
         jsonFromLoan();
         startPage();
     }
@@ -32,9 +30,7 @@ public class Menu {
     public void exit() throws Exception {
         jsonToCustomer();
         jsonToLoan();
-        //jsonToTransaction();
         jsonToKYC();
-        //jsonToAccounts();
         System.exit(0);
     }
 
@@ -51,12 +47,13 @@ public class Menu {
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
+                    exit();
                     break;
                 case "1":
                     registerCustomer();
                     break;
                 case "2":
-                    String personalNumber = UserInput.readLine("Please enter your personal number: ");
+                    String personalNumber = UserInput.readLine("Enter your personal number: ");
                     if (!service.onlyDigits(personalNumber)) {
                         System.out.println(divider + "Personal number should contains digits." + EOL);
                     } else {
@@ -64,7 +61,7 @@ public class Menu {
                             System.out.println(divider + "No customer with that personal number." + EOL);
                             startPage();
                         }
-                        String password = UserInput.readLine("Please enter your password: ");
+                        String password = UserInput.readLine("Enter your password: ");
                         Customer foundCustomer = service.findCustomer(personalNumber);
                         if (foundCustomer.verifyPassword(password)) {
                             customerMenu(foundCustomer);
@@ -326,7 +323,7 @@ public class Menu {
 
         do {
             if (!service.approvedKYC(currentUser)) {
-                System.out.println(" \u001B[32m\" + Please register KYC first to use all bank services!" + " \u001B[0m");
+                System.out.println(" \u001B[32m" + "Please register KYC first to use all bank services!" + " \u001B[0m");
                 kycMenu(currentUser);
             } else {
                 Printing.loanMenu();
@@ -461,40 +458,53 @@ public class Menu {
                     System.out.println(currentUser.toString());
                     break;
                 case "2":
-                    String personalNumber1 = UserInput.readLine("Please enter your personalNumber");
-                    String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
-                    if (telephoneNumber.isBlank() || !service.onlyDigitsT(telephoneNumber) || telephoneNumber.length() < 9 || telephoneNumber.length() > 13) {
-                        throw new Exception("Telephone number must contain between 9 to 13 digits.");
+                    try {
+                        String telephoneNumber = UserInput.readLine("Please enter your new telephone number: ");
+                        if (telephoneNumber.isBlank() || !service.onlyDigitsT(telephoneNumber) || telephoneNumber.length() < 9 || telephoneNumber.length() > 13) {
+                            throw new Exception ("Telephone number must contain between 9 to 13 digits.");
+                        }
+                        String message1 = service.editCustomerTelephone(currentUser, telephoneNumber);
+                        System.out.println(EOL + message1 + EOL);
+                    }catch(Exception e){
+                        System.out.println(e);
                     }
-                    String message1 = service.editCustomerTelephone(personalNumber1, telephoneNumber);
-                    System.out.println(EOL + message1 + EOL);
                     break;
                 case "3":
-                    String personalNumber2 = UserInput.readLine("Please enter your personalNumber");
-                    String email = UserInput.readLine("Please enter your new email: ");
-                    if (email.isBlank() || !email.contains("@") || !email.contains(".")) {
-                        throw new Exception("Invalid Email address.");
-                    }
-                    String message2 = service.editCustomerEmail(personalNumber2, email);
-                    System.out.println(EOL + message2 + EOL);
+                    try {
+
+                        String email = UserInput.readLine("Please enter your new email: ");
+                        if (email.isBlank() || !email.contains("@") || !email.contains(".")) {
+                            throw new Exception("Invalid Email address.");
+                        }
+                        String message2 = service.editCustomerEmail(currentUser, email);
+                        System.out.println(EOL + message2 + EOL);
+                    }catch (Exception e){
+                    System.out.println(e);
+                }
                     break;
                 case "4":
-                    String personalNumber3 = UserInput.readLine("Please enter your personalNumber");
-                    String password = UserInput.readLine("Please enter your new password: ");
-                    if (password.isBlank() || password.isEmpty()) {
-                        throw new Exception("You must have a password.");
-                    }
-                    String message3 = service.editCustomerPassword(personalNumber3, password);
-                    System.out.println(EOL + message3 + EOL);
+                    try {
+                        String password = UserInput.readLine("Please enter your new password: ");
+                        if (password.isBlank() || password.isEmpty()) {
+                            throw new Exception("You must have a password.");
+                        }
+                        String message3 = service.editCustomerPassword(currentUser, password);
+                        System.out.println(EOL + message3 + EOL);
+                    }catch(Exception e){
+                        System.out.println(e);
+                        }
                     break;
                 case "5":
-                    String personalNumber4 = UserInput.readLine("Please enter your personalNumber");
-                    String pinCode = UserInput.readLine("Please enter your new PIN-code: ");
-                    if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode) || pinCode.length() != 4) {
-                        throw new Exception("PIN-code must be digits and contain four numbers.");
+                    try {
+                        String pinCode = UserInput.readLine("Please enter your new PIN-code: ");
+                        if (pinCode.isEmpty() || pinCode.isBlank() || !service.onlyDigitsP(pinCode) || pinCode.length() != 4) {
+                            throw new Exception("PIN-code must be digits and contain four numbers.");
+                        }
+                        String message4 = service.editCustomerPincode(currentUser, pinCode);
+                        System.out.println(EOL + message4 + EOL);
+                    }catch(Exception e) {
+                        System.out.println(e);
                     }
-                    String message4 = service.editCustomerPincode(personalNumber4, pinCode);
-                    System.out.println(EOL + message4 + EOL);
                     break;
                 default:
                     Printing.invalidEntry();
@@ -525,7 +535,6 @@ public class Menu {
                     break;
                 case "2":
                     System.out.println(service.numberOfApprovedKYCs());
-                    System.out.println(service.printAllApprovedKYCs());
                     break;
                 default:
                     Printing.invalidEntry();
@@ -709,7 +718,7 @@ public class Menu {
             if (monthlyIncome < 0) {
                 throw new Exception("Minimum income is 0,00 SEK. ");
             }
-            double currentLoanDebt = UserInput.readDouble("Wht is the sum of your current loan debt? ");
+            double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt? ");
             if (currentLoanDebt < 0) {
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }

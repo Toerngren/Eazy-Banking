@@ -1,9 +1,1 @@
-[
-  {
-    "personalNumber": "9309251337",
-    "loanAmount": 100.0,
-    "yearlyInterestRate": 2.3,
-    "numOfYears": 5,
-    "date": "Dec 21, 2021, 7:53:59 PM"
-  }
-]
+[{"personalNumber":"9309251337","loanAmount":100.0,"yearlyInterestRate":2.3,"numOfYears":5,"date":"Dec 21, 2021, 7:53:59 PM"},{"personalNumber":"9602037944","loanAmount":3000.0,"yearlyInterestRate":2.3,"numOfYears":1,"date":"Jan 6, 2022, 11:48:55 AM"}]
