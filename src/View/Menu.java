@@ -53,7 +53,7 @@ public class Menu {
                     registerCustomer();
                     break;
                 case "2":
-                    String personalNumber = UserInput.readLine("Input your personal number: ");
+                    String personalNumber = UserInput.readLine("Enter your personal number: ");
                     if (!service.onlyDigits(personalNumber)) {
                         System.out.println(divider + "Personal number should contains digits." + EOL);
                     } else {
@@ -61,7 +61,7 @@ public class Menu {
                             System.out.println(divider + "No customer with that personal number." + EOL);
                             startPage();
                         }
-                        String password = UserInput.readLine("Input your password: ");
+                        String password = UserInput.readLine("Enter your password: ");
                         Customer foundCustomer = service.findCustomer(personalNumber);
                         if (foundCustomer.verifyPassword(password)) {
                             customerMenu(foundCustomer);
