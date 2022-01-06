@@ -355,21 +355,6 @@ public class Service {
         return false;
     }
 
-    /*
-    public String deleteCustomer(String personalNumber) {
-
-      if(customerList.isEmpty()){ Adrians version of verifyCustomer
-            return "No customers created yet.";
-        }
-        for (Customer customer : customerList) {
-            if(!customer.getPersonalNumber().equals(personalNumber) && !customer.getPassword().equals(password)){
-                return "Wrong personal number or password.";
-            }
-        }
-
-        return "Verified customer.";
-    }
-  */
 
     public String printAllCustomers() {
         String allCustomers = "All registered customers:";
@@ -380,94 +365,27 @@ public class Service {
         return allCustomers + System.lineSeparator();
     }
 
-    public String editCustomerFirstName(String personalNumber, String newFirstName) {
 
-        Customer nameToChange = null;
-        for (Customer currentName : customerList) {
-            if (currentName.getPersonalNumber().equals(personalNumber)) {
-                if (newFirstName.isEmpty()) {
-                    return "Invalid entry.";
-                }
-                nameToChange = currentName;
-                currentName.setFirstName(newFirstName);
-            }
-        }
-        if (nameToChange == null) {
-            return personalNumber + " was not registered yet.";
-        }
-        return personalNumber + "'s " + " first name was edited successfully.";
+    public String editCustomerEmail(Customer currentUser, String newEmail) throws Exception {
+
+                currentUser.setEmail(newEmail);
+                return "Email successfully changed.";
+    }
+    public String editCustomerTelephone(Customer currentUser, String newTelephone) {
+
+        currentUser.setTelephone(newTelephone);
+        return "Telephone number successfully changed.";
     }
 
-    public String editCustomerLastName(String personalNumber, String newLastName) {
+    public String editCustomerPassword(Customer currentUser, String newPassword) {
 
-        Customer lastNameToChange = null;
-
-        for (Customer currentLastName : customerList) {
-            if (currentLastName.getPersonalNumber().equals(personalNumber)) {
-                if (newLastName.isEmpty() || newLastName.isBlank()) {
-                    return "Invalid entry";
-                }
-                lastNameToChange = currentLastName;
-                currentLastName.setLastName(newLastName);
-            }
-        }
-        if (lastNameToChange == null) {
-            return personalNumber + " was not registered yet.";
-        }
-        return personalNumber + "'s last name was edited successfully.";
+        currentUser.setPassword(newPassword);
+        return "Password successfully changed.";
     }
+    public String editCustomerPincode(Customer currentUser, String newPincode) {
 
-    public String editCustomerEmail(String personalNumber, String newEmail) throws Exception {
-
-        Customer emailToChange = null;
-        for (Customer currentEmail : customerList) {
-            if (currentEmail.getPersonalNumber().equals(personalNumber)) {
-                emailToChange = currentEmail;
-                currentEmail.setEmail(newEmail);
-                return personalNumber + "'s" + " email was edited successfully.";
-            }
-        }
-        return "invalid personal number";
-    }
-    public String editCustomerTelephone(String personalNumber, String newTelephone) {
-        String changedTelephone = "";
-
-        for (Customer currentPhone : customerList) {
-            if (currentPhone.getPersonalNumber().equals(personalNumber)) {
-                currentPhone.setTelephone(newTelephone);
-                changedTelephone = personalNumber + "'s" + " telephone number was edited successfully.";
-                return changedTelephone;
-            }
-        }
-        return "Invalid personal number";
-    }
-    public boolean employeeLoginCheck(String username, String password) {
-
-        return username.equals("admin") && password.equals("admin");
-    }
-
-    public String editCustomerPassword(String personalNumber, String newPassword) {
-
-        String dosomething = "";
-        for (Customer customer : customerList) {
-            if (customer.getPersonalNumber().equals(personalNumber)) {
-
-                customer.setPassword(newPassword);
-                dosomething = personalNumber + "'s" + " password was edited successfully.";
-                return dosomething;
-            }
-        }
-        return "Invalid personal number";
-    }
-    public String editCustomerPincode(String personalNumber, String newPincode) {
-
-        for (Customer currentPinCode : customerList) {
-            if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
-                currentPinCode.setPinCode(newPincode);
-                return personalNumber + "'s" + " pin code was edited successfully.";
-            }
-        }
-        return "Invalid personal Number";
+        currentUser.setPinCode(newPincode);
+        return "PIN-code successfully changed.";
     }
 
     
