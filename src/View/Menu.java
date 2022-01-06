@@ -21,10 +21,8 @@ public class Menu {
     Service service = new Service();
 
     public void init() throws Exception {
-        //jsonFromAccounts();
         jsonFromCustomer();
         jsonFromKYC();
-        //jsonFromTransaction();
         jsonFromLoan();
         startPage();
     }
@@ -32,9 +30,7 @@ public class Menu {
     public void exit() throws Exception {
         jsonToCustomer();
         jsonToLoan();
-        //jsonToTransaction();
         jsonToKYC();
-        //jsonToAccounts();
         System.exit(0);
     }
 
@@ -51,12 +47,13 @@ public class Menu {
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
                 case "0":
+                    exit();
                     break;
                 case "1":
                     registerCustomer();
                     break;
                 case "2":
-                    String personalNumber = UserInput.readLine("Please enter your personal number: ");
+                    String personalNumber = UserInput.readLine("Input your personal number: ");
                     if (!service.onlyDigits(personalNumber)) {
                         System.out.println(divider + "Personal number should contains digits." + EOL);
                     } else {
@@ -64,7 +61,7 @@ public class Menu {
                             System.out.println(divider + "No customer with that personal number." + EOL);
                             startPage();
                         }
-                        String password = UserInput.readLine("Please enter your password: ");
+                        String password = UserInput.readLine("Input your password: ");
                         Customer foundCustomer = service.findCustomer(personalNumber);
                         if (foundCustomer.verifyPassword(password)) {
                             customerMenu(foundCustomer);
@@ -679,7 +676,7 @@ public class Menu {
             if (monthlyIncome < 0) {
                 throw new Exception("Minimum income is 0,00 SEK. ");
             }
-            double currentLoanDebt = UserInput.readDouble("Wht is the sum of your current loan debt? ");
+            double currentLoanDebt = UserInput.readDouble("What is the sum of your current loan debt? ");
             if (currentLoanDebt < 0) {
                 throw new Exception("Minimum value is 0,00 SEK. ");
             }
@@ -806,7 +803,7 @@ public class Menu {
 
     public void jsonFromCustomer() throws FileNotFoundException {
         Gson gson = new Gson();
-        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator") + "src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.addCustomerToList(customer);
             if (!customer.getSavingsList().isEmpty()) {
@@ -821,7 +818,7 @@ public class Menu {
     public void jsonToCustomer() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") + "src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"));
             writer.write(gson.toJson(service.getCustomerList()));
             writer.close();
         } catch (IOException e) {
@@ -831,7 +828,7 @@ public class Menu {
 
     public void jsonFromLoan() throws FileNotFoundException {
         Gson gson = new Gson();
-        Loan[] loanList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
+        Loan[] loanList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator")+ "src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
         for (Loan loan : loanList) {
             service.getLoanList().add(loan);
         }
@@ -840,7 +837,7 @@ public class Menu {
     public void jsonToLoan() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") + "src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"));
             writer.write(gson.toJson(service.getLoanList()));
             writer.close();
         } catch (IOException e) {
@@ -851,7 +848,7 @@ public class Menu {
     public void jsonFromKYC() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        KYC[] approvedKYCList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
+        KYC[] approvedKYCList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator")+ "src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
         for (KYC kyc : approvedKYCList) {
             service.getApprovedKYCList().add(kyc);
         }
@@ -860,7 +857,7 @@ public class Menu {
     public void jsonToKYC() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator")+ "src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"));
             writer.write(gson.toJson(service.getApprovedKYCList()));
             writer.close();
         } catch (IOException e) {
