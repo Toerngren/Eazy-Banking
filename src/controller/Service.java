@@ -417,13 +417,13 @@ public class Service {
         return personalNumber + "'s last name was edited successfully.";
     }
 
-    public String editCustomerEmail(String personalNumber, String newEmail) {
+    public String editCustomerEmail(String personalNumber, String newEmail) throws Exception{
 
         Customer emailToChange = null;
         for (Customer currentEmail : customerList) {
             if (currentEmail.getPersonalNumber().equals(personalNumber)) {
-                if (newEmail.isEmpty() || newEmail.isBlank()) {
-                    return "Invalid entry.";
+                if (newEmail.isEmpty() || newEmail.isBlank() || !newEmail.contains("@")){
+                throw new Exception("Invalid entry.");
                 }
                 emailToChange = currentEmail;
                 currentEmail.setEmail(newEmail);
@@ -436,13 +436,13 @@ public class Service {
         return personalNumber + "'s" + " email was edited successfully.";
     }
 
-    public String editCustomerTelephone(String personalNumber, String newTelephone) {
+    public String editCustomerTelephone(String personalNumber, String newTelephone)throws Exception {
         String changedTelephone = "";
         Customer telephoneToChange = null;
         for (Customer currentPhone : customerList) {
             if (currentPhone.getPersonalNumber().equals(personalNumber)) {
                 if (newTelephone.isEmpty() || newTelephone.isBlank() || !onlyDigitsT(newTelephone) || newTelephone.length() < 9 || newTelephone.length() > 13) {
-                    return "Invalid entry.";
+                    throw new Exception("Invalid entry.");
                 }
                 telephoneToChange = currentPhone;
                 currentPhone.setTelephone(newTelephone);
@@ -461,13 +461,13 @@ public class Service {
         return username.equals("admin") && password.equals("admin");
     }
 
-    public String editCustomerPassword(String personalNumber, String newPassword) {
+    public String editCustomerPassword(String personalNumber, String newPassword) throws Exception {
         Customer passwordToChange = null;
         String dosomething = "";
         for (Customer customer : customerList) {
             if (customer.getPersonalNumber().equals(personalNumber)) {
                 if (newPassword.isEmpty() || newPassword.isBlank() || !onlyDigitsPass(newPassword)) {
-                    return "Invalid entry.";
+                   throw new Exception("Invalid entry.");
                 }
                 passwordToChange = customer;
                 customer.setPassword(newPassword);
@@ -482,12 +482,12 @@ public class Service {
         return dosomething;
     }
 
-    public String editCustomerPincode(String personalNumber, String newPincode) {
+    public String editCustomerPincode(String personalNumber, String newPincode)throws Exception {
         Customer pinCodeToChange = null;
         for (Customer currentPinCode : customerList) {
             if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
                 if (newPincode.isEmpty() || newPincode.isBlank() || !onlyDigitsP(newPincode) || newPincode.length() != 4) {
-                    return "Invalid entry.";
+                    throw new Exception("Invalid entry.");
                 }
                 pinCodeToChange = currentPinCode;
                 currentPinCode.setPinCode(newPincode);
