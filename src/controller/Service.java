@@ -417,88 +417,59 @@ public class Service {
         return personalNumber + "'s last name was edited successfully.";
     }
 
-    public String editCustomerEmail(String personalNumber, String newEmail) throws Exception{
+    public String editCustomerEmail(String personalNumber, String newEmail) throws Exception {
 
         Customer emailToChange = null;
         for (Customer currentEmail : customerList) {
             if (currentEmail.getPersonalNumber().equals(personalNumber)) {
-                if (newEmail.isEmpty() || newEmail.isBlank() || !newEmail.contains("@")){
-                throw new Exception("Invalid entry.");
-                }
                 emailToChange = currentEmail;
                 currentEmail.setEmail(newEmail);
-            }
-            if (emailToChange == null) {
-
-                return personalNumber + " was not registered yet.";
+                return personalNumber + "'s" + " email was edited successfully.";
             }
         }
-        return personalNumber + "'s" + " email was edited successfully.";
+        return "invalid personal number";
     }
-
-    public String editCustomerTelephone(String personalNumber, String newTelephone)throws Exception {
+    public String editCustomerTelephone(String personalNumber, String newTelephone) {
         String changedTelephone = "";
-        Customer telephoneToChange = null;
+
         for (Customer currentPhone : customerList) {
             if (currentPhone.getPersonalNumber().equals(personalNumber)) {
-                if (newTelephone.isEmpty() || newTelephone.isBlank() || !onlyDigitsT(newTelephone) || newTelephone.length() < 9 || newTelephone.length() > 13) {
-                    throw new Exception("Invalid entry.");
-                }
-                telephoneToChange = currentPhone;
                 currentPhone.setTelephone(newTelephone);
                 changedTelephone = personalNumber + "'s" + " telephone number was edited successfully.";
-            }
-            if (telephoneToChange == null) {
-
-                return personalNumber + " was not registered yet.";
+                return changedTelephone;
             }
         }
-        return changedTelephone;
+        return "Invalid personal number";
     }
-
     public boolean employeeLoginCheck(String username, String password) {
 
         return username.equals("admin") && password.equals("admin");
     }
 
-    public String editCustomerPassword(String personalNumber, String newPassword) throws Exception {
-        Customer passwordToChange = null;
+    public String editCustomerPassword(String personalNumber, String newPassword) {
+
         String dosomething = "";
         for (Customer customer : customerList) {
             if (customer.getPersonalNumber().equals(personalNumber)) {
-                if (newPassword.isEmpty() || newPassword.isBlank() || !onlyDigitsPass(newPassword)) {
-                   throw new Exception("Invalid entry.");
-                }
-                passwordToChange = customer;
+
                 customer.setPassword(newPassword);
                 dosomething = personalNumber + "'s" + " password was edited successfully.";
-
-            }
-            if (passwordToChange == null) {
-
-                return personalNumber + " was not registered yet.";
+                return dosomething;
             }
         }
-        return dosomething;
+        return "Invalid personal number";
     }
+    public String editCustomerPincode(String personalNumber, String newPincode) {
 
-    public String editCustomerPincode(String personalNumber, String newPincode)throws Exception {
-        Customer pinCodeToChange = null;
         for (Customer currentPinCode : customerList) {
             if (currentPinCode.getPersonalNumber().equals(personalNumber)) {
-                if (newPincode.isEmpty() || newPincode.isBlank() || !onlyDigitsP(newPincode) || newPincode.length() != 4) {
-                    throw new Exception("Invalid entry.");
-                }
-                pinCodeToChange = currentPinCode;
                 currentPinCode.setPinCode(newPincode);
-            }
-            if (pinCodeToChange == null) {
-
-                return personalNumber + " was not registered yet.";
+                return personalNumber + "'s" + " pin code was edited successfully.";
             }
         }
-        return personalNumber + "'s" + " pin code was edited successfully.";
+        return "Invalid personal Number";
     }
+
     
     public String updateKYC(String occupation, double salary, String PEP, String FATCA) {
         return "";
