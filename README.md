@@ -4,6 +4,7 @@
 
 Gson:
 To run our software you must utilize google Gson library.
+https://github.com/google/gson
 
 Maven dependency: 
 <dependency>
