@@ -3,7 +3,17 @@
 #Eazy Banking
 
 Depending on PC/MAC: 
+When loading the preloaded data from our json files you **MIGHT** have to change the file path on six methods.
+The methods are called "jsonFrom" and "jsonTo". The **6** methods are located at the very bottom of "Menu.java" class.
+Depending on if you are on a PC or a Mac you might have to **remove** or **add** this: 
 
+"dit094_miniproject_group_3" +System.getProperty("file.separator") + 
+
+If you need to add it you simply add it before:
+
+"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+
+in each of the six methods.
 
 
 
