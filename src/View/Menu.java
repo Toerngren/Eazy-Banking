@@ -570,21 +570,12 @@ public class Menu {
                     break;
                 case "2":
                     try {
-                        System.out.println(service.viewMessage(currentUser));
-                        String reply = UserInput.readLine("Would you like to reply? Yes or No.");
-                        if (reply.equals("yes")) {
-                            String replyMessage = UserInput.readLine("What would you like to reply?");
-                            if(replyMessage.isEmpty()) {
-                                throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
-                            }
-                            service.messageToEmployee(currentUser, replyMessage);
-                            service.removeMessage(currentUser);
-                        } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
-                            System.out.println("No reply has been sent.");
-                            service.removeMessage(currentUser);
-
+                        String message = service.viewMessage(currentUser);
+                        System.out.println(message);
+                        if (message.equals(EOL + "There are currently no new messages.")) {
+                            customerSupportMenu(currentUser);
                         } else {
-                            reply = UserInput.readLine("Would you like to reply? Yes or No: ");
+                            String reply = UserInput.readLine("Would you like to reply? Yes or No: ");
                             if (reply.equals("yes")) {
                                 String replyMessage = UserInput.readLine("Message to reply: ");
                                 if (replyMessage.isEmpty()) {
@@ -643,20 +634,10 @@ public class Menu {
                     try {
                         String message = service.viewMessage();
                         System.out.println(service.viewMessage());
-                        String reply = UserInput.readLine("Would you like to reply? Yes or No.");
-                        if (reply.equals("yes")) {
-                            String replyMessage = UserInput.readLine("What would you like to reply?");
-                            if(replyMessage.isEmpty()) {
-                                throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m");
-                            }
-                            service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);
-                            service.removeMessage();
-                        } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
-                            System.out.println("No reply has been sent.");
-                            service.removeMessage();
-
+                        if (message.equals(EOL + "There are currently no new messages.")) {
+                            employeeCustomerSupportMenu();
                         } else {
-                            reply = UserInput.readLine("Would you like to reply? Yes or No: ");
+                            String reply = UserInput.readLine("Would you like to reply? Yes or No: ");
                             if (reply.equals("yes")) {
                                 String replyMessage = UserInput.readLine("Message to reply: ");
                                 if (replyMessage.isEmpty()) {
@@ -858,7 +839,7 @@ public class Menu {
 
     public void jsonFromCustomer() throws FileNotFoundException {
         Gson gson = new Gson();
-        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.addCustomerToList(customer);
             if (!customer.getSavingsList().isEmpty()) {
@@ -873,7 +854,7 @@ public class Menu {
     public void jsonToCustomer() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"));
             writer.write(gson.toJson(service.getCustomerList()));
             writer.close();
         } catch (IOException e) {
@@ -883,7 +864,7 @@ public class Menu {
 
     public void jsonFromLoan() throws FileNotFoundException {
         Gson gson = new Gson();
-        Loan[] loanList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
+        Loan[] loanList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
         for (Loan loan : loanList) {
             service.getLoanList().add(loan);
         }
@@ -892,7 +873,7 @@ public class Menu {
     public void jsonToLoan() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"));
             writer.write(gson.toJson(service.getLoanList()));
             writer.close();
         } catch (IOException e) {
@@ -903,7 +884,7 @@ public class Menu {
     public void jsonFromKYC() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        KYC[] approvedKYCList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
+        KYC[] approvedKYCList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
         for (KYC kyc : approvedKYCList) {
             service.getApprovedKYCList().add(kyc);
         }
@@ -912,7 +893,7 @@ public class Menu {
     public void jsonToKYC() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"));
             writer.write(gson.toJson(service.getApprovedKYCList()));
             writer.close();
         } catch (IOException e) {
