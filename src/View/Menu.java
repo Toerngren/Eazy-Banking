@@ -606,6 +606,7 @@ public class Menu {
     public void employeeCustomerSupportMenu() throws Exception {
         String option;
         do {
+            System.out.println("---------------------------" + EOL + "\u001B[32m" + "Number of unread messages: " + service.numberOfMessages() + "\u001B[0m");
             Printing.employeeSupportMenu();
             option = UserInput.readLine("Please type an option number: ");
             switch (option) {
