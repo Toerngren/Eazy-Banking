@@ -65,7 +65,7 @@ public class BankAccount {
         return this.transactionList;
     }
 
-    // todo Margaret to Update if needed
+
     public String toString() {
         return null;
     }

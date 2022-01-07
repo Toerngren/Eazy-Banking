@@ -26,7 +26,7 @@ public class Menu {
         if (todayDate.isEqual(todayDate.with(firstDayOfMonth()))) {
             service.addProfitToSavings();
         }
-
+        // populate our lists when launching the software
         jsonFromCustomer();
         jsonFromKYC();
         jsonFromLoan();
@@ -34,6 +34,7 @@ public class Menu {
     }
 
     public void exit() throws Exception {
+        //deserializing and writes to appropiate json file
         jsonToCustomer();
         jsonToLoan();
         jsonToKYC();
@@ -130,7 +131,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    /* ACCOUNTS MENU */
+
     public void myAccounts(Customer currentUser) throws Exception {
         String option = "";
 
@@ -161,7 +162,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    /* PAY AND TRANSFER MENU */
+
     public void payTransferMenu(Customer currentUser) throws Exception {
         String option = null;
         do {
@@ -261,7 +262,7 @@ public class Menu {
         return operationResult;
     }
 
-    /* TRANSACTION HISTORY */
+
     public void transactionHistoryMenu(Customer currentUser) throws Exception {
         String option;
 
@@ -317,7 +318,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    /* LOAN MENU */
+
     public String loanMenu(Customer currentUser) throws Exception {
         String option = "";
         String operationResult = "";
@@ -375,7 +376,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    /* KYC MENU */
+
     public void kycMenu(Customer currentUser) throws Exception {
         String option;
         double salary = 0.0;
@@ -410,7 +411,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    /* EMPLOYEE MENU */
+
     public void employeeMenu() throws Exception {
         String option;
         System.out.println("You are now logged in!");
@@ -445,7 +446,7 @@ public class Menu {
         UserInput.exitScanner();
     }
 
-    // Todo @Christoph / Adrian, add exceptions so that email must contain @ and so on.
+
     public void customerProfileMenu(Customer currentUser) throws Exception {
         String option;
         do {
@@ -688,7 +689,7 @@ public class Menu {
     }
 
 
-    //TODO Adrian lägga till så att + funkar i telefonumret och PIN-code 4siffror
+
     public void registerCustomer() throws Exception {
         try {
             String personalNumber = UserInput.readLine("Customer personal number: ");
@@ -792,24 +793,6 @@ public class Menu {
     }
 
 
-
-    /*
-    public void loginCustomer(){
-        String verify = "";
-        String personalNumber = UserInput.readLine("Customer personal number:");
-        String password = UserInput.readLine("Customer password:");
-        if (!service.isCustomerExist(personalNumber)){
-            verify = " PersonalNumber number does not exist.";
-        }
-        if (!service.verifyCustomer(personalNumber, password)){
-            verify = "Password does not match.";
-        }else {
-            customerMenu();
-        }
-        System.out.println(verify);
-    }
-*/
-
     public void deposit(String toAccount, Customer currentUser) {
         try {
             double amount = UserInput.readDouble("Enter amount to deposit (SEK): ");
@@ -875,7 +858,7 @@ public class Menu {
 
     public void jsonFromCustomer() throws FileNotFoundException {
         Gson gson = new Gson();
-        Customer[] customerList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
+        Customer[] customerList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
         for (Customer customer : customerList) {
             service.addCustomerToList(customer);
             if (!customer.getSavingsList().isEmpty()) {
@@ -890,7 +873,7 @@ public class Menu {
     public void jsonToCustomer() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"));
             writer.write(gson.toJson(service.getCustomerList()));
             writer.close();
         } catch (IOException e) {
@@ -900,7 +883,7 @@ public class Menu {
 
     public void jsonFromLoan() throws FileNotFoundException {
         Gson gson = new Gson();
-        Loan[] loanList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
+        Loan[] loanList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"), Loan[].class);
         for (Loan loan : loanList) {
             service.getLoanList().add(loan);
         }
@@ -909,7 +892,7 @@ public class Menu {
     public void jsonToLoan() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Loan.json"));
             writer.write(gson.toJson(service.getLoanList()));
             writer.close();
         } catch (IOException e) {
@@ -920,7 +903,7 @@ public class Menu {
     public void jsonFromKYC() throws FileNotFoundException {
         Gson gson = new Gson();
 
-        KYC[] approvedKYCList = gson.fromJson(new FileReader("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
+        KYC[] approvedKYCList = gson.fromJson(new FileReader("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"), KYC[].class);
         for (KYC kyc : approvedKYCList) {
             service.getApprovedKYCList().add(kyc);
         }
@@ -929,7 +912,7 @@ public class Menu {
     public void jsonToKYC() {
         Gson gson = new Gson();
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("dit094_miniproject_group_3" +System.getProperty("file.separator") +"src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "KYC.json"));
             writer.write(gson.toJson(service.getApprovedKYCList()));
             writer.close();
         } catch (IOException e) {

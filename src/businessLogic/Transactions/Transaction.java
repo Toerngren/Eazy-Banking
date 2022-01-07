@@ -57,9 +57,4 @@ public class Transaction {
         return "";
     }
 
-   /*
-    public boolean equalTo() {
-        return false;
-    }*/
-
 }

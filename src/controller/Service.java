@@ -257,15 +257,6 @@ public class Service {
         return true;
     }
 
-    public boolean onlyDigitsPass(String password) {
-        for (int i = 0; i < password.length(); i++) {
-            if (!Character.isDigit(password.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public String reviewUnapprovedKYC(String review) {
         KYC unapprovedKYC = findUnapprovedKYC();
         String result = "";
@@ -301,14 +292,7 @@ public class Service {
         savingsAccounts.add(sA);
     }
 
-    public String showUnapprovedKYC() {
-        KYC unapprovedKYC = findUnapprovedKYC();
-        if (unapprovedKYC != null) {
-            return employeeDisplayKYC(unapprovedKYC);
-        } else {
-            return "No KYC registered for this customer." + System.lineSeparator();
-        }
-    }
+
 
     public String numberOfApprovedKYCs() {
         String result = "";
@@ -331,13 +315,6 @@ public class Service {
         return result;
     }
 
-    public String printAllApprovedKYCs() {
-        String allApprovedKYCs = "All approved KYCs:";
-        for (KYC approvedKYC : approvedKYCList) {
-            allApprovedKYCs = allApprovedKYCs + System.lineSeparator() + approvedKYC.toString();
-        }
-        return allApprovedKYCs;
-    }
 
     public KYC findUnapprovedKYC() {
         for (KYC kyc : reviewKYCList) {
@@ -388,10 +365,7 @@ public class Service {
         return "PIN-code successfully changed.";
     }
 
-    
-    public String updateKYC(String occupation, double salary, String PEP, String FATCA) {
-        return "";
-    }
+
 
     // method for finding account object by Account Number
 
@@ -913,15 +887,6 @@ public class Service {
         return false;
     }
 
-    //todo Faiza
-    public String openNewAccount() {
-        return "";
-    }
-
-    public String closeAccount(String accountNumber) {
-        return "";
-    }
-
     public Customer findCustomer(String personalNumber) {
         try {
             if (customerList.size() > 0) {
@@ -937,14 +902,6 @@ public class Service {
         return null;
     }
 
-    public Customer getCustomerByPN(String pn) {
-        for (Customer c : customerList) {
-            if (c.getPersonalNumber().equals(pn)) {
-                return c;
-            }
-        }
-        return null;
-    }
 
     public void addCustomerToList(Customer customer) {
         this.customerList.add(customer);
