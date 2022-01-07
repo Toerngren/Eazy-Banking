@@ -43,9 +43,10 @@ username: admin
 password: admin
 
 To login as a Customer with access to all banking services you can use:
-username: x
-password: x
+personal number: 6410124540
+password: chokladpralin
 
+There are also more customers loaded from the json file.
 ##Contributors
 
 - Adrian Niklasson gusnikada@student.gu.se
