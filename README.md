@@ -29,7 +29,7 @@ Depending on if you are on a PC or a Mac you might have to **remove** or **add**
 
 
 "dit094_miniproject_group_3" +System.getProperty("file.separator") + 
-**Or both dit094_miniproject_group_3**
+**Or**
 "dit094_miniproject_group_3" +System.getProperty("file.separator") + "src" + System.getProperty("file.separator") + 
 If you need to add it you simply add it before:
 
