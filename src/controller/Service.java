@@ -420,7 +420,7 @@ public class Service {
         if (sa == null && cha == null) {
             throw new Exception("Account doesn't exist.");
         }
-        if (amount < 0) {
+        if (amount <= 0) {
             throw new Exception("Amount should be greater than 0.");
         } else if(sa != null) {
             sa.addToUpdateBalance(amount);
