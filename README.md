@@ -4,6 +4,7 @@
 
 Gson:
 To run our software you must utilize google Gson library.
+
 Maven dependency: 
 <dependency>
   <groupId>com.google.code.gson</groupId>
@@ -12,6 +13,7 @@ Maven dependency:
 </dependency>
 
 Gradle dependency:
+
 dependencies {
   implementation 'com.google.code.gson:gson:2.8.9'
 }
