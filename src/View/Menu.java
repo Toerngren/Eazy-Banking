@@ -21,6 +21,12 @@ public class Menu {
     Service service = new Service();
 
     public void init() throws Exception {
+        // Checking if today is the first day of the month to add up monthly profits
+        LocalDate todayDate = LocalDate.now();
+        if (todayDate.isEqual(todayDate.with(firstDayOfMonth()))) {
+            service.addProfitToSavings();
+        }
+
         jsonFromCustomer();
         jsonFromKYC();
         jsonFromLoan();
@@ -37,11 +43,6 @@ public class Menu {
     public void startPage() throws Exception {
         String option;
         do {
-            // Checking if today is the first day of the month to add up monthly profits
-            LocalDate todayDate = LocalDate.now();
-            if (todayDate.isEqual(todayDate.with(firstDayOfMonth()))) {
-                service.addProfitToSavings();
-            }
 
             Printing.startPage();
             option = UserInput.readLine("Please type an option number: ");
