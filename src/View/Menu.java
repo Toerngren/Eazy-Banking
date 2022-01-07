@@ -583,7 +583,7 @@ public class Menu {
                             service.removeMessage(currentUser);
 
                         } else {
-                            String reply = UserInput.readLine("Would you like to reply? Yes or No: ");
+                            reply = UserInput.readLine("Would you like to reply? Yes or No: ");
                             if (reply.equals("yes")) {
                                 String replyMessage = UserInput.readLine("Message to reply: ");
                                 if (replyMessage.isEmpty()) {
@@ -655,13 +655,13 @@ public class Menu {
                             service.removeMessage();
 
                         } else {
-                            String reply = UserInput.readLine("Would you like to reply? Yes or No: ");
+                            reply = UserInput.readLine("Would you like to reply? Yes or No: ");
                             if (reply.equals("yes")) {
                                 String replyMessage = UserInput.readLine("Message to reply: ");
                                 if (replyMessage.isEmpty()) {
                                     throw new Exception("\u001B[31m" + "Message cannot be empty, please write your message." + "\u001B[0m" + EOL);
                                 }
-                                service.messageToCustomer(service.fetchPersonalNumber(replyMessage), replyMessage);
+                                service.messageToCustomer(service.fetchPersonalNumber(), replyMessage);
                                 service.removeMessage();
                             } else if (reply.trim().toLowerCase(Locale.ROOT).equals("no")) {
                                 System.out.println("No reply has been sent.");
