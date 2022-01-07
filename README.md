@@ -2,6 +2,23 @@
 
 #Eazy Banking
 
+Gson:
+To run our software you must utilize google Gson library.
+Maven dependency: 
+<dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+  <version>2.8.9</version>
+</dependency>
+
+Gradle dependency:
+dependencies {
+  implementation 'com.google.code.gson:gson:2.8.9'
+}
+
+Or JAR download:
+https://search.maven.org/artifact/com.google.code.gson/gson/2.8.9/jar
+
 Depending on PC/MAC: 
 When loading the preloaded data from our json files you **MIGHT** have to change the file path on six methods.
 The methods are called "jsonFrom" and "jsonTo". The **6** methods are located at the very bottom of "Menu.java" class.
@@ -14,10 +31,6 @@ If you need to add it you simply add it before:
 "src" + System.getProperty("file.separator") + "controller" + System.getProperty("file.separator") + "Customer.json"), Customer[].class);
 
 in each of the six methods.
-
-
-
-
 
 
 To login as an Employee you can use:
