@@ -47,6 +47,7 @@ personal number: 6410124540
 password: chokladpralin
 
 There are also more customers loaded from the json file.
+
 ##Contributors
 
 - Adrian Niklasson gusnikada@student.gu.se
