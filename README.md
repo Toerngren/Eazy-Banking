@@ -3,7 +3,7 @@
 #Eazy Banking
 
 Gson:
-To run our software you must utilize google Gson library.
+To run our software you must utilize google Gson library. Found at Maven / Gradle / JAR download.
 https://github.com/google/gson
 
 Maven dependency: 
