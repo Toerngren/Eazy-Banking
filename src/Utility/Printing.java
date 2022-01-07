@@ -53,15 +53,13 @@ public class Printing {
     }
 
     public static void loanMenu() {
-        System.out.println(EOL +
-                "0. Return to menu." + EOL +
+        System.out.println( EOL + "0. Return to menu." + EOL +
                 "1. My loan." + EOL +
                 "2. Apply for a new loan." + EOL);
     }
 
     public static void myLoanMenu() {
-        System.out.println(EOL +
-                "0. Return to menu. " + EOL +
+        System.out.println( EOL + "0. Return to menu. " + EOL +
                 "1. View loan. " + EOL +
                 "2. Pay loan. " + EOL);
     }
@@ -91,13 +89,13 @@ public class Printing {
     }
 
     public static void customerSupportMenu() {
-        System.out.println("0. Return to menu." + EOL +
+        System.out.println( EOL + "0. Return to menu." + EOL +
                 "1. Write a message to Customer Support." + EOL +
                 "2. Read latest message." + EOL);
     }
 
     public static void employeeSupportMenu() {
-        System.out.println("0. Return to menu." + EOL +
+        System.out.println( EOL + "0. Return to menu." + EOL +
                 "1. Write message to a customer." + EOL +
                 "2. Read latest message." + EOL );
     }

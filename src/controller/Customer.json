@@ -4,9 +4,11 @@
     "firstName": "a",
     "lastName": "a",
     "email": "@,",
-    "telephone": "04",
+    "telephone": "123456789",
     "password": "123",
     "pinCode": "1234",
+    "savedRecipients": [],
+    "customerMessageList": [],
     "checkingList": [
       {
         "customerPersonalNumber": "9309253830",
@@ -17,25 +19,21 @@
     ],
     "savingsList": [
       {
-        "interestRate": 0.0,
         "customerPersonalNumber": "9309253830",
         "accountNumber": "333444",
         "balance": 1000.0,
         "transactionList": []
       }
-    ],
-    "savedRecipients": [],
-    "customerMessageList": []
+    ]
   },
   {
     "personalNumber": "9309251337",
     "firstName": "a",
     "lastName": "a",
     "email": "@",
-    "telephone": "0",
+    "telephone": "123456789",
     "password": "123",
     "pinCode": "1234",
-    "bankAccounts": [],
     "savedRecipients": [],
     "customerMessageList": [],
     "checkingList": [
@@ -48,12 +46,78 @@
     ],
     "savingsList": [
       {
-        "interestRate": 0.0,
         "customerPersonalNumber": "9309251337",
         "accountNumber": "395612",
         "balance": 1000.0,
         "transactionList": []
       }
     ]
+  },
+  {
+    "personalNumber": "9602037944",
+    "firstName": "Adrian",
+    "lastName": "Nickelsson",
+    "email": "adrian@dot.com",
+    "telephone": "123456789",
+    "password": "1234",
+    "pinCode": "1234",
+    "savedRecipients": [],
+    "customerMessageList": [],
+    "checkingList": [
+      {
+        "customerPersonalNumber": "9602037944",
+        "accountNumber": "062838",
+        "balance": 500.0,
+        "transactionList": [
+          {
+            "transactionID": "6106adcc-3dab-4d68-aa70-c14c3b66368f",
+            "date": "Jan 6, 2022, 11:49:13 AM",
+            "amount": 500.0,
+            "fromAccount": "",
+            "toAccount": "062838",
+            "note": ""
+          }
+        ]
+      }
+    ],
+    "savingsList": [
+      {
+        "TYPE": "Savings Account",
+        "customerPersonalNumber": "9602037944",
+        "accountNumber": "345850",
+        "balance": 2500.0,
+        "transactionList": [
+          {
+            "transactionID": "52f19787-49f1-4570-8c4e-e90532a839dc",
+            "date": "Jan 6, 2022, 11:48:55 AM",
+            "amount": 3000.0,
+            "fromAccount": "",
+            "toAccount": "345850",
+            "note": ""
+          },
+          {
+            "transactionID": "68a4ec7e-d4f2-40b0-a536-1cd8c135f96a",
+            "date": "Jan 6, 2022, 11:49:13 AM",
+            "amount": 500.0,
+            "fromAccount": "345850",
+            "toAccount": "",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "personalNumber": "9602037955",
+    "firstName": "Adrian",
+    "lastName": "Niklasson",
+    "email": "bajs@i.",
+    "telephone": "123456789",
+    "password": "1234",
+    "pinCode": "1234",
+    "savedRecipients": [],
+    "customerMessageList": [],
+    "checkingList": [],
+    "savingsList": []
   }
 ]
