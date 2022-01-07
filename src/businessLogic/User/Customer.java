@@ -46,7 +46,7 @@ public class Customer{
         if(customerMessageList.isEmpty()){
             return EOL + "There are currently no new messages.";
         } else {
-            return "Message from: " + customerMessageList.get(0);
+            return "From: Customer Support \n"  + "Message: " + customerMessageList.get(0);
         }
     }
 

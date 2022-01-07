@@ -899,9 +899,12 @@ public class Service {
         return "\u001B[32m" + "Message sent." + "\u001B[0m";
     }
 
-    public String fetchPersonalNumber(String message) {
-        return message.substring(15, 25);
+    public String fetchPersonalNumber() {
+        String message = viewMessage();
+        String personalNumber = message.substring(14, 24);
+        return personalNumber;
     }
+
 
     public boolean verifyEmployee(String userName, String pinCode) {
         if (employee.getEmployeeID().equals(userName.trim().toLowerCase(Locale.ROOT)) && employee.getPinCode().equals(pinCode.trim().toLowerCase(Locale.ROOT))) {
