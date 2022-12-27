@@ -1,6 +1,10 @@
 # DIT094_MINIPROJECT_GROUP_3
 
-#Eazy Banking
+DIT094 Mini Project: Team Programming HT21 7,5 hp /credits.
+
+Course is offered by the department of Computer Science and Engineering at the University of Gothenburg, during Study Period 2, 2021.
+
+## Eazy Banking
 
 Gson:
 To run our software you must utilize google Gson library. Found at Maven / Gradle / JAR download.
@@ -48,10 +52,10 @@ password: chokladpralin
 
 There are also more customers loaded from the json file.
 
-##Contributors
+## Contributors
 
 - Adrian Niklasson gusnikada@student.gu.se
-- Anna Törngren gusolsang@student.gu.se 
+- [A.Toerngren](https://github.com/Toerngren)
 - Christopher Andersson gusandchbh@student.gu.se
 - Faiza Amjad  gusamjfa@student.gu.se
 - Marharyta Apanasevich  gusmarhaap@student.gu.se
